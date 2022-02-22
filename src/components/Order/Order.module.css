@@ -1,0 +1,129 @@
+.inRealization {
+  max-width: 1200px;
+  width: 100%;
+  height: 50%;
+  max-height: 175px;
+  border: 6px solid #fc8800;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+  margin-top: 5px;
+}
+
+.realized {
+  max-width: 1200px;
+  width: 100%;
+  height: 50%;
+  max-height: 175px;
+  border: 6px solid #1ca90f;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+  margin-top: 5px;
+}
+
+.order {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.client {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  max-width: 220px;
+  width: 30%;
+  border: 6px solid #ffffff;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.dest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 40%;
+
+  border: 6px solid #ffffff;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.dest > div {
+  margin: 5px;
+}
+
+.from,
+.to {
+  text-align: center;
+  width: 100%;
+}
+.truckAndArrow {
+  width: 80%;
+  height: 100%;
+  margin-right: 0;
+}
+
+.arrow {
+  background-image: url("https://res.cloudinary.com/siz4rimag/image/upload/v1645195731/toppng.com-left-arrow-comments-transparent-background-arrow-png-white-980x472_j1f61q.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 100%;
+  max-width: 185px;
+  height: 40%;
+  max-height: 190px;
+  margin-left: 10px;
+}
+
+.truck {
+  background-image: url("https://res.cloudinary.com/siz4rimag/image/upload/v1644861173/PinClipart.com_white-van-clipart_2743704_jjqzdt.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 70%;
+  max-width: 185px;
+  height: 30%;
+  max-height: 190px;
+  margin-top: 10px;
+  margin-left: 5px;
+}
+
+.stuff {
+  display: flex;
+  flex-direction: row;
+  width: 20%;
+  height: 100%;
+  align-items: center;
+  border: 6px solid #ffffff;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+
+  padding: 5px;
+}
+
+.stuffImage {
+  background-image: url("https://res.cloudinary.com/siz4rimag/image/upload/v1645197029/commodity-icon-12_1_q8memw.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+
+  height: 100%;
+  width: 50%;
+
+  margin-right: 10px;
+}
+
+.details {
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: Roboto;
+  font-size: 20px;
+
+  color: #031cf8;
+}

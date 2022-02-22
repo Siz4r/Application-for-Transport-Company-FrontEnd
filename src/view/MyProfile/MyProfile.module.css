@@ -1,0 +1,63 @@
+.container {
+  width: 100%;
+  height: 100%;
+  font-size: 72px;
+  padding: 20px;
+}
+
+.wrapper {
+  height: 100%;
+  border: 6px solid #ffffff;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+  font-size: 8vh;
+}
+
+.userDetails {
+  margin-top: 10px;
+  width: 100%;
+  height: 45%;
+  display: flex;
+  flex-direction: row;
+}
+
+.pic {
+  width: 50%;
+  height: 100%;
+  background-image: url("https://res.cloudinary.com/siz4rimag/image/upload/v1643390736/443-4432362_fabric-fabric-icon-png-transparent-png_1_euwyic.png");
+}
+
+.userData {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  border: 6px solid #ffffff;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+
+  margin: 20px 30px 10px;
+  padding-left: 10px;
+}
+
+.formBox {
+  /* width: 100%; */
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0 0 30px;
+  font-size: 5vh;
+}
+
+.inputsBox {
+  display: flex;
+  flex-direction: row;
+
+  height: 100%;
+}
+
+.col {
+  height: 100%;
+  width: 100%;
+}
