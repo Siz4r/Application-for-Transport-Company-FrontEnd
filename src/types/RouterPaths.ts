@@ -1,5 +1,3 @@
-import { type } from "os";
-
 export enum AuthenticatedPaths {
   MY_PROFILE = "/my-profile/",
   EMPLOYEES = "/employees/",

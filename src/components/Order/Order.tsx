@@ -4,7 +4,6 @@ type Props = {
   clientFirstName: string;
   clientLastName: string;
   companyFrom: string;
-  companyTo: string;
   stuffName: string;
   realized: boolean;
 };
@@ -23,11 +22,6 @@ export const Order = (props: Props) => {
           </div>
           <div className={classes.truckAndArrow}>
             <div className={classes.truck} />
-            <div className={classes.arrow} />
-          </div>
-          <div className={classes.to}>
-            To: <br></br>
-            {props.companyTo}
           </div>
         </div>
         <div className={classes.stuff}>

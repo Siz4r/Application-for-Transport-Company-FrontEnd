@@ -5,7 +5,6 @@ import { IuserSlice } from "../../../store/SignIn/slice";
 
 export const useSelectUser = () => {
   const user = useSelector<RootState>(({ user }) => user) as IuserSlice;
-
   return {
     loading: user.loading,
     isAuthenticated: user as Object,

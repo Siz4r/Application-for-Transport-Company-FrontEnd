@@ -1,5 +1,8 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import decode from "jwt-decode";
+import localStorage from "redux-persist/es/storage";
 import { LocalStorageKeys } from "../types/LocalStorageKeys";
+import { Token } from "../types/Token";
 
 const apiUrl = "http://localhost:5000";
 
@@ -7,44 +10,54 @@ type fetchArgs = {
   requestConfig: AxiosRequestConfig;
 };
 
-enum AuthorizationLevel {
+export enum AuthorizationLevel {
   UNAUTHORIZED = "UNAUTHORIZED",
   AUTHORIZED = "AUTHORIZED",
   ANY = "ANY",
 }
 
-const calculateRemainingTime = (expirationTime: any) => {
-  const currentTime = new Date().getTime();
-  const adjExpirationTime = new Date(expirationTime).getTime();
+const isJwtExpired = (jwt: string) => {
+  try {
+    // Define needed type by hand because jwt-decode lacks proper typing
+    const decoded: { exp: number } = decode(jwt, { header: false });
+    if (!decoded || !decoded.exp) return false;
 
-  const remainingDuration = adjExpirationTime - currentTime;
+    if (decoded.exp * 1000 <= new Date().getTime()) return false;
 
-  return remainingDuration;
-};
-
-const isJwtExpired = (expirationTime: any) => {
-  const remainingTime = calculateRemainingTime(expirationTime);
-
-  if (remainingTime < 60) {
     return true;
+  } catch (error) {
+    return false;
   }
-
-  return false;
 };
 
-const getTokens = () => {
-  const storedToken = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN);
-  const storedExpirationTime = localStorage.getItem(LocalStorageKeys.EXP_TIME);
+const getTokens = async (): Promise<Token | undefined> => {
+  let storedToken = await localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN);
 
-  if (isJwtExpired(storedExpirationTime)) {
-    // const refreshToken = await unAuthFetch(
-    //     fetchArgs: {
-    //         method: "POST",
-    //         headers: {
-    //         }
-    //     }
-    // )
+  if (!storedToken) return undefined;
+
+  if (isJwtExpired(storedToken)) {
+    const response = await unAuthFetch(
+      {
+        requestConfig: {
+          method: "POST",
+          withCredentials: true,
+        },
+      },
+      `${apiUrl}/api/auth/refresh_token`
+    );
+
+    if (response.status >= 400) return undefined;
+
+    const { accessToken } = response.data;
+
+    localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN, accessToken);
+
+    storedToken = accessToken as string;
   }
+
+  return {
+    accessToken: storedToken,
+  };
 };
 
 const unAuthFetch = (args: fetchArgs, path: string): Promise<AxiosResponse> => {
@@ -56,12 +69,30 @@ const unAuthFetch = (args: fetchArgs, path: string): Promise<AxiosResponse> => {
   }
 };
 
-// const authFetch = (args: fetchArgs, path: string): Promise<AxiosResponse> => {
-//   const { requestConfig: requestLibraryConfig } = args;
-//   let config = requestLibraryConfig;
+const authFetch = async (
+  args: fetchArgs,
+  path: string
+): Promise<AxiosResponse> => {
+  try {
+    const { requestConfig: requestLibraryConfig } = args;
+    let config = requestLibraryConfig;
 
-//   const tokens = getTokens();
-// };
+    const tokens = await getTokens();
+
+    if (!tokens) throw new Error("Refresh and access tokens expired!");
+    const response = axios(path, {
+      ...config,
+      headers: {
+        Authorization: `Bearer ${tokens.accessToken}`,
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+    return response;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
 
 export const apiFetch = async <RES>(
   url: string,
@@ -73,24 +104,26 @@ export const apiFetch = async <RES>(
     const response = await (async () => {
       if (authLevel === AuthorizationLevel.UNAUTHORIZED) {
         return await unAuthFetch(args, path);
-        // } else if (authorizationLevel === AuthorizationLevel.AUTHORIZED) {
-        //   return await authFetch(url, args);
-        // } else if (authorizationLevel === AuthorizationLevel.ANY) {
-        // Check if access token ok
-        //   const tokens = await tokensHealthcheck();
+      } else if (authLevel === AuthorizationLevel.AUTHORIZED) {
+        return await authFetch(args, path);
+      } else if (authLevel === AuthorizationLevel.ANY) {
+        const tokens = await getTokens();
 
-        //   if (tokens === undefined) {
-        //     return await unAuthFetch(url, args);
-        //   } else {
-        //     return await authFetch(url, args);
-        //   }
+        if (tokens === undefined) {
+          return await unAuthFetch(args, url);
+        } else {
+          return await authFetch(args, url);
+        }
       }
       return await unAuthFetch(args, path);
     })();
-    if (response.status >= 400) throw new Error(response.statusText);
+
+    if (response.status >= 400) {
+      throw new Error(response.data);
+    }
 
     return response.data as RES;
   } catch (error: any) {
-    throw error;
+    throw error.response.data;
   }
 };
