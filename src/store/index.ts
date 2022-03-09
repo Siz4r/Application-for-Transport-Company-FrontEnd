@@ -1,13 +1,10 @@
-import {
-  AnyAction,
-  CombinedState,
-  combineReducers,
-  configureStore,
-} from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { clientsSlice } from "./Clients/slice";
 import { employeesSlice } from "./Employees/slice";
-import { IuserSlice, userSlice } from "./SignIn/slice";
+import { ordersSlice } from "./Orders/slice";
+import { userSlice } from "./SignIn/slice";
 
 const persistConfig = {
   key: "root",
@@ -35,6 +32,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userSlice.reducer,
   employees: employeesSlice.reducer,
+  clients: clientsSlice.reducer,
+  orders: ordersSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

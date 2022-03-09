@@ -3,23 +3,19 @@ import {
   EmployeeAndClientOrdersResponse,
 } from "../Orders/types";
 
-export interface Employee {
+export interface Client {
   id: string;
   firstName: string;
   lastName: string;
-  isAvailable: boolean;
 }
 
-export interface EmployeeGetByIdResponse {
+export interface ClientListResponse {
+  clientId: string;
   userFirstName: string;
   userLastName: string;
-  userEmail: string;
-  userPhoneNumber: string;
-
-  orderList: EmployeeAndClientOrdersResponse[];
 }
 
-export interface EmployeeGetById {
+export interface ClientGetById {
   firstName: string;
   lastName: string;
   email: string;
@@ -28,9 +24,11 @@ export interface EmployeeGetById {
   orders: EmployeeAndClientOrders[];
 }
 
-export interface EmployeeGetAllEmployeesResponse {
-  employeeId: string;
+export interface ClientGetByIdResponse {
   userFirstName: string;
   userLastName: string;
-  isAvailable: boolean;
+  userEmail: string;
+  userPhoneNumber: string;
+
+  orderList: EmployeeAndClientOrdersResponse[];
 }

@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { OrderComponent } from "../../../components/Order/OrderComponent";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
-import { useEmployees } from "../../../core/hooks/Employees/useEmployees";
+import { useClients } from "../../../core/hooks/Clients/useClients";
 import { AuthenticatedView } from "../../../core/wrappers/AuthenticatedView";
 import { EmployeeGetById } from "../../../store/Employees/types";
 import { EmployeeAndClientOrders } from "../../../store/Orders/types";
 import { RouterPathsKeys } from "../../../types";
 import { isBoolean } from "../../../utils/isCheckers/isBooleans";
-import classes from "./Employee.module.css";
+import classes from "./Client.module.css";
 
 const mapOrders = (isDone: boolean, orders: EmployeeAndClientOrders[]) => {
   return orders
@@ -30,61 +30,61 @@ const mapOrders = (isDone: boolean, orders: EmployeeAndClientOrders[]) => {
     });
 };
 
-export const Employee = () => {
+export const Client = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { fetchEmployeeById } = useEmployees({
+  const { fetchClientById } = useClients({
     fetchOnMount: false,
   });
-  const [isEmployeeLoading, setIsEmployeeLoading] = useState<boolean>(true);
+  const [isClientLoading, setIsClientLoading] = useState<boolean>(true);
   let realizedOrders, inRealizationOrders;
 
-  const [employee, setEmployee] = useState<
-    boolean | Awaited<ReturnType<typeof fetchEmployeeById>>
+  const [client, setClient] = useState<
+    boolean | Awaited<ReturnType<typeof fetchClientById>>
   >(false);
 
   useEffect(() => {
     if (id === undefined) {
-      navigate(RouterPathsKeys.EMPLOYEE);
+      navigate(RouterPathsKeys.CLIENT);
     } else {
-      setIsEmployeeLoading(true);
-      fetchEmployeeById(id)
-        .then((employee) => {
-          if (!isBoolean(employee)) {
-            setEmployee(employee);
+      setIsClientLoading(true);
+      fetchClientById(id)
+        .then((client) => {
+          if (!isBoolean(client)) {
+            setClient(client);
           } else {
-            navigate(RouterPathsKeys.EMPLOYEE);
+            navigate(RouterPathsKeys.CLIENT);
           }
         })
-        .finally(() => setIsEmployeeLoading(false));
+        .finally(() => setIsClientLoading(false));
     }
-  }, [fetchEmployeeById, id, navigate]);
+  }, []);
 
-  if (!isBoolean(employee)) {
-    inRealizationOrders = mapOrders(false, employee.orders);
+  if (!isBoolean(client)) {
+    inRealizationOrders = mapOrders(false, client.orders);
 
-    realizedOrders = mapOrders(true, employee.orders);
+    realizedOrders = mapOrders(true, client.orders);
   }
 
-  const employeeData = employee as EmployeeGetById;
+  const clientData = client as EmployeeGetById;
 
   return (
     <AuthenticatedView>
-      {!isEmployeeLoading || typeof employee !== "boolean" ? (
+      {!isClientLoading || typeof client !== "boolean" ? (
         <div className={classes.wrapper}>
-          <h2>Employee</h2>
+          <h2>Client</h2>
           <div className={classes.container}>
             <div className={classes.person}>
               <div className={classes.pic} />
               <div className={classes.data}>
                 <div className={classes.names}>
-                  {employeeData.firstName} {employeeData.lastName}
+                  {clientData.firstName} {clientData.lastName}
                 </div>
                 <div className={classes.phoneNumber}>
-                  {employeeData.phoneNumber}
+                  {clientData.phoneNumber}
                 </div>
-                <div className={classes.email}>{employeeData.email}</div>
+                <div className={classes.email}>{clientData.email}</div>
               </div>
               <form>
                 <label htmlFor="file-upload" className={classes.fileUpload}>
@@ -95,7 +95,7 @@ export const Employee = () => {
               </form>
             </div>
             <div className={classes.orders}>
-              {employeeData.orders.length > 0 ? (
+              {clientData.orders.length > 0 ? (
                 <div>
                   <h3>In Realization</h3>
                   {inRealizationOrders}
