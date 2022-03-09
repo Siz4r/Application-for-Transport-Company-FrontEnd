@@ -1,6 +1,12 @@
 import { User } from "./types";
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { loginWithCredentials } from "./api";
+import {
+  loginWithCredentials,
+  logout,
+  refreshToken,
+  updateUserData,
+} from "./api";
+import storage from "redux-persist/lib/storage";
 
 export type UserEntity = User | boolean;
 
@@ -21,15 +27,26 @@ export const userSlice = createSlice<IuserSlice, {}>({
       state.user = action.payload.user;
     });
 
-    builder.addMatcher(
-      isAnyOf(loginWithCredentials.pending),
-      (state, action) => {
-        state.loading = true;
-      }
-    );
+    builder.addCase(refreshToken.fulfilled, (state, action) => {
+      state.user = action.payload.user;
+    });
+
+    builder.addCase(logout.fulfilled, (state) => {
+      state.user = false;
+      // @ts-ignore
+      state = {};
+      storage.removeItem("persist:root");
+      localStorage.setItem("persist:root", "");
+    });
+
+    builder.addCase(updateUserData.fulfilled, () => {});
+
+    builder.addMatcher(isAnyOf(loginWithCredentials.pending), (state) => {
+      state.loading = true;
+    });
     builder.addMatcher(
       isAnyOf(loginWithCredentials.rejected, loginWithCredentials.fulfilled),
-      (state, action) => {
+      (state) => {
         state.loading = false;
       }
     );

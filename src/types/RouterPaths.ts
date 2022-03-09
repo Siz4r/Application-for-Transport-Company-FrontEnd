@@ -1,9 +1,8 @@
-import { type } from "os";
-
 export enum AuthenticatedPaths {
   MY_PROFILE = "/my-profile/",
-  EMPLOYEES = "/employees/",
   EMPLOYEE = "/employee/",
+  CLIENT = "/client/",
+  ORDER = "/order/",
 }
 
 export enum UnAuthenticatedPaths {

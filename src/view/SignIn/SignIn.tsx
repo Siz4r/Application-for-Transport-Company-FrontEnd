@@ -6,6 +6,7 @@ import classes from "./SignIn.module.css";
 import { loginWithCredentials } from "../../store/SignIn/api";
 import { useTypedDispatch } from "../../core/hooks/TypedDispatch/useTypedDispatch";
 import { parseErrorToString } from "../../core/parseErrorToString";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 type Props = {};
 
@@ -40,7 +41,7 @@ export const SignIn = (props: Props) => {
 
   return (
     <div className={classes.container}>
-      <h2>Forgot Password</h2>
+      <h2>Sign in</h2>
       <form className={classes.inputForm} onSubmit={submitHandler}>
         <input
           type="text"

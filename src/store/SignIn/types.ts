@@ -10,12 +10,26 @@ export interface User {
   postalCode: string;
 }
 
-// export interface ApiUser {
-//   id: string;
-//   username: string;
-//   email: string;
-//   createdAt: string;
-// }
+export interface ApiUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  city: string;
+  street: string;
+  buildingNumber: number;
+  postalCode: string;
+}
+
+export interface UpdateData {
+  id: string;
+  phoneNumber: string;
+  city: string;
+  postalCode: string;
+  street: string;
+  buildingNumber: number;
+}
 
 export interface ApiTokenResponse {
   accessToken: string;
@@ -23,7 +37,7 @@ export interface ApiTokenResponse {
 }
 
 export interface ApiAuthenticationResponse extends ApiTokenResponse {
-  user: User;
+  user: ApiUser;
 }
 
 export interface ApiRegisterResponse {

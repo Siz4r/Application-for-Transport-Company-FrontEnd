@@ -61,3 +61,25 @@
   height: 100%;
   width: 100%;
 }
+
+.updateAddressBut {
+  margin-top: 45px;
+  width: 90%;
+  background: #e21a1a;
+  border: 3px solid #000000;
+  font-size: 24px;
+  font-family: Roboto;
+  /* display: flex;
+  align-items: center; */
+  text-align: center;
+}
+
+.error {
+  font-size: 16px;
+  color: #e21a1a;
+}
+
+.newDataInfo {
+  font-size: 16px;
+  color: lawngreen;
+}

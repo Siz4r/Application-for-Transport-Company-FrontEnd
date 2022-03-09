@@ -11,14 +11,22 @@
 }
 
 .container input {
-  background: #c4c4c4;
   width: 100%;
   max-width: 350px;
   height: 40%;
-  border: 2px solid #000000;
   font-size: 24px;
   padding: 5px;
   color: #000000;
+}
+
+.correct {
+  background: #c4c4c4;
+  border: 2px solid #000000;
+}
+
+.invalid {
+  border: 2px solid red;
+  background: rgb(105, 27, 27);
 }
 
 .container label {
