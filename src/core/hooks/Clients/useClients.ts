@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { getClientById, getClients } from "../../../store/Clients/api";
+import {
+  deleteClient,
+  getClientById,
+  getClients,
+} from "../../../store/Clients/api";
 import { Client, ClientGetById } from "../../../store/Clients/types";
 import { useTypedDispatch } from "../TypedDispatch/useTypedDispatch";
 
@@ -19,6 +23,11 @@ export const useClients = (
 
   const typedDispatchGetClientById = useTypedDispatch<
     typeof getClientById,
+    Required<ClientGetById>
+  >();
+
+  const typedDispatchDeleteClient = useTypedDispatch<
+    typeof deleteClient,
     Required<ClientGetById>
   >();
 
@@ -47,6 +56,12 @@ export const useClients = (
     return payload;
   };
 
+  const removeClient = async (id: string) => {
+    setclientsLoading(true);
+    typedDispatchDeleteClient(deleteClient({ id }));
+    setclientsLoading(false);
+  };
+
   useEffect(() => {
     if (fetchOnMount) {
       try {
@@ -60,6 +75,7 @@ export const useClients = (
   return {
     fetchClients,
     fetchClientById,
+    removeClient,
     clientsLoading,
     clients,
   };

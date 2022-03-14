@@ -1,5 +1,5 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { getOrderById, getOrders } from "./api";
+import { getOrderById, getOrders, updateOrder } from "./api";
 import { Order, OrderDetails } from "./types";
 
 type OrderEntity = OrderDetails | boolean;
@@ -27,8 +27,10 @@ export const ordersSlice = createSlice<IordersSlice, {}>({
       state.orderDetails = action.payload;
     });
 
+    builder.addCase(updateOrder.fulfilled, () => {});
+
     builder.addMatcher(
-      isAnyOf(getOrders.pending, getOrderById.pending),
+      isAnyOf(getOrders.pending, getOrderById.pending, updateOrder.pending),
       (state) => {
         state.loading = true;
       }
@@ -39,7 +41,9 @@ export const ordersSlice = createSlice<IordersSlice, {}>({
         getOrders.fulfilled,
         getOrders.rejected,
         getOrderById.fulfilled,
-        getOrderById.rejected
+        getOrderById.rejected,
+        updateOrder.fulfilled,
+        updateOrder.rejected
       ),
       (state) => {
         state.loading = false;

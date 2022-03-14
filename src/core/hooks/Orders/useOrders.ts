@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { getOrderById, getOrders } from "../../../store/Orders/api";
+import {
+  getOrderById,
+  getOrders,
+  updateOrder,
+} from "../../../store/Orders/api";
 import { Order, OrderDetails } from "../../../store/Orders/types";
 import { useTypedDispatch } from "../TypedDispatch/useTypedDispatch";
 
@@ -13,6 +17,10 @@ export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
   const typedDispatchGetOrders = useTypedDispatch<typeof getOrders, Order[]>();
   const typedDispatchGetOrderById = useTypedDispatch<
     typeof getOrderById,
+    OrderDetails
+  >();
+  const typedDispatchUpdateOrder = useTypedDispatch<
+    typeof updateOrder,
     OrderDetails
   >();
 
@@ -41,6 +49,14 @@ export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
     return payload;
   };
 
+  const updateOrderQuantity = async (id: string, quantity: number) => {
+    setOrdersLoading(true);
+    const { payload } = await typedDispatchUpdateOrder(
+      updateOrder({ id: id, quantity: quantity })
+    );
+    setOrdersLoading(false);
+  };
+
   useEffect(() => {
     if (fetchOnMount) {
       try {
@@ -54,6 +70,7 @@ export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
   return {
     fetchOrders,
     fetchOrderById,
+    updateOrderQuantity,
     ordersLoading,
     orders,
   };

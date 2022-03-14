@@ -11,6 +11,7 @@ export interface Employee {
 }
 
 export interface EmployeeGetByIdResponse {
+  id: string;
   userFirstName: string;
   userLastName: string;
   userEmail: string;
@@ -20,6 +21,7 @@ export interface EmployeeGetByIdResponse {
 }
 
 export interface EmployeeGetById {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -29,7 +31,7 @@ export interface EmployeeGetById {
 }
 
 export interface EmployeeGetAllEmployeesResponse {
-  employeeId: string;
+  id: string;
   userFirstName: string;
   userLastName: string;
   isAvailable: boolean;

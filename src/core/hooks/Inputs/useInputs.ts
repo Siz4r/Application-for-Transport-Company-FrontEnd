@@ -54,6 +54,10 @@ const useInput = (validateValue: ValidateValue, initialValue: string) => {
     dispatch({ type: "RESET" });
   };
 
+  const setValue = (newValue: string) => {
+    dispatch({ type: "INPUT", value: newValue });
+  };
+
   return {
     value: inputState.value,
     isValid: valueIsValid,
@@ -61,6 +65,7 @@ const useInput = (validateValue: ValidateValue, initialValue: string) => {
     valueChangeHandler,
     inputBlurHandler,
     reset,
+    setValue,
   };
 };
 

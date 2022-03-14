@@ -4,7 +4,8 @@ import { ClientGetById, ClientGetByIdResponse } from "../types";
 export const serializeSingleClient = (
   apiClient: ClientGetByIdResponse
 ): ClientGetById => {
-  const employee: ClientGetById = {
+  const client: ClientGetById = {
+    id: apiClient.id,
     firstName: apiClient.userFirstName,
     lastName: apiClient.userLastName,
     phoneNumber: apiClient.userPhoneNumber,
@@ -24,5 +25,5 @@ export const serializeSingleClient = (
         } as EmployeeAndClientOrders)
     ),
   };
-  return employee;
+  return client;
 };

@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { AxiosResponse } from "axios";
 import { apiFetch, AuthorizationLevel } from "../../core/apiFetch";
 import { serializeClients } from "./serializers/serializeClients";
 import { serializeSingleClient } from "./serializers/serializeSingleClient";
@@ -53,3 +54,23 @@ export const getClientById = createAsyncThunk<
     return thunkAPI.rejectWithValue(error);
   }
 });
+
+export const deleteClient = createAsyncThunk<void, { id: string }, {}>(
+  "client/delete",
+  async ({ id }, thunkAPI) => {
+    try {
+      await apiFetch<AxiosResponse>(
+        `/api/clients/${id}`,
+        {
+          requestConfig: {
+            method: "DELETE",
+            withCredentials: true,
+          },
+        },
+        AuthorizationLevel.AUTHORIZED
+      );
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);

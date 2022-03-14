@@ -8,7 +8,7 @@ export const serializeEmployees = (
       ({
         firstName: e.userFirstName,
         lastName: e.userLastName,
-        id: e.employeeId,
+        id: e.id,
         isAvailable: e.isAvailable,
       } as Employee)
   );

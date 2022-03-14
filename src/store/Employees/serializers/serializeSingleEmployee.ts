@@ -5,6 +5,7 @@ export const serializeSingleEmployee = (
   apiEmployee: EmployeeGetByIdResponse
 ): EmployeeGetById => {
   const employee: EmployeeGetById = {
+    id: apiEmployee.id,
     firstName: apiEmployee.userFirstName,
     lastName: apiEmployee.userLastName,
     phoneNumber: apiEmployee.userPhoneNumber,

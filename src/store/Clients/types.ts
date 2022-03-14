@@ -16,6 +16,7 @@ export interface ClientListResponse {
 }
 
 export interface ClientGetById {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -25,6 +26,7 @@ export interface ClientGetById {
 }
 
 export interface ClientGetByIdResponse {
+  id: string;
   userFirstName: string;
   userLastName: string;
   userEmail: string;

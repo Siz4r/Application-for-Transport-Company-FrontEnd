@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../../components";
+import { Button } from "../../components/UI/Button";
 import classes from "./NewPassword.module.css";
 
 type Props = {};

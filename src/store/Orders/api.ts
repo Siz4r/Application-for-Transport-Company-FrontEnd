@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { AxiosResponse } from "axios";
 import { apiFetch, AuthorizationLevel } from "../../core/apiFetch";
 import { serializeOrderDetails } from "./serializers/serializeOrderDetails";
 import { serializeOrders } from "./serializers/serializeOrders";
@@ -52,3 +53,27 @@ export const getOrderById = createAsyncThunk<OrderDetails, { id: string }, {}>(
     }
   }
 );
+
+export const updateOrder = createAsyncThunk<
+  void,
+  { id: string; quantity: number },
+  {}
+>("orders/updateQuantity", async ({ id, quantity }, thunkAPI) => {
+  try {
+    await apiFetch<AxiosResponse>(
+      `/api/orders/${id}`,
+      {
+        requestConfig: {
+          method: "PATCH",
+          withCredentials: true,
+          data: JSON.stringify({
+            amount: quantity,
+          }),
+        },
+      },
+      AuthorizationLevel.AUTHORIZED
+    );
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});

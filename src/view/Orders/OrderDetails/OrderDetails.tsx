@@ -7,15 +7,37 @@ import { useNavigate, useParams } from "react-router-dom";
 import { RouterPathsKeys } from "../../../types";
 import { isBoolean } from "../../../utils/isCheckers/isBooleans";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
+import useInput from "../../../core/hooks/Inputs/useInputs";
+import { Input } from "../../../components/UI/Input";
+import { parseErrorToString } from "../../../core/parseErrorToString";
+import { useEmployees } from "../../../core/hooks/Employees/useEmployees";
+
+const hasOnlyNumbers = (value: string) => /^\d+$/.test(value);
 
 export const OrderDetails = () => {
-  const { fetchOrderById } = useOrders({
+  const [formError, setFormError] = useState<string | undefined>(undefined);
+  let employeeId: string | undefined;
+
+  const { fetchOrderById, updateOrderQuantity } = useOrders({
     fetchOnMount: false,
+  });
+
+  const { employees } = useEmployees({
+    fetchOnMount: true,
   });
   const [isOrderLoading, setIsOrderLoading] = useState<boolean>(false);
   const [order, setOrder] = useState<
     boolean | Awaited<ReturnType<typeof fetchOrderById>>
   >(false);
+
+  const {
+    value: quantityValue,
+    isValid: quantityIsValid,
+    hasError: quantityHasError,
+    valueChangeHandler: quantityChangeHandler,
+    inputBlurHandler: quantityBlurHandler,
+    setValue: quantitySetValue,
+  } = useInput(hasOnlyNumbers, "0");
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -29,6 +51,7 @@ export const OrderDetails = () => {
         .then((order) => {
           if (!isBoolean(order)) {
             setOrder(order);
+            quantitySetValue(order.quantity.toString());
           } else {
             navigate(RouterPathsKeys.ORDER);
           }
@@ -37,9 +60,35 @@ export const OrderDetails = () => {
     }
   }, []);
 
+  const updateOrder = () => {
+    if (id !== undefined) {
+      try {
+        updateOrderQuantity(id, parseInt(quantityValue));
+      } catch (error: any) {
+        parseErrorToString(error, setFormError);
+      }
+    }
+  };
+
+  const submitHandler = (event: React.FormEvent) => {
+    event.preventDefault();
+  };
+
+  const assigneEmployee = (event: React.FormEvent<HTMLInputElement>) => {
+    employeeId = employees
+      .filter(
+        (e) =>
+          e.firstName === event.currentTarget.value.split(" ")[0] &&
+          e.lastName === event.currentTarget.value.split(" ")[1]
+      )
+      .at(0)?.id;
+    console.log(employeeId);
+  };
+
   if (isBoolean(order)) {
     return <LoadingSpinner />;
   }
+
   const isDoneClasses = order.done ? "text-success" : "text-danger";
 
   return (
@@ -81,19 +130,32 @@ export const OrderDetails = () => {
             <div className="col align-self-center px-4">
               <div className="row">
                 <div className="col">
-                  <h2>
-                    order On: <br />
+                  <h2 className="text-center">
+                    Order on: <br />
                     {order.stuffName}
                   </h2>
                 </div>
-                <div className="col">
-                  <h2>
-                    Quantity: <br /> {order.quantity}
-                  </h2>
+                <div className="col w-100 text-center">
+                  <Input
+                    id="quantity"
+                    placeholder="Quantity"
+                    type="number"
+                    labelText="Quantity:"
+                    value={quantityValue}
+                    onChange={quantityChangeHandler}
+                    onBlur={quantityBlurHandler}
+                    hasError={quantityHasError}
+                  />
                 </div>
               </div>
             </div>
             <div className="col align-self-center text-center">
+              <button
+                className="text-center m-4 px-5 bg-warning"
+                onClick={updateOrder}
+              >
+                Update order
+              </button>
               <h1 className={isDoneClasses}>DONE</h1>
             </div>
           </div>
@@ -167,19 +229,25 @@ export const OrderDetails = () => {
                 </div>
               </div>
             </div>
-            <form className="col align-items-start">
+            <form className="col align-items-start" onSubmit={submitHandler}>
               <div className="row mt-4">
-                <label htmlFor="employee-choice" className="bg-white border-0">
-                  Choose a employee
+                <label
+                  htmlFor="employee-choice"
+                  className="bg-white border-0 text-center"
+                >
+                  Choose an employee
                 </label>
                 <input
                   className="mt-2"
                   list="employees"
                   id="employee-choice"
                   name="employee-choice"
+                  onChange={assigneEmployee}
                 />
-                <datalist id="employees">
-                  <option value="Sasza Rusalksi" />
+                <datalist id="employees" className="text-center">
+                  {employees.map((e) => (
+                    <option key={e.id} value={`${e.firstName} ${e.lastName}`} />
+                  ))}
                 </datalist>
 
                 <button className="mt-4 py-2 bg-secondary bg-gradient text-white text-weight-bold">

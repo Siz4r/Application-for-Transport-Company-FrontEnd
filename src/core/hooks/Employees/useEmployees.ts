@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { getEmployeeById, getEmployees } from "../../../store/Employees/api";
+import {
+  deleteEmployee,
+  getEmployeeById,
+  getEmployees,
+} from "../../../store/Employees/api";
 import { Employee, EmployeeGetById } from "../../../store/Employees/types";
 import { useTypedDispatch } from "../TypedDispatch/useTypedDispatch";
 
@@ -19,6 +23,11 @@ export const useEmployees = (
 
   const typedDispatchGetEmployeeById = useTypedDispatch<
     typeof getEmployeeById,
+    Required<EmployeeGetById>
+  >();
+
+  const typedDispatchDeleteEmployee = useTypedDispatch<
+    typeof deleteEmployee,
     Required<EmployeeGetById>
   >();
 
@@ -49,6 +58,12 @@ export const useEmployees = (
     return payload;
   };
 
+  const removeEmployee = async (id: string) => {
+    setEmployeesLoading(true);
+    typedDispatchDeleteEmployee(deleteEmployee({ id }));
+    setEmployeesLoading(false);
+  };
+
   useEffect(() => {
     if (fetchOnMount) {
       try {
@@ -62,6 +77,7 @@ export const useEmployees = (
   return {
     fetchEmployees,
     fetchEmployeeById,
+    removeEmployee,
     employeesLoading,
     employees,
   };
