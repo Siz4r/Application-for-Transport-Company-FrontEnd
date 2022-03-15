@@ -4,6 +4,7 @@ import { apiFetch, AuthorizationLevel } from "../../core/apiFetch";
 import { serializeOrderDetails } from "./serializers/serializeOrderDetails";
 import { serializeOrders } from "./serializers/serializeOrders";
 import {
+  Employee,
   Order,
   OrderDetails,
   OrderDetailsResponse,
@@ -55,12 +56,12 @@ export const getOrderById = createAsyncThunk<OrderDetails, { id: string }, {}>(
 );
 
 export const updateOrder = createAsyncThunk<
-  void,
+  AxiosResponse,
   { id: string; quantity: number },
   {}
 >("orders/updateQuantity", async ({ id, quantity }, thunkAPI) => {
   try {
-    await apiFetch<AxiosResponse>(
+    return await apiFetch<AxiosResponse>(
       `/api/orders/${id}`,
       {
         requestConfig: {
@@ -77,3 +78,44 @@ export const updateOrder = createAsyncThunk<
     return thunkAPI.rejectWithValue(error);
   }
 });
+
+export const assigneEmployeeToOrder = createAsyncThunk<
+  AxiosResponse,
+  { id: string; employee: Employee },
+  {}
+>("orders/assigneEmployee", async ({ id, employee }, thunkAPI) => {
+  try {
+    return await apiFetch<AxiosResponse>(
+      `/api/employees/${employee.id}/orders/${id}`,
+      {
+        requestConfig: {
+          method: "POST",
+          withCredentials: true,
+        },
+      },
+      AuthorizationLevel.AUTHORIZED
+    );
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+export const changeOrderState = createAsyncThunk<void, { id: string }, {}>(
+  "orders/changeOrderState",
+  async ({ id }, thunkAPI) => {
+    try {
+      await apiFetch<AxiosResponse>(
+        `/api/orders/${id}`,
+        {
+          requestConfig: {
+            method: "PUT",
+            withCredentials: true,
+          },
+        },
+        AuthorizationLevel.AUTHORIZED
+      );
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);

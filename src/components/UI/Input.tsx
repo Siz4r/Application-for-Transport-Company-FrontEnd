@@ -17,8 +17,6 @@ export const Input = (props: Props) => {
     ? `${classes.invalid}`
     : `${classes.correct}`;
 
-  console.log(props.value);
-
   return (
     <div className={classes.container}>
       <label htmlFor={props.id}>

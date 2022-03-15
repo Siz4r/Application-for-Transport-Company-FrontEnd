@@ -11,14 +11,23 @@ import useInput from "../../../core/hooks/Inputs/useInputs";
 import { Input } from "../../../components/UI/Input";
 import { parseErrorToString } from "../../../core/parseErrorToString";
 import { useEmployees } from "../../../core/hooks/Employees/useEmployees";
+import { Employee } from "../../../store/Orders/types";
+import { WarningModal } from "../../../components/Modals/warningModal";
 
 const hasOnlyNumbers = (value: string) => /^\d+$/.test(value);
+const quantityValidation = (value: string) =>
+  hasOnlyNumbers(value) && parseInt(value) > 0;
 
 export const OrderDetails = () => {
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  let employeeId: string | undefined;
+  let employee: Employee | undefined;
 
-  const { fetchOrderById, updateOrderQuantity } = useOrders({
+  const {
+    fetchOrderById,
+    updateOrderQuantity,
+    assigneEmployee,
+    updateOrderState,
+  } = useOrders({
     fetchOnMount: false,
   });
 
@@ -37,7 +46,7 @@ export const OrderDetails = () => {
     valueChangeHandler: quantityChangeHandler,
     inputBlurHandler: quantityBlurHandler,
     setValue: quantitySetValue,
-  } = useInput(hasOnlyNumbers, "0");
+  } = useInput(quantityValidation, "0");
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -61,7 +70,7 @@ export const OrderDetails = () => {
   }, []);
 
   const updateOrder = () => {
-    if (id !== undefined) {
+    if (id !== undefined && quantityIsValid) {
       try {
         updateOrderQuantity(id, parseInt(quantityValue));
       } catch (error: any) {
@@ -70,19 +79,38 @@ export const OrderDetails = () => {
     }
   };
 
-  const submitHandler = (event: React.FormEvent) => {
-    event.preventDefault();
+  const changeOrderState = () => {
+    if (id !== undefined && !isBoolean(order)) {
+      try {
+        updateOrderState(id);
+        setOrder({ ...order, done: !order.done });
+      } catch (error: any) {
+        parseErrorToString(error, setFormError);
+      }
+    }
   };
 
-  const assigneEmployee = (event: React.FormEvent<HTMLInputElement>) => {
-    employeeId = employees
+  const submitHandler = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (employee && id && !isBoolean(order)) {
+      try {
+        assigneEmployee(id, employee);
+        setOrder({ ...order, employee: employee });
+      } catch (error: any) {
+        parseErrorToString(error, setFormError);
+      }
+    }
+  };
+
+  const getEmployee = (event: React.FormEvent<HTMLInputElement>) => {
+    employee = employees
       .filter(
         (e) =>
           e.firstName === event.currentTarget.value.split(" ")[0] &&
           e.lastName === event.currentTarget.value.split(" ")[1]
       )
-      .at(0)?.id;
-    console.log(employeeId);
+      .at(0);
   };
 
   if (isBoolean(order)) {
@@ -110,7 +138,7 @@ export const OrderDetails = () => {
                   <strong>
                     <h3 className="mt-3">{order.company.name}</h3>
                   </strong>
-                  {order.company.address.buildingNumber != 0 ? (
+                  {order.company.address.buildingNumber !== 0 ? (
                     <div>
                       <p className="mb-0 mt-2 text-secondary">
                         {order.company.address.street}{" "}
@@ -178,7 +206,7 @@ export const OrderDetails = () => {
                       {order.client.firstName} {order.client.lastName}
                     </h3>
                   </strong>
-                  {order.client.address.buildingNumber != 0 ? (
+                  {order.client.address.buildingNumber !== 0 ? (
                     <div>
                       <p className="mb-0 mt-2 text-secondary">
                         {order.client.address.street}{" "}
@@ -229,7 +257,11 @@ export const OrderDetails = () => {
                 </div>
               </div>
             </div>
-            <form className="col align-items-start" onSubmit={submitHandler}>
+            <form
+              className="col align-items-start"
+              onSubmit={submitHandler}
+              id="newEmployee"
+            >
               <div className="row mt-4">
                 <label
                   htmlFor="employee-choice"
@@ -242,25 +274,42 @@ export const OrderDetails = () => {
                   list="employees"
                   id="employee-choice"
                   name="employee-choice"
-                  onChange={assigneEmployee}
+                  onChange={getEmployee}
                 />
                 <datalist id="employees" className="text-center">
-                  {employees.map((e) => (
-                    <option key={e.id} value={`${e.firstName} ${e.lastName}`} />
-                  ))}
+                  {employees
+                    .filter((e) => e.isAvailable)
+                    .map((e) => (
+                      <option
+                        key={e.id}
+                        value={`${e.firstName} ${e.lastName}`}
+                      />
+                    ))}
                 </datalist>
 
-                <button className="mt-4 py-2 bg-secondary bg-gradient text-white text-weight-bold">
-                  Assign new employee
-                </button>
+                <WarningModal
+                  onClick={() => {}}
+                  body="Are you sure you want to assign this employee? Once you do this you wont be able to leave order without assigned worker!"
+                  buttonBody="Assign new employee"
+                  style="mt-4 py-2 bg-secondary bg-gradient text-white text-weight-bold"
+                  formId="newEmployee"
+                />
               </div>
             </form>
             <div className="col align-self-center text-center">
-              <button className="mt-3 p-4 bg-success bg-gradient text-white">
-                <h3 className="p-0">Mark order as done</h3>
+              <button
+                onClick={changeOrderState}
+                className={`mt-0 p-4 bg-${
+                  order.done ? "danger" : "success"
+                } bg-gradient text-white`}
+              >
+                <h3 className="p-0">
+                  {order.done ? "Mark order as not done" : "Mark order as done"}
+                </h3>
               </button>
             </div>
           </div>
+          {formError && <p>{formError}</p>}
         </div>
       ) : (
         <LoadingSpinner />

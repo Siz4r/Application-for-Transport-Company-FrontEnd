@@ -10,6 +10,7 @@ export const serializeEmployees = (
         lastName: e.userLastName,
         id: e.id,
         isAvailable: e.isAvailable,
+        phoneNumber: e.userPhoneNumber,
       } as Employee)
   );
   return employees;

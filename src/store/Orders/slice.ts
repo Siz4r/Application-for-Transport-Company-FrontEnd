@@ -1,5 +1,12 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { getOrderById, getOrders, updateOrder } from "./api";
+import { isBoolean } from "../../utils/isCheckers/isBooleans";
+import {
+  assigneEmployeeToOrder,
+  changeOrderState,
+  getOrderById,
+  getOrders,
+  updateOrder,
+} from "./api";
 import { Order, OrderDetails } from "./types";
 
 type OrderEntity = OrderDetails | boolean;
@@ -29,8 +36,26 @@ export const ordersSlice = createSlice<IordersSlice, {}>({
 
     builder.addCase(updateOrder.fulfilled, () => {});
 
+    builder.addCase(assigneEmployeeToOrder.fulfilled, (state, action) => {
+      if (!isBoolean(state.orderDetails)) {
+        state.orderDetails.employee = action.meta.arg.employee;
+      }
+    });
+
+    builder.addCase(changeOrderState.fulfilled, (state) => {
+      if (!isBoolean(state.orderDetails)) {
+        state.orderDetails.done = !state.orderDetails.done;
+      }
+    });
+
     builder.addMatcher(
-      isAnyOf(getOrders.pending, getOrderById.pending, updateOrder.pending),
+      isAnyOf(
+        getOrders.pending,
+        getOrderById.pending,
+        updateOrder.pending,
+        assigneEmployeeToOrder.pending,
+        changeOrderState.pending
+      ),
       (state) => {
         state.loading = true;
       }
@@ -43,7 +68,11 @@ export const ordersSlice = createSlice<IordersSlice, {}>({
         getOrderById.fulfilled,
         getOrderById.rejected,
         updateOrder.fulfilled,
-        updateOrder.rejected
+        updateOrder.rejected,
+        assigneEmployeeToOrder.fulfilled,
+        assigneEmployeeToOrder.rejected,
+        changeOrderState.fulfilled,
+        changeOrderState.rejected
       ),
       (state) => {
         state.loading = false;

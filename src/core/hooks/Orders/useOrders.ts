@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import {
+  assigneEmployeeToOrder,
+  changeOrderState,
   getOrderById,
   getOrders,
   updateOrder,
 } from "../../../store/Orders/api";
-import { Order, OrderDetails } from "../../../store/Orders/types";
+import { Employee, Order, OrderDetails } from "../../../store/Orders/types";
 import { useTypedDispatch } from "../TypedDispatch/useTypedDispatch";
 
 type UseOrdersConfig = {
@@ -15,13 +17,22 @@ type UseOrdersConfig = {
 
 export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
   const typedDispatchGetOrders = useTypedDispatch<typeof getOrders, Order[]>();
+
   const typedDispatchGetOrderById = useTypedDispatch<
     typeof getOrderById,
     OrderDetails
   >();
-  const typedDispatchUpdateOrder = useTypedDispatch<
-    typeof updateOrder,
-    OrderDetails
+
+  const typedDispatchUpdateOrder = useTypedDispatch<typeof updateOrder, void>();
+
+  const typedDispatchAssigneOrderToEmployee = useTypedDispatch<
+    typeof assigneEmployeeToOrder,
+    void
+  >();
+
+  const typedDispatchChangeOrderState = useTypedDispatch<
+    typeof changeOrderState,
+    void
   >();
 
   const fetchOnMount = config && config.fetchOnMount === false ? false : true;
@@ -55,6 +66,25 @@ export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
       updateOrder({ id: id, quantity: quantity })
     );
     setOrdersLoading(false);
+    return payload;
+  };
+
+  const assigneEmployee = async (id: string, employee: Employee) => {
+    setOrdersLoading(true);
+    const { payload } = await typedDispatchAssigneOrderToEmployee(
+      assigneEmployeeToOrder({ id, employee })
+    );
+    setOrdersLoading(false);
+    return payload;
+  };
+
+  const updateOrderState = async (id: string) => {
+    setOrdersLoading(true);
+    const { payload } = await typedDispatchChangeOrderState(
+      changeOrderState({ id })
+    );
+    setOrdersLoading(false);
+    return payload;
   };
 
   useEffect(() => {
@@ -71,6 +101,8 @@ export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
     fetchOrders,
     fetchOrderById,
     updateOrderQuantity,
+    assigneEmployee,
+    updateOrderState,
     ordersLoading,
     orders,
   };

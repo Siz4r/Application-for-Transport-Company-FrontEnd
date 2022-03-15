@@ -7,6 +7,7 @@ export interface Employee {
   id: string;
   firstName: string;
   lastName: string;
+  phoneNumber: string;
   isAvailable: boolean;
 }
 
@@ -34,5 +35,6 @@ export interface EmployeeGetAllEmployeesResponse {
   id: string;
   userFirstName: string;
   userLastName: string;
+  userPhoneNumber: string;
   isAvailable: boolean;
 }
