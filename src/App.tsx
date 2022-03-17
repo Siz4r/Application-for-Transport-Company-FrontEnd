@@ -4,6 +4,8 @@ import { BootstrapAuthentication } from "./core/wrappers/BootstrapAuthentication
 import { RouterPathsKeys } from "./types";
 import { Client } from "./view/Clients/Client/Client";
 import { Clients } from "./view/Clients/Clients";
+import { Companies } from "./view/Companies/Companies";
+import { CompanyDetails } from "./view/Companies/CompanyDetails/CompanyDetails";
 import { Employee } from "./view/Employees/EmployeeDetails/Employee";
 import { Employees } from "./view/Employees/Employees";
 import ForgotPassword from "./view/ForgotPassword/ForgotPassword";
@@ -35,6 +37,11 @@ function App() {
             <Route
               path={RouterPathsKeys.ORDER + ":id"}
               element={<OrderDetails />}
+            />
+            <Route path={RouterPathsKeys.COMPANY} element={<Companies />} />
+            <Route
+              path={RouterPathsKeys.COMPANY + ":id"}
+              element={<CompanyDetails />}
             />
           </Routes>
         </Router>

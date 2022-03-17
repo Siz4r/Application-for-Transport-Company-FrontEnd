@@ -5,6 +5,8 @@ type Props = {
   body: string;
   buttonBody: string;
   onClick: () => void;
+  placeInRightBottomCorner: boolean;
+  style: any;
 };
 
 export const DeleteModal = (props: Props) => {
@@ -21,9 +23,9 @@ export const DeleteModal = (props: Props) => {
   const handleShow = () => setShow(true);
 
   return (
-    <div>
+    <div className="row justify-content-end w-100">
       <button
-        className="deleteBut m-4 px-5 bg-danger"
+        className="m-4 px-5 bg-danger w-25"
         type="button"
         onClick={handleShow}
       >

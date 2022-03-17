@@ -23,7 +23,7 @@ export const NavBar = () => {
       <Link to={RouterPathsKeys.SIGN_IN} className={classes.link}>
         Your files
       </Link>
-      <Link to={RouterPathsKeys.SIGN_IN} className={classes.link}>
+      <Link to={RouterPathsKeys.COMPANY} className={classes.link}>
         Companys
       </Link>
       <Link to={RouterPathsKeys.SIGN_IN} className={classes.link}>

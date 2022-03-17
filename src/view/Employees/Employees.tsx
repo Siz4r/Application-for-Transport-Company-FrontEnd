@@ -4,9 +4,7 @@ import { AuthenticatedView } from "../../core/wrappers/AuthenticatedView";
 import { RouterPathsKeys } from "../../types";
 import classes from "./Employees.module.css";
 
-type Props = {};
-
-export const Employees = (props: Props) => {
+export const Employees = () => {
   const { employeesLoading, employees } = useEmployees({
     fetchOnMount: true,
   });

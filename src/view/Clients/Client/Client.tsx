@@ -123,7 +123,7 @@ export const Client = () => {
               </div>
             </div>
           </div>
-          <div>
+          <div className="">
             {client.orders.length > 0 ? (
               <div className="m-2">
                 <h3 className="row m-2">In Realization</h3>
@@ -140,6 +140,8 @@ export const Client = () => {
             buttonBody="Delete client"
             body="Do you really want to delete this client? All his data and related orders will be lost!"
             onClick={deleteClient}
+            placeInRightBottomCorner={true}
+            style="w-50"
           />
         </div>
       ) : (

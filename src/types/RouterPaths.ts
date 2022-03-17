@@ -3,6 +3,7 @@ export enum AuthenticatedPaths {
   EMPLOYEE = "/employee/",
   CLIENT = "/client/",
   ORDER = "/order/",
+  COMPANY = "/company/",
 }
 
 export enum UnAuthenticatedPaths {

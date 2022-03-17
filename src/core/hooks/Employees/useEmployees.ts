@@ -60,7 +60,7 @@ export const useEmployees = (
 
   const removeEmployee = async (id: string) => {
     setEmployeesLoading(true);
-    typedDispatchDeleteEmployee(deleteEmployee({ id }));
+    await typedDispatchDeleteEmployee(deleteEmployee({ id }));
     setEmployeesLoading(false);
   };
 

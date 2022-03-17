@@ -136,6 +136,8 @@ export const Employee = () => {
             buttonBody="Delete employee"
             body="Do you really want to delete this employee? All his data and related orders will be lost!"
             onClick={deleteEmployee}
+            placeInRightBottomCorner={true}
+            style="w-50"
           />
         </div>
       ) : (
