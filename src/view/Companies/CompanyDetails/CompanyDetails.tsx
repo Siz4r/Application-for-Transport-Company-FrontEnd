@@ -1,6 +1,4 @@
-import { DeleteModal } from "../../../components/Modals/deleteModal";
 import { WarningModal } from "../../../components/Modals/warningModal";
-import { Input } from "../../../components/UI/Input";
 import { AuthenticatedView } from "../../../core/wrappers/AuthenticatedView";
 
 export const CompanyDetails = () => {
@@ -58,23 +56,47 @@ export const CompanyDetails = () => {
               <button className="bg-warning w-100 my-3">Edit stuff</button>
             </div>
           </div>
-          <div className="row">
-            <form className="shadowBox my-4 col-6 p-3">
+          <div className="row align-items-end">
+            <form className="shadowBox my-4 col-9 p-3">
               <div className="row">
-                <div className="col-6">
+                <div className="col-4">
                   <input
                     type="text"
-                    value={"elo"}
-                    className="bg-secondary mb-2 w-75"
+                    className="mb-2 w-100 py-3 px-3 border border-2 border-dark"
+                    placeholder="Name"
+                    style={{ fontSize: 20, fontWeight: "bold" }}
                   />
-                  <input type="text" value={"elo"} className="w-75 my-2 mb-5" />
-                  <button className="bg-success w-75 mt-5">Add stuff</button>
+                  <input
+                    type="text"
+                    className="w-75 my-2 mb-5 py-3 px-3 w-100 border border-2 border-dark"
+                    placeholder="Quantity"
+                    style={{ fontSize: 20, fontWeight: "bold" }}
+                  />
+                  <button
+                    className="bg-success w-100 mt-5 border border-2 border-dark"
+                    style={{ fontSize: 20 }}
+                  >
+                    Add stuff
+                  </button>
                 </div>
-                <div className="col-6">
-                  <input type="text" value={"elo"} />
+                <div className="col-8">
+                  <textarea
+                    placeholder="Description"
+                    className="h-100 w-100 p-2 px-3 border border-2 border-dark"
+                    style={{ fontSize: 20, fontWeight: "bold" }}
+                  />
                 </div>
               </div>
             </form>
+            <div className="col-3">
+              <WarningModal
+                body="Do you really want to delete this company?"
+                buttonBody="Delete stuff"
+                formId="elo"
+                onClick={() => {}}
+                style="w-100 bg-danger my-4 h5"
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -13,10 +13,10 @@ type Props = {
 export const AuthenticatedView = (props: Props) => {
   const { user, loading } = useSelectUser();
 
-  if (loading || isBoolean(user)) {
-    console.log(loading);
-    return <Navigate to={RouterPathsKeys.SIGN_IN} />;
-  }
+  // if (loading || isBoolean(user)) {
+  //   console.log(loading);
+  //   return <Navigate to={RouterPathsKeys.SIGN_IN} />;
+  // }
 
   return (
     <div className={classes.container}>
