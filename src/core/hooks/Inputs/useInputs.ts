@@ -42,7 +42,11 @@ const useInput = (validateValue: ValidateValue, initialValue: string) => {
   const valueIsValid = validateValue(inputState.value);
   const hasError = !valueIsValid && inputState.isTouched;
 
-  const valueChangeHandler = (event: React.FormEvent<HTMLInputElement>) => {
+  const valueChangeHandler = (
+    event:
+      | React.FormEvent<HTMLInputElement>
+      | React.FormEvent<HTMLTextAreaElement>
+  ) => {
     dispatch({ type: "INPUT", value: event.currentTarget.value });
   };
 

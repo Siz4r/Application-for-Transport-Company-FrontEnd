@@ -1,7 +1,46 @@
 import { WarningModal } from "../../../components/Modals/warningModal";
+import useInput from "../../../core/hooks/Inputs/useInputs";
 import { AuthenticatedView } from "../../../core/wrappers/AuthenticatedView";
 
+const validateQuantity = (value: string) => parseInt(value) > 0;
+const isNotEmpty = (value: string) => value.trim().length > 2;
+const hasOnlyLetters = (value: string) => !/[^a-zżźółćśęąń]/i.test(value);
+const correctTextInput = (value: string) =>
+  isNotEmpty(value) && hasOnlyLetters(value);
+
 export const CompanyDetails = () => {
+  const {
+    value: editQuantityValue,
+    inputBlurHandler: editQuantityBlurHandler,
+    valueChangeHandler: editQuantityChangeHandler,
+    isValid: editQuantityIsValid,
+    hasError: editQuantityHasError,
+  } = useInput(validateQuantity, "200");
+
+  const {
+    value: nameValue,
+    inputBlurHandler: nameBlurHandler,
+    valueChangeHandler: nameChangeHandler,
+    isValid: nameIsValid,
+    hasError: nameHasError,
+  } = useInput(correctTextInput, "Name");
+
+  const {
+    value: quantityValue,
+    inputBlurHandler: quantityBlurHandler,
+    valueChangeHandler: quantityChangeHandler,
+    isValid: quantityIsValid,
+    hasError: quantityHasError,
+  } = useInput(validateQuantity, "200");
+
+  const {
+    value: descriptionValue,
+    inputBlurHandler: descriptionBlurHandler,
+    valueChangeHandler: descriptionChangeHandler,
+    isValid: descriptionIsValid,
+    hasError: descriptionHasError,
+  } = useInput(isNotEmpty, "Description");
+
   return (
     <AuthenticatedView>
       <div className="container">
@@ -34,7 +73,17 @@ export const CompanyDetails = () => {
             </div>
             <div className="col-2 text-center">
               <h2>Pelet</h2>
-              <h2>Quantity: 200</h2>
+              <h2>Quantity:</h2>
+              <input
+                type="number"
+                placeholder="Quantity"
+                value={parseInt(editQuantityValue)}
+                onChange={editQuantityChangeHandler}
+                onBlur={editQuantityBlurHandler}
+                className={`mb-2 w-100 py-3 px-3 border border-2 ${
+                  editQuantityIsValid ? "border-dark" : "border-danger"
+                }`}
+              />
             </div>
             <div className="col-5 text-center">
               <p>
@@ -62,14 +111,24 @@ export const CompanyDetails = () => {
                 <div className="col-4">
                   <input
                     type="text"
-                    className="mb-2 w-100 py-3 px-3 border border-2 border-dark"
+                    className={`mb-2 w-100 py-3 px-3 border border-2 ${
+                      nameIsValid ? "border-dark" : "border-danger"
+                    }`}
                     placeholder="Name"
+                    value={nameValue}
+                    onChange={nameChangeHandler}
+                    onBlur={nameBlurHandler}
                     style={{ fontSize: 20, fontWeight: "bold" }}
                   />
                   <input
-                    type="text"
-                    className="w-75 my-2 mb-5 py-3 px-3 w-100 border border-2 border-dark"
+                    type="number"
+                    className={`mb-2 w-100 py-3 px-3 border border-2 ${
+                      quantityIsValid ? "border-dark" : "border-danger"
+                    }`}
                     placeholder="Quantity"
+                    value={quantityValue}
+                    onChange={quantityChangeHandler}
+                    onBlur={quantityBlurHandler}
                     style={{ fontSize: 20, fontWeight: "bold" }}
                   />
                   <button
@@ -82,7 +141,12 @@ export const CompanyDetails = () => {
                 <div className="col-8">
                   <textarea
                     placeholder="Description"
-                    className="h-100 w-100 p-2 px-3 border border-2 border-dark"
+                    className={`mb-2 w-100 h-100 py-3 px-3 border border-2 ${
+                      descriptionIsValid ? "border-dark" : "border-danger"
+                    }`}
+                    onBlur={descriptionBlurHandler}
+                    onChange={descriptionChangeHandler}
+                    value={descriptionValue}
                     style={{ fontSize: 20, fontWeight: "bold" }}
                   />
                 </div>
@@ -91,7 +155,7 @@ export const CompanyDetails = () => {
             <div className="col-3">
               <WarningModal
                 body="Do you really want to delete this company?"
-                buttonBody="Delete stuff"
+                buttonBody="Delete company"
                 formId="elo"
                 onClick={() => {}}
                 style="w-100 bg-danger my-4 h5"
