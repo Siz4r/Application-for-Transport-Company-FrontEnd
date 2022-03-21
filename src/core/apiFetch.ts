@@ -124,7 +124,6 @@ export const apiFetch = async <RES>(
 
     return response.data as RES;
   } catch (error: any) {
-    console.log(error.response.data);
     throw error.response.data;
   }
 };

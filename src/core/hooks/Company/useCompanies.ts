@@ -1,8 +1,19 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { getCompanies } from "../../../store/Companies/api";
-import { Company } from "../../../store/Companies/types";
+import {
+  addStuffToCompany,
+  deleteCompany,
+  deleteStuffFromCompany,
+  editStuff,
+  getCompanies,
+  getCompanyById,
+} from "../../../store/Companies/api";
+import {
+  AddStuffData,
+  Company,
+  CompanyDetails,
+} from "../../../store/Companies/types";
 import { useTypedDispatch } from "../TypedDispatch/useTypedDispatch";
 
 type UseCompaniesConfig = {
@@ -15,6 +26,28 @@ export const useCompanies = (
   const typedDispatchGetCompanies = useTypedDispatch<
     typeof getCompanies,
     Company[]
+  >();
+
+  const typedDispatchGetCompanyById = useTypedDispatch<
+    typeof getCompanyById,
+    CompanyDetails
+  >();
+
+  const typedDispatchAddStuff = useTypedDispatch<
+    typeof addStuffToCompany,
+    string
+  >();
+
+  const typedDispatchEditStuff = useTypedDispatch<typeof editStuff, string>();
+
+  const typedDispatchDeleteStuff = useTypedDispatch<
+    typeof deleteStuffFromCompany,
+    string
+  >();
+
+  const typedDispatchDeleteCompany = useTypedDispatch<
+    typeof deleteCompany,
+    string
   >();
 
   const fetchOnMount = config && config.fetchOnMount === false ? false : true;
@@ -34,6 +67,69 @@ export const useCompanies = (
     return payload;
   };
 
+  const fetchCompanyById = async (id: string) => {
+    try {
+      setCompaniesLoading(true);
+      const { payload } = await typedDispatchGetCompanyById(
+        getCompanyById({ id })
+      );
+      setCompaniesLoading(false);
+      return payload;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const addStuff = async (data: AddStuffData) => {
+    try {
+      setCompaniesLoading(true);
+      const { payload } = await typedDispatchAddStuff(addStuffToCompany(data));
+      setCompaniesLoading(false);
+      return payload;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const removeStuff = async (id: string) => {
+    setCompaniesLoading(true);
+    await typedDispatchDeleteStuff(deleteStuffFromCompany({ id }));
+    setCompaniesLoading(false);
+  };
+
+  const editStuffData = async (data: {
+    quantity: number;
+    prize: number;
+    id: string;
+  }) => {
+    try {
+      setCompaniesLoading(true);
+      const { payload } = await typedDispatchEditStuff(
+        editStuff({ quantity: data.quantity, prize: data.prize, id: data.id })
+      );
+      if (payload) throw payload;
+      setCompaniesLoading(false);
+      return payload;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const removeCompany = async (id: string) => {
+    try {
+      console.log("Elo");
+      setCompaniesLoading(true);
+      const { payload } = await typedDispatchDeleteCompany(
+        deleteCompany({ id })
+      );
+      if (payload) throw payload;
+      setCompaniesLoading(false);
+      return payload;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (fetchOnMount) {
       try {
@@ -46,6 +142,11 @@ export const useCompanies = (
 
   return {
     fetchCompanies,
+    fetchCompanyById,
+    addStuff,
+    editStuffData,
+    removeStuff,
+    removeCompany,
     companies,
     companiesLoading,
   };
