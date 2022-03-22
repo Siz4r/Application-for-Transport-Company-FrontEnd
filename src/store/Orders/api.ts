@@ -104,7 +104,7 @@ export const changeOrderState = createAsyncThunk<void, { id: string }, {}>(
   "orders/changeOrderState",
   async ({ id }, thunkAPI) => {
     try {
-      await apiFetch<AxiosResponse>(
+      await apiFetch(
         `/api/orders/${id}`,
         {
           requestConfig: {
@@ -119,3 +119,27 @@ export const changeOrderState = createAsyncThunk<void, { id: string }, {}>(
     }
   }
 );
+
+export const addOrder = createAsyncThunk<
+  void,
+  { stuffId: string; clientId: string; amount: number },
+  {}
+>("orders/addOrder", async ({ stuffId, clientId, amount }, thunkAPI) => {
+  try {
+    await apiFetch(
+      `/api/orders/${stuffId}/${clientId}`,
+      {
+        requestConfig: {
+          data: JSON.stringify({
+            amount: amount,
+          }),
+          method: "POST",
+          withCredentials: true,
+        },
+      },
+      AuthorizationLevel.AUTHORIZED
+    );
+  } catch (error: any) {
+    throw thunkAPI.rejectWithValue(error);
+  }
+});

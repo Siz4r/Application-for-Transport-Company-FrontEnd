@@ -2,7 +2,7 @@ import { AuthenticatedView } from "../../../core/wrappers/AuthenticatedView";
 import "./OrderDetails.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useOrders } from "../../../core/hooks/Orders/useOrders";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { RouterPathsKeys } from "../../../types";
 import { isBoolean } from "../../../utils/isCheckers/isBooleans";
@@ -13,6 +13,7 @@ import { parseErrorToString } from "../../../core/parseErrorToString";
 import { useEmployees } from "../../../core/hooks/Employees/useEmployees";
 import { Employee } from "../../../store/Orders/types";
 import { WarningModal } from "../../../components/Modals/warningModal";
+import { Form } from "react-bootstrap";
 
 const hasOnlyNumbers = (value: string) => /^\d+$/.test(value);
 const quantityValidation = (value: string) =>
@@ -20,7 +21,7 @@ const quantityValidation = (value: string) =>
 
 export const OrderDetails = () => {
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  let employee: Employee | undefined;
+  const [employee, setEmployee] = useState<Employee | undefined>(undefined);
 
   const {
     fetchOrderById,
@@ -34,6 +35,7 @@ export const OrderDetails = () => {
   const { employees } = useEmployees({
     fetchOnMount: true,
   });
+  let freeEmployees: Employee[] = [];
   const [isOrderLoading, setIsOrderLoading] = useState<boolean>(false);
   const [order, setOrder] = useState<
     boolean | Awaited<ReturnType<typeof fetchOrderById>>
@@ -61,6 +63,10 @@ export const OrderDetails = () => {
           if (!isBoolean(order)) {
             setOrder(order);
             quantitySetValue(order.quantity.toString());
+            freeEmployees = employees.filter((e) => e.isAvailable);
+            if (freeEmployees.length > 0) {
+              setEmployee(freeEmployees[0]);
+            }
           } else {
             navigate(RouterPathsKeys.ORDER);
           }
@@ -103,14 +109,10 @@ export const OrderDetails = () => {
     }
   };
 
-  const getEmployee = (event: React.FormEvent<HTMLInputElement>) => {
-    employee = employees
-      .filter(
-        (e) =>
-          e.firstName === event.currentTarget.value.split(" ")[0] &&
-          e.lastName === event.currentTarget.value.split(" ")[1]
-      )
-      .at(0);
+  const getEmployee = (event: React.FormEvent<HTMLSelectElement>) => {
+    setEmployee(
+      freeEmployees.filter((e) => e.id === event.currentTarget.value).at(0)
+    );
   };
 
   if (isBoolean(order)) {
@@ -247,9 +249,13 @@ export const OrderDetails = () => {
                 </div>
                 <div className="col align-self-center mx-3 text-center">
                   <strong>
-                    <h3 className="mt-3">
-                      {order.employee.firstName} {order.employee.lastName}
-                    </h3>
+                    {order.employee.firstName ? (
+                      <h3 className="mt-3">
+                        {order.employee.firstName} {order.employee.lastName}
+                      </h3>
+                    ) : (
+                      <p>This order hasn't yet got assigned employee!</p>
+                    )}
                   </strong>
                   <p className="mb-0 mt-2 text-secondary">
                     {order.employee.phoneNumber}
@@ -269,23 +275,23 @@ export const OrderDetails = () => {
                 >
                   Choose an employee
                 </label>
-                <input
-                  className="mt-2"
-                  list="employees"
-                  id="employee-choice"
-                  name="employee-choice"
+                <Form.Select
+                  id="employees"
+                  className="text-center mt-2"
                   onChange={getEmployee}
-                />
-                <datalist id="employees" className="text-center">
-                  {employees
-                    .filter((e) => e.isAvailable)
-                    .map((e) => (
-                      <option
-                        key={e.id}
-                        value={`${e.firstName} ${e.lastName}`}
-                      />
-                    ))}
-                </datalist>
+                >
+                  {freeEmployees.length > 0 ? (
+                    freeEmployees.map((e) => (
+                      <option key={e.id} value={e.id}>
+                        {e.firstName} {e.lastName}
+                      </option>
+                    ))
+                  ) : (
+                    <option key="0" value="">
+                      There is no free employees!
+                    </option>
+                  )}
+                </Form.Select>
 
                 <WarningModal
                   onClick={() => {}}

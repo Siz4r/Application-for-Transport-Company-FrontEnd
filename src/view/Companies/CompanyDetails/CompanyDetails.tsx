@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { WarningModal } from "../../../components/Modals/warningModal";
 import { StuffItem } from "../../../components/Stuff/StuffItem";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
 import { useCompanies } from "../../../core/hooks/Company/useCompanies";
 import useInput from "../../../core/hooks/Inputs/useInputs";
+import { useOrders } from "../../../core/hooks/Orders/useOrders";
+import { useSelectUser } from "../../../core/hooks/SelectUser/useSelectUser";
 import { parseErrorToString } from "../../../core/parseErrorToString";
 import { AuthenticatedView } from "../../../core/wrappers/AuthenticatedView";
 import { Stuff } from "../../../store/Companies/types";
@@ -24,7 +27,7 @@ export const CompanyDetails = () => {
     valueChangeHandler: nameChangeHandler,
     isValid: nameIsValid,
     hasError: nameHasError,
-  } = useInput(correctTextInput, "Name");
+  } = useInput(correctTextInput, "");
 
   const {
     value: quantityValue,
@@ -32,7 +35,7 @@ export const CompanyDetails = () => {
     valueChangeHandler: quantityChangeHandler,
     isValid: quantityIsValid,
     hasError: quantityHasError,
-  } = useInput(validateNumber, "0");
+  } = useInput(validateNumber, "");
 
   const {
     value: prizeValue,
@@ -40,7 +43,7 @@ export const CompanyDetails = () => {
     valueChangeHandler: prizeChangeHandler,
     isValid: prizeIsValid,
     hasError: prizeHasError,
-  } = useInput(validateNumber, "0");
+  } = useInput(validateNumber, "");
 
   const {
     value: descriptionValue,
@@ -48,12 +51,17 @@ export const CompanyDetails = () => {
     valueChangeHandler: descriptionChangeHandler,
     isValid: descriptionIsValid,
     hasError: descriptionHasError,
-  } = useInput(isNotEmpty, "Description");
+  } = useInput(isNotEmpty, "");
 
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [topQuantityRange, setTopQuantityRange] = useState(0);
+  const [orderQuantity, setOrderQuantity] = useState(0);
+  const [orderStuffId, setOrderStuffId] = useState("");
+  const { user } = useSelectUser();
 
   const [company, setCompany] = useState<
     boolean | Awaited<ReturnType<typeof fetchCompanyById>>
@@ -66,6 +74,10 @@ export const CompanyDetails = () => {
       fetchOnMount: false,
     });
 
+  const { orderAStuff } = useOrders({
+    fetchOnMount: false,
+  });
+
   useEffect(() => {
     if (id === undefined) {
       navigate(RouterPathsKeys.COMPANY);
@@ -74,6 +86,11 @@ export const CompanyDetails = () => {
         if (!isBoolean(company)) {
           setCompany(company);
           setStuffs(company.stuffs);
+          const temp = company.stuffs[0];
+          if (temp) {
+            setTopQuantityRange(temp.quantity);
+            setOrderStuffId(temp.id);
+          }
         } else {
           navigate(RouterPathsKeys.COMPANY);
         }
@@ -112,6 +129,21 @@ export const CompanyDetails = () => {
     }
   };
 
+  const addOrderHandler = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("elo");
+
+    if (!isBoolean(user)) {
+      if (orderStuffId && orderQuantity && user.id) {
+        try {
+          orderAStuff(orderStuffId, user.id, orderQuantity);
+        } catch (error) {
+          parseErrorToString(error, setFormError);
+        }
+      }
+    }
+  };
+
   const onStuffDelete = (id: string) => {
     setStuffs((stuffs) => stuffs.filter((s) => s.id !== id));
   };
@@ -141,6 +173,72 @@ export const CompanyDetails = () => {
                   <h5 className="text-secondary m-0 p-0">
                     {company.postalCode} {company.city}
                   </h5>
+                </div>
+                <div className="col-8 d-flex flex-row-reverse mb-5">
+                  <Button
+                    onClick={() => setIsOpenModal(true)}
+                    className="py-3 w-50 mb-5"
+                  >
+                    Add order
+                  </Button>
+
+                  <Modal
+                    show={isOpenModal}
+                    onHide={() => setIsOpenModal(false)}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>Choose the stuff</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <form onSubmit={addOrderHandler} id="orderForm">
+                        <Form.Group>
+                          <Form.Label className="mt-2">Stuff</Form.Label>
+                          <Form.Select
+                            className="mt-0"
+                            onChange={(e) => {
+                              const stuff = stuffs.find(
+                                (s) => s.id === e.currentTarget.value
+                              );
+                              if (stuff) {
+                                setTopQuantityRange(stuff.quantity);
+                                setOrderQuantity(stuff.quantity / 2);
+                                setOrderStuffId(stuff.id);
+                              }
+                            }}
+                          >
+                            {stuffs.map((s) => (
+                              <option value={s.id} key={s.id}>
+                                {s.name}
+                              </option>
+                            ))}
+                          </Form.Select>
+                          <Form.Label className="mt-2">
+                            Quantity: {orderQuantity}
+                          </Form.Label>
+                          <Form.Range
+                            min={1}
+                            max={topQuantityRange}
+                            onChange={(e) =>
+                              setOrderQuantity(parseInt(e.currentTarget.value))
+                            }
+                            value={orderQuantity}
+                          />
+                        </Form.Group>
+                      </form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        form="orderForm"
+                        onClick={() => {
+                          setIsOpenModal(false);
+                        }}
+                      >
+                        Submit
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
                 </div>
               </div>
               <h1 className="py-2">Stuffs</h1>
@@ -190,7 +288,7 @@ export const CompanyDetails = () => {
                         className={`mb-2 w-100 py-3 px-3 border border-2 ${
                           !prizeHasError ? "border-dark" : "border-danger"
                         }`}
-                        placeholder="Quantity"
+                        placeholder="Prize for ton"
                         value={prizeValue}
                         onChange={prizeChangeHandler}
                         onBlur={prizeBlurHandler}

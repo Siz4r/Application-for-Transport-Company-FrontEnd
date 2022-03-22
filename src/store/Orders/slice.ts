@@ -1,6 +1,7 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { isBoolean } from "../../utils/isCheckers/isBooleans";
 import {
+  addOrder,
   assigneEmployeeToOrder,
   changeOrderState,
   getOrderById,
@@ -34,8 +35,6 @@ export const ordersSlice = createSlice<IordersSlice, {}>({
       state.orderDetails = action.payload;
     });
 
-    builder.addCase(updateOrder.fulfilled, () => {});
-
     builder.addCase(assigneEmployeeToOrder.fulfilled, (state, action) => {
       if (!isBoolean(state.orderDetails)) {
         state.orderDetails.employee = action.meta.arg.employee;
@@ -54,7 +53,8 @@ export const ordersSlice = createSlice<IordersSlice, {}>({
         getOrderById.pending,
         updateOrder.pending,
         assigneEmployeeToOrder.pending,
-        changeOrderState.pending
+        changeOrderState.pending,
+        addOrder.pending
       ),
       (state) => {
         state.loading = true;
@@ -72,7 +72,9 @@ export const ordersSlice = createSlice<IordersSlice, {}>({
         assigneEmployeeToOrder.fulfilled,
         assigneEmployeeToOrder.rejected,
         changeOrderState.fulfilled,
-        changeOrderState.rejected
+        changeOrderState.rejected,
+        addOrder.fulfilled,
+        addOrder.rejected
       ),
       (state) => {
         state.loading = false;
