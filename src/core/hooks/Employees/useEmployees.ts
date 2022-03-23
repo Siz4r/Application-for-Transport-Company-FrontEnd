@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import {
+  addEmployee,
   deleteEmployee,
   getEmployeeById,
   getEmployees,
 } from "../../../store/Employees/api";
 import { Employee, EmployeeGetById } from "../../../store/Employees/types";
+import { RegisterData } from "../../../utils/types";
 import { useTypedDispatch } from "../TypedDispatch/useTypedDispatch";
 
 type UseProjectsConfig = {
@@ -30,6 +32,8 @@ export const useEmployees = (
     typeof deleteEmployee,
     Required<EmployeeGetById>
   >();
+
+  const typedDispatchAddEmployee = useTypedDispatch<typeof addEmployee, void>();
 
   const fetchOnMount = config && config.fetchOnMount === false ? false : true;
   const [employeesLoading, setEmployeesLoading] = useState(
@@ -64,6 +68,12 @@ export const useEmployees = (
     setEmployeesLoading(false);
   };
 
+  const registerEmployee = async (data: RegisterData) => {
+    setEmployeesLoading(true);
+    await typedDispatchAddEmployee(addEmployee(data));
+    setEmployeesLoading(false);
+  };
+
   useEffect(() => {
     if (fetchOnMount) {
       try {
@@ -78,6 +88,7 @@ export const useEmployees = (
     fetchEmployees,
     fetchEmployeeById,
     removeEmployee,
+    registerEmployee,
     employeesLoading,
     employees,
   };

@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import {
+  addClient,
   deleteClient,
   getClientById,
   getClients,
 } from "../../../store/Clients/api";
 import { Client, ClientGetById } from "../../../store/Clients/types";
+import { RegisterData } from "../../../utils/types";
 import { useTypedDispatch } from "../TypedDispatch/useTypedDispatch";
 
 type UseProjectsConfig = {
@@ -30,6 +32,8 @@ export const useClients = (
     typeof deleteClient,
     Required<ClientGetById>
   >();
+
+  const typedDispatchAddClient = useTypedDispatch<typeof addClient, string>();
 
   const fetchOnMount = config && config.fetchOnMount === false ? false : true;
   const [clientsLoading, setclientsLoading] = useState(
@@ -62,6 +66,13 @@ export const useClients = (
     setclientsLoading(false);
   };
 
+  const registerClient = async (data: RegisterData) => {
+    setclientsLoading(true);
+    console.log("Elo");
+    typedDispatchAddClient(addClient(data));
+    setclientsLoading(false);
+  };
+
   useEffect(() => {
     if (fetchOnMount) {
       try {
@@ -76,6 +87,7 @@ export const useClients = (
     fetchClients,
     fetchClientById,
     removeClient,
+    registerClient,
     clientsLoading,
     clients,
   };

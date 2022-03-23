@@ -4,3 +4,10 @@ export interface Address {
   postalCode: string;
   buildingNumber: number;
 }
+
+export interface RegisterData {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+}

@@ -1,6 +1,6 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { isBoolean } from "../../utils/isCheckers/isBooleans";
-import { deleteClient, getClientById, getClients } from "./api";
+import { addClient, deleteClient, getClientById, getClients } from "./api";
 import { Client, ClientGetById } from "./types";
 
 export type ClientEntity = ClientGetById | boolean;
@@ -36,8 +36,20 @@ export const clientsSlice = createSlice<IclientsSlice, {}>({
       state.client = false;
     });
 
+    builder.addCase(addClient.fulfilled, (state, action) => {
+      state.clients = [
+        ...state.clients,
+        { ...action.meta.arg, id: action.payload },
+      ];
+    });
+
     builder.addMatcher(
-      isAnyOf(getClients.pending, getClientById.pending, deleteClient.pending),
+      isAnyOf(
+        getClients.pending,
+        getClientById.pending,
+        deleteClient.pending,
+        addClient.pending
+      ),
       (state) => {
         state.loading = true;
       }
@@ -50,7 +62,9 @@ export const clientsSlice = createSlice<IclientsSlice, {}>({
         getClientById.fulfilled,
         getClientById.rejected,
         deleteClient.fulfilled,
-        deleteClient.rejected
+        deleteClient.rejected,
+        addClient.fulfilled,
+        addClient.rejected
       ),
       (state) => {
         state.loading = false;

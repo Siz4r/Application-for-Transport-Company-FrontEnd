@@ -1,6 +1,11 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { isBoolean } from "../../utils/isCheckers/isBooleans";
-import { deleteEmployee, getEmployeeById, getEmployees } from "./api";
+import {
+  addEmployee,
+  deleteEmployee,
+  getEmployeeById,
+  getEmployees,
+} from "./api";
 import { Employee, EmployeeGetById } from "./types";
 
 export type EmployeeEntity = EmployeeGetById | boolean;
@@ -36,11 +41,19 @@ export const employeesSlice = createSlice<IemployeesSlice, {}>({
       state.employee = false;
     });
 
+    builder.addCase(addEmployee.fulfilled, (state, action) => {
+      state.employees = [
+        ...state.employees,
+        { ...action.meta.arg, id: action.payload, isAvailable: true },
+      ];
+    });
+
     builder.addMatcher(
       isAnyOf(
         getEmployees.pending,
         getEmployeeById.pending,
-        deleteEmployee.pending
+        deleteEmployee.pending,
+        addEmployee.pending
       ),
       (state) => {
         state.loading = true;
@@ -54,7 +67,9 @@ export const employeesSlice = createSlice<IemployeesSlice, {}>({
         getEmployeeById.fulfilled,
         getEmployeeById.rejected,
         deleteEmployee.rejected,
-        deleteEmployee.fulfilled
+        deleteEmployee.fulfilled,
+        addEmployee.fulfilled,
+        addEmployee.rejected
       ),
       (state) => {
         state.loading = false;

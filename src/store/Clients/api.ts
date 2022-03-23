@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
 import { apiFetch, AuthorizationLevel } from "../../core/apiFetch";
+import { RegisterData } from "../../utils/types";
 import { serializeClients } from "./serializers/serializeClients";
 import { serializeSingleClient } from "./serializers/serializeSingleClient";
 import {
@@ -69,6 +70,29 @@ export const deleteClient = createAsyncThunk<void, { id: string }, {}>(
         },
         AuthorizationLevel.AUTHORIZED
       );
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const addClient = createAsyncThunk<string, RegisterData, {}>(
+  "client/add",
+  async (data, thunkAPI) => {
+    try {
+      const response = apiFetch<string>(
+        `/api/clients/`,
+        {
+          requestConfig: {
+            method: "POST",
+            withCredentials: true,
+            data: JSON.stringify(data),
+          },
+        },
+        AuthorizationLevel.AUTHORIZED
+      );
+
+      return response;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error);
     }
