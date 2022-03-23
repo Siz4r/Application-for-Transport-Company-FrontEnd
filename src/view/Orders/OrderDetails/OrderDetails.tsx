@@ -35,7 +35,7 @@ export const OrderDetails = () => {
   const { employees } = useEmployees({
     fetchOnMount: true,
   });
-  let freeEmployees: Employee[] = [];
+  const [freeEmployees, setFreeEmployees] = useState<Employee[]>([]);
   const [isOrderLoading, setIsOrderLoading] = useState<boolean>(false);
   const [order, setOrder] = useState<
     boolean | Awaited<ReturnType<typeof fetchOrderById>>
@@ -63,10 +63,7 @@ export const OrderDetails = () => {
           if (!isBoolean(order)) {
             setOrder(order);
             quantitySetValue(order.quantity.toString());
-            freeEmployees = employees.filter((e) => e.isAvailable);
-            if (freeEmployees.length > 0) {
-              setEmployee(freeEmployees[0]);
-            }
+            setFreeEmployees([...employees.filter((e) => e.isAvailable)]);
           } else {
             navigate(RouterPathsKeys.ORDER);
           }
@@ -118,6 +115,12 @@ export const OrderDetails = () => {
   if (isBoolean(order)) {
     return <LoadingSpinner />;
   }
+
+  if (freeEmployees.length > 0 && !employee) {
+    setEmployee(freeEmployees[0]);
+  }
+
+  console.log(employee);
 
   const isDoneClasses = order.done ? "text-success" : "text-danger";
 

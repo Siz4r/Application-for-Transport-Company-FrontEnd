@@ -1,19 +1,96 @@
 import "react-bootstrap";
+import { Form } from "react-bootstrap";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { FormModal } from "../../components/Modals/FormModal";
+import { ModalInput } from "../../components/Modals/ModalInput";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";
 import { useCompanies } from "../../core/hooks/Company/useCompanies";
+import useInput from "../../core/hooks/Inputs/useInputs";
 import { AuthenticatedView } from "../../core/wrappers/AuthenticatedView";
 import { RouterPathsKeys } from "../../types";
+import { parseErrorToString } from "../../core/parseErrorToString";
+import {
+  correctTextInput,
+  hasOnlyNumbers,
+  isNotEmpty,
+} from "../MyProfile/MyProfile";
 
 export const Companies = () => {
-  const { companies, companiesLoading } = useCompanies({ fetchOnMount: true });
+  const { companies, createCompany, companiesLoading } = useCompanies({
+    fetchOnMount: true,
+  });
+  const [formError, setFormError] = useState<string | undefined>(undefined);
+
+  const {
+    value: nameValue,
+    isValid: nameIsValid,
+    hasError: nameHasError,
+    valueChangeHandler: nameChangeHandler,
+    inputBlurHandler: nameBlurHandler,
+  } = useInput(correctTextInput, "");
+  const {
+    value: cityValue,
+    isValid: cityIsValid,
+    hasError: cityHasError,
+    valueChangeHandler: cityChangeHandler,
+    inputBlurHandler: cityBlurHandler,
+  } = useInput(correctTextInput, "");
+  const {
+    value: streetValue,
+    isValid: streetIsValid,
+    hasError: streetHasError,
+    valueChangeHandler: streetChangeHandler,
+    inputBlurHandler: streetBlurHandler,
+  } = useInput(isNotEmpty, "");
+
+  const {
+    value: buildingNumberValue,
+    isValid: buildingNumberIsValid,
+    hasError: buildingNumberHasError,
+    valueChangeHandler: buildingNumberChangeHandler,
+    inputBlurHandler: buildingNumberBlurHandler,
+  } = useInput(hasOnlyNumbers, "");
+
+  const {
+    value: postalCodeValue,
+    isValid: postalCodeIsValid,
+    hasError: postalCodeHasError,
+    valueChangeHandler: postalCodeChangeHandler,
+    inputBlurHandler: postalCodeBlurHandler,
+  } = useInput(isNotEmpty, "");
+
+  const formIsValid =
+    postalCodeIsValid &&
+    nameIsValid &&
+    buildingNumberIsValid &&
+    streetIsValid &&
+    cityIsValid;
+
+  const submitHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (formIsValid) {
+      try {
+        createCompany({
+          name: nameValue,
+          buildingNumber: parseInt(buildingNumberValue),
+          postalCode: postalCodeValue,
+          street: streetValue,
+          city: cityValue,
+        });
+      } catch (error) {
+        parseErrorToString(error, setFormError);
+      }
+    }
+  };
 
   return (
     <AuthenticatedView>
       <div className="container text-center">
         {!companiesLoading ? (
           companies.length !== 0 ? (
-            <div className="row m-2">
+            <div className="row m-2 d.flex flex-row-reverse">
               <ul className="list-group">
                 {companies.map((c) => (
                   <li className="list-group-item" key={c.id}>
@@ -47,6 +124,61 @@ export const Companies = () => {
                   </li>
                 ))}
               </ul>
+
+              <FormModal formId="addCompany" buttonBody="Add company">
+                <form id="addCompany" onSubmit={submitHandler}>
+                  <Form.Group>
+                    <Form.Label className="mt-2">Name:</Form.Label>
+                    <ModalInput
+                      type="text"
+                      placeholder="Name"
+                      value={nameValue}
+                      onChange={nameChangeHandler}
+                      onBlur={nameBlurHandler}
+                      hasError={nameHasError}
+                    />
+                    <Form.Label className="mt-2">City:</Form.Label>
+                    <ModalInput
+                      type="text"
+                      placeholder="City"
+                      value={cityValue}
+                      onChange={cityChangeHandler}
+                      onBlur={cityBlurHandler}
+                      hasError={cityHasError}
+                    />
+
+                    <Form.Label className="mt-2">Postal Code:</Form.Label>
+                    <ModalInput
+                      type="text"
+                      placeholder="Postal Code"
+                      value={postalCodeValue}
+                      onChange={postalCodeChangeHandler}
+                      onBlur={postalCodeBlurHandler}
+                      hasError={postalCodeHasError}
+                    />
+
+                    <Form.Label className="mt-2">Street:</Form.Label>
+                    <ModalInput
+                      type="text"
+                      placeholder="Street"
+                      value={streetValue}
+                      onChange={streetChangeHandler}
+                      onBlur={streetBlurHandler}
+                      hasError={streetHasError}
+                    />
+
+                    <Form.Label className="mt-2">Building number:</Form.Label>
+                    <ModalInput
+                      type="number"
+                      placeholder="Building number"
+                      value={buildingNumberValue}
+                      onChange={buildingNumberChangeHandler}
+                      onBlur={buildingNumberBlurHandler}
+                      hasError={buildingNumberHasError}
+                    />
+                  </Form.Group>
+                </form>
+              </FormModal>
             </div>
           ) : (
             <h2>You have no registered companys!</h2>

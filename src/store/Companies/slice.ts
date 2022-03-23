@@ -1,6 +1,7 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { isBoolean } from "../../utils/isCheckers/isBooleans";
 import {
+  addCompany,
   addStuffToCompany,
   deleteCompany,
   deleteStuffFromCompany,
@@ -74,6 +75,17 @@ export const companiesSlice = createSlice<IcompanySlice, {}>({
       }
     });
 
+    builder.addCase(addCompany.fulfilled, (state, action) => {
+      state.companies = [
+        ...state.companies,
+        {
+          id: action.payload,
+          name: action.meta.arg.name,
+          address: { ...action.meta.arg },
+        },
+      ];
+    });
+
     builder.addMatcher(
       isAnyOf(
         getCompanies.pending,
@@ -81,7 +93,8 @@ export const companiesSlice = createSlice<IcompanySlice, {}>({
         addStuffToCompany.pending,
         editStuff.pending,
         deleteStuffFromCompany.pending,
-        deleteCompany.pending
+        deleteCompany.pending,
+        addCompany.pending
       ),
       (state) => {
         state.loading = true;
@@ -101,7 +114,9 @@ export const companiesSlice = createSlice<IcompanySlice, {}>({
         editStuff.rejected,
         editStuff.fulfilled,
         deleteCompany.rejected,
-        deleteCompany.fulfilled
+        deleteCompany.fulfilled,
+        addCompany.fulfilled,
+        addCompany.rejected
       ),
       (state) => {
         state.loading = false;

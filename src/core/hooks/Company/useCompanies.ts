@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import {
+  addCompany,
   addStuffToCompany,
   deleteCompany,
   deleteStuffFromCompany,
@@ -10,6 +11,7 @@ import {
   getCompanyById,
 } from "../../../store/Companies/api";
 import {
+  AddCompanyData,
   AddStuffData,
   Company,
   CompanyDetails,
@@ -49,6 +51,8 @@ export const useCompanies = (
     typeof deleteCompany,
     string
   >();
+
+  const typedDispatchAddCompany = useTypedDispatch<typeof addCompany, string>();
 
   const fetchOnMount = config && config.fetchOnMount === false ? false : true;
 
@@ -117,7 +121,6 @@ export const useCompanies = (
 
   const removeCompany = async (id: string) => {
     try {
-      console.log("Elo");
       setCompaniesLoading(true);
       const { payload } = await typedDispatchDeleteCompany(
         deleteCompany({ id })
@@ -128,6 +131,13 @@ export const useCompanies = (
     } catch (error) {
       throw error;
     }
+  };
+
+  const createCompany = async (data: AddCompanyData) => {
+    setCompaniesLoading(true);
+    const { payload } = await typedDispatchAddCompany(addCompany(data));
+    setCompaniesLoading(false);
+    return payload;
   };
 
   useEffect(() => {
@@ -147,6 +157,7 @@ export const useCompanies = (
     editStuffData,
     removeStuff,
     removeCompany,
+    createCompany,
     companies,
     companiesLoading,
   };

@@ -11,12 +11,11 @@ import { updateUserData } from "../../store/SignIn/api";
 import { useState } from "react";
 import { parseErrorToString } from "../../core/parseErrorToString";
 
-type Props = {};
-
-const isNotEmpty = (value: string) => value.trim().length > 2;
-const hasOnlyNumbers = (value: string) => /^\d+$/.test(value);
-const hasOnlyLetters = (value: string) => !/[^a-zżźółćśęąń]/i.test(value);
-const correctTextInput = (value: string) =>
+export const isNotEmpty = (value: string) => value.trim().length > 2;
+export const hasOnlyNumbers = (value: string) => /^\d+$/.test(value);
+export const hasOnlyLetters = (value: string) =>
+  !/[^a-zżźółćśęąń]/i.test(value);
+export const correctTextInput = (value: string) =>
   isNotEmpty(value) && hasOnlyLetters(value);
 
 const defaultAddressValues = {
@@ -31,7 +30,7 @@ const defaultAddressValues = {
   id: "",
 };
 
-export const MyProfile = (props: Props) => {
+export const MyProfile = () => {
   const { user } = useSelectUser();
 
   let userData: User = {
@@ -51,6 +50,7 @@ export const MyProfile = (props: Props) => {
       buildingNumber: user.buildingNumber,
     };
   }
+
   const {
     value: phoneNumberValue,
     isValid: phoneNumberIsValid,
@@ -58,6 +58,7 @@ export const MyProfile = (props: Props) => {
     valueChangeHandler: phoneNumberChangeHandler,
     inputBlurHandler: phoneNumberBlurHandler,
   } = useInput(hasOnlyNumbers, userData.phoneNumber);
+
   const {
     value: cityValue,
     isValid: cityIsValid,
@@ -65,6 +66,7 @@ export const MyProfile = (props: Props) => {
     valueChangeHandler: cityChangeHandler,
     inputBlurHandler: cityBlurHandler,
   } = useInput(correctTextInput, userData.city);
+
   const {
     value: streetValue,
     isValid: streetIsValid,

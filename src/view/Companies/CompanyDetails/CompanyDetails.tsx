@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import { FormModal } from "../../../components/Modals/FormModal";
 import { WarningModal } from "../../../components/Modals/warningModal";
 import { StuffItem } from "../../../components/Stuff/StuffItem";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
@@ -57,7 +58,6 @@ export const CompanyDetails = () => {
   const navigate = useNavigate();
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [isOpenModal, setIsOpenModal] = useState(false);
   const [topQuantityRange, setTopQuantityRange] = useState(0);
   const [orderQuantity, setOrderQuantity] = useState(0);
   const [orderStuffId, setOrderStuffId] = useState("");
@@ -131,12 +131,23 @@ export const CompanyDetails = () => {
 
   const addOrderHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("elo");
 
     if (!isBoolean(user)) {
       if (orderStuffId && orderQuantity && user.id) {
         try {
           orderAStuff(orderStuffId, user.id, orderQuantity);
+          const stuff = stuffs.find((o) => o.id === orderStuffId);
+          if (stuff) {
+            const index = stuffs.indexOf(stuff);
+            setStuffs((stuffs) => [
+              ...stuffs.slice(0, index),
+              {
+                ...stuff,
+                quantity: stuff.quantity - orderQuantity,
+              },
+              ...stuffs.slice(index + 1),
+            ]);
+          }
         } catch (error) {
           parseErrorToString(error, setFormError);
         }
@@ -175,70 +186,43 @@ export const CompanyDetails = () => {
                   </h5>
                 </div>
                 <div className="col-8 d-flex flex-row-reverse mb-5">
-                  <Button
-                    onClick={() => setIsOpenModal(true)}
-                    className="py-3 w-50 mb-5"
-                  >
-                    Add order
-                  </Button>
-
-                  <Modal
-                    show={isOpenModal}
-                    onHide={() => setIsOpenModal(false)}
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>Choose the stuff</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <form onSubmit={addOrderHandler} id="orderForm">
-                        <Form.Group>
-                          <Form.Label className="mt-2">Stuff</Form.Label>
-                          <Form.Select
-                            className="mt-0"
-                            onChange={(e) => {
-                              const stuff = stuffs.find(
-                                (s) => s.id === e.currentTarget.value
-                              );
-                              if (stuff) {
-                                setTopQuantityRange(stuff.quantity);
-                                setOrderQuantity(stuff.quantity / 2);
-                                setOrderStuffId(stuff.id);
-                              }
-                            }}
-                          >
-                            {stuffs.map((s) => (
-                              <option value={s.id} key={s.id}>
-                                {s.name}
-                              </option>
-                            ))}
-                          </Form.Select>
-                          <Form.Label className="mt-2">
-                            Quantity: {orderQuantity}
-                          </Form.Label>
-                          <Form.Range
-                            min={1}
-                            max={topQuantityRange}
-                            onChange={(e) =>
-                              setOrderQuantity(parseInt(e.currentTarget.value))
+                  <FormModal formId="orderForm" buttonBody="Order a stuff">
+                    <form onSubmit={addOrderHandler} id="orderForm">
+                      <Form.Group>
+                        <Form.Label className="mt-2">Stuff</Form.Label>
+                        <Form.Select
+                          className="mt-0"
+                          onChange={(e) => {
+                            const stuff = stuffs.find(
+                              (s) => s.id === e.currentTarget.value
+                            );
+                            if (stuff) {
+                              setTopQuantityRange(stuff.quantity);
+                              setOrderQuantity(stuff.quantity / 2);
+                              setOrderStuffId(stuff.id);
                             }
-                            value={orderQuantity}
-                          />
-                        </Form.Group>
-                      </form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        variant="primary"
-                        type="submit"
-                        form="orderForm"
-                        onClick={() => {
-                          setIsOpenModal(false);
-                        }}
-                      >
-                        Submit
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
+                          }}
+                        >
+                          {stuffs.map((s) => (
+                            <option value={s.id} key={s.id}>
+                              {s.name}
+                            </option>
+                          ))}
+                        </Form.Select>
+                        <Form.Label className="mt-2">
+                          Quantity: {orderQuantity}
+                        </Form.Label>
+                        <Form.Range
+                          min={1}
+                          max={topQuantityRange}
+                          onChange={(e) =>
+                            setOrderQuantity(parseInt(e.currentTarget.value))
+                          }
+                          value={orderQuantity}
+                        />
+                      </Form.Group>
+                    </form>
+                  </FormModal>
                 </div>
               </div>
               <h1 className="py-2">Stuffs</h1>

@@ -50,3 +50,11 @@ export interface AddStuffData {
   name: string;
   companyId: string;
 }
+
+export interface AddCompanyData {
+  name: string;
+  city: string;
+  street: string;
+  buildingNumber: number;
+  postalCode: string;
+}

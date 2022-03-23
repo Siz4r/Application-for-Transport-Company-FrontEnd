@@ -3,6 +3,7 @@ import { apiFetch, AuthorizationLevel } from "../../core/apiFetch";
 import { serializeCompanies } from "./serializers/serializeCompanies";
 import { serializeCompanyDetails } from "./serializers/serializeCompanyDetails";
 import {
+  AddCompanyData,
   AddStuffData,
   Company,
   CompanyDetails,
@@ -140,6 +141,29 @@ export const deleteCompany = createAsyncThunk<void, { id: string }, {}>(
       );
     } catch (error) {
       console.log(error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const addCompany = createAsyncThunk<string, AddCompanyData, {}>(
+  "companies/add",
+  async (companyData, thunkAPI) => {
+    try {
+      const response = await apiFetch<string>(
+        `/api/companies/`,
+        {
+          requestConfig: {
+            method: "POST",
+            withCredentials: true,
+            data: JSON.stringify(companyData),
+          },
+        },
+        AuthorizationLevel.AUTHORIZED
+      );
+
+      return response;
+    } catch (error: any) {
       return thunkAPI.rejectWithValue(error);
     }
   }
