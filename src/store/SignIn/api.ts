@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
+import jwtDecode from "jwt-decode";
 import storage from "redux-persist/lib/storage";
 import { apiFetch, AuthorizationLevel } from "../../core/apiFetch";
 import { LocalStorageKeys } from "../../types/LocalStorageKeys";
@@ -15,7 +16,7 @@ export const refreshToken = createAsyncThunk<
   {}
 >("user/refreshToken", async (_) => {
   const response = await apiFetch<ApiAuthenticationResponse>(
-    "/api/auth/refresh_token",
+    "/auth/refresh_token",
     {
       requestConfig: {
         method: "POST",
@@ -25,10 +26,11 @@ export const refreshToken = createAsyncThunk<
   );
 
   const { accessToken, user } = response;
+  const role: { ROLE: string } = jwtDecode(accessToken);
   // Update access token
   localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN, response.accessToken);
   return {
-    user: serializeUser(user),
+    user: serializeUser(user, role.ROLE),
     accessToken,
   };
 });
@@ -45,25 +47,23 @@ export const loginWithCredentials = createAsyncThunk<
   {}
 >("user/loginWithCredentials", async ({ username, password }, thunkAPI) => {
   try {
-    const response = await apiFetch<ApiAuthenticationResponse>(
-      "/api/auth/login",
-      {
-        requestConfig: {
-          method: "POST",
-          data: JSON.stringify({ username, password }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
+    const response = await apiFetch<ApiAuthenticationResponse>("/auth/login", {
+      requestConfig: {
+        method: "POST",
+        data: JSON.stringify({ username, password }),
+        headers: {
+          "Content-Type": "application/json",
         },
-      }
-    );
+        withCredentials: true,
+      },
+    });
 
     const { accessToken, user } = response;
+    const role: { ROLE: string } = jwtDecode(accessToken);
     // Set access token
     localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN, accessToken);
     return {
-      user: serializeUser(user),
+      user: serializeUser(user, role.ROLE),
       accessToken,
     };
   } catch (error) {

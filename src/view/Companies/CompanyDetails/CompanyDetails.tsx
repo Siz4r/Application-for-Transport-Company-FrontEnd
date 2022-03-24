@@ -22,6 +22,13 @@ const correctTextInput = (value: string) =>
   isNotEmpty(value) && hasOnlyLetters(value);
 
 export const CompanyDetails = () => {
+  const navigate = useNavigate();
+  const { role } = useSelectUser();
+
+  if (role === "Employees") {
+    navigate(RouterPathsKeys.MY_PROFILE);
+  }
+
   const {
     value: nameValue,
     inputBlurHandler: nameBlurHandler,
@@ -55,7 +62,6 @@ export const CompanyDetails = () => {
   } = useInput(isNotEmpty, "");
 
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const [topQuantityRange, setTopQuantityRange] = useState(0);

@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RegisterModal } from "../../components/Modals/RegisterModal";
 import { useClients } from "../../core/hooks/Clients/useClients";
+import { useSelectUser } from "../../core/hooks/SelectUser/useSelectUser";
 import { AuthenticatedView } from "../../core/wrappers/AuthenticatedView";
 import { RouterPathsKeys } from "../../types";
 import classes from "./Clients.module.css";
@@ -9,6 +10,12 @@ export const Clients = () => {
   const { clientsLoading, clients, registerClient } = useClients({
     fetchOnMount: true,
   });
+  const { role } = useSelectUser();
+  const navigate = useNavigate();
+
+  if (role === "Employees") {
+    navigate(RouterPathsKeys.MY_PROFILE);
+  }
 
   return (
     <AuthenticatedView>

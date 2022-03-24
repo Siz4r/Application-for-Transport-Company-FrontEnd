@@ -4,6 +4,7 @@ import { DeleteModal } from "../../../components/Modals/deleteModal";
 import { OrderComponent } from "../../../components/Order/OrderComponent";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
 import { useClients } from "../../../core/hooks/Clients/useClients";
+import { useSelectUser } from "../../../core/hooks/SelectUser/useSelectUser";
 import { parseErrorToString } from "../../../core/parseErrorToString";
 import { AuthenticatedView } from "../../../core/wrappers/AuthenticatedView";
 import { EmployeeAndClientOrders } from "../../../store/Orders/types";
@@ -33,7 +34,12 @@ const mapOrders = (isDone: boolean, orders: EmployeeAndClientOrders[]) => {
 
 export const Client = () => {
   const { id } = useParams();
+  const { role } = useSelectUser();
   const navigate = useNavigate();
+
+  if (role === "Employees") {
+    navigate(RouterPathsKeys.MY_PROFILE);
+  }
 
   const { fetchClientById, removeClient } = useClients({
     fetchOnMount: false,

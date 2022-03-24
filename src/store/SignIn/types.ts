@@ -8,6 +8,7 @@ export interface User {
   street: string;
   buildingNumber: number;
   postalCode: string;
+  role: string;
 }
 
 export interface ApiUser {

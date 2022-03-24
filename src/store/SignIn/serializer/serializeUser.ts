@@ -1,6 +1,6 @@
 import { ApiUser, User } from "../types";
 
-export const serializeUser = (apiUser: ApiUser): User => {
+export const serializeUser = (apiUser: ApiUser, role: string): User => {
   const {
     id,
     firstName,
@@ -22,5 +22,6 @@ export const serializeUser = (apiUser: ApiUser): User => {
     postalCode,
     buildingNumber,
     city,
+    role,
   };
 };

@@ -28,6 +28,7 @@ const defaultAddressValues = {
   email: "",
   phoneNumber: "",
   id: "",
+  role: "",
 };
 
 export const MyProfile = () => {
@@ -48,6 +49,7 @@ export const MyProfile = () => {
       postalCode: user.postalCode,
       street: user.street,
       buildingNumber: user.buildingNumber,
+      role: user.role,
     };
   }
 

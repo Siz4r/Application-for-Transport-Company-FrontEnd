@@ -1,5 +1,5 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { NavBar } from "../../components/NavBar/NavBar";
 import { RouterPathsKeys } from "../../types";
 import { isBoolean } from "../../utils/isCheckers/isBooleans";
@@ -12,10 +12,15 @@ type Props = {
 
 export const AuthenticatedView = (props: Props) => {
   const { user, loading } = useSelectUser();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (loading || isBoolean(user)) {
+      navigate(RouterPathsKeys.SIGN_IN);
+    }
+  }, []);
 
   if (loading || isBoolean(user)) {
-    console.log(loading);
-    return <Navigate to={RouterPathsKeys.SIGN_IN} />;
+    return null;
   }
 
   return (

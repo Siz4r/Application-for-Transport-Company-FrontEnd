@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import decode from "jwt-decode";
 import localStorage from "redux-persist/es/storage";
 import { LocalStorageKeys } from "../types/LocalStorageKeys";
@@ -18,7 +18,6 @@ export enum AuthorizationLevel {
 
 const isJwtExpired = (jwt: string) => {
   try {
-    // Define needed type by hand because jwt-decode lacks proper typing
     const decoded: { exp: number } = decode(jwt, { header: false });
     if (!decoded || !decoded.exp) return false;
 
@@ -43,7 +42,7 @@ const getTokens = async (): Promise<Token | undefined> => {
           withCredentials: true,
         },
       },
-      `${apiUrl}/api/auth/refresh_token`
+      `${apiUrl}/auth/refresh_token`
     );
 
     if (response.status >= 400) return undefined;

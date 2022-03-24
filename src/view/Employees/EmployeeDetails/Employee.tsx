@@ -9,7 +9,7 @@ import { EmployeeAndClientOrders } from "../../../store/Orders/types";
 import { RouterPathsKeys } from "../../../types";
 import { DeleteModal } from "../../../components/Modals/deleteModal";
 import { isBoolean } from "../../../utils/isCheckers/isBooleans";
-import { Modal } from "react-bootstrap";
+import { useSelectUser } from "../../../core/hooks/SelectUser/useSelectUser";
 
 const mapOrders = (isDone: boolean, orders: EmployeeAndClientOrders[]) => {
   return orders
@@ -34,6 +34,11 @@ const mapOrders = (isDone: boolean, orders: EmployeeAndClientOrders[]) => {
 export const Employee = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { role } = useSelectUser();
+
+  if (role === "Clients") {
+    navigate(RouterPathsKeys.MY_PROFILE);
+  }
 
   const { fetchEmployeeById, removeEmployee } = useEmployees({
     fetchOnMount: false,

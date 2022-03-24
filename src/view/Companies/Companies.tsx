@@ -1,7 +1,7 @@
 import "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FormModal } from "../../components/Modals/FormModal";
 import { ModalInput } from "../../components/Modals/ModalInput";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";
@@ -15,11 +15,20 @@ import {
   hasOnlyNumbers,
   isNotEmpty,
 } from "../MyProfile/MyProfile";
+import { useSelectUser } from "../../core/hooks/SelectUser/useSelectUser";
 
 export const Companies = () => {
   const { companies, createCompany, companiesLoading } = useCompanies({
     fetchOnMount: true,
   });
+
+  const navigate = useNavigate();
+  const { role } = useSelectUser();
+
+  if (role === "Employees") {
+    navigate(RouterPathsKeys.MY_PROFILE);
+  }
+
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
   const {
@@ -124,61 +133,6 @@ export const Companies = () => {
                   </li>
                 ))}
               </ul>
-
-              <FormModal formId="addCompany" buttonBody="Add company">
-                <form id="addCompany" onSubmit={submitHandler}>
-                  <Form.Group>
-                    <Form.Label className="mt-2">Name:</Form.Label>
-                    <ModalInput
-                      type="text"
-                      placeholder="Name"
-                      value={nameValue}
-                      onChange={nameChangeHandler}
-                      onBlur={nameBlurHandler}
-                      hasError={nameHasError}
-                    />
-                    <Form.Label className="mt-2">City:</Form.Label>
-                    <ModalInput
-                      type="text"
-                      placeholder="City"
-                      value={cityValue}
-                      onChange={cityChangeHandler}
-                      onBlur={cityBlurHandler}
-                      hasError={cityHasError}
-                    />
-
-                    <Form.Label className="mt-2">Postal Code:</Form.Label>
-                    <ModalInput
-                      type="text"
-                      placeholder="Postal Code"
-                      value={postalCodeValue}
-                      onChange={postalCodeChangeHandler}
-                      onBlur={postalCodeBlurHandler}
-                      hasError={postalCodeHasError}
-                    />
-
-                    <Form.Label className="mt-2">Street:</Form.Label>
-                    <ModalInput
-                      type="text"
-                      placeholder="Street"
-                      value={streetValue}
-                      onChange={streetChangeHandler}
-                      onBlur={streetBlurHandler}
-                      hasError={streetHasError}
-                    />
-
-                    <Form.Label className="mt-2">Building number:</Form.Label>
-                    <ModalInput
-                      type="number"
-                      placeholder="Building number"
-                      value={buildingNumberValue}
-                      onChange={buildingNumberChangeHandler}
-                      onBlur={buildingNumberBlurHandler}
-                      hasError={buildingNumberHasError}
-                    />
-                  </Form.Group>
-                </form>
-              </FormModal>
             </div>
           ) : (
             <h2>You have no registered companys!</h2>
@@ -186,6 +140,60 @@ export const Companies = () => {
         ) : (
           <LoadingSpinner />
         )}
+        <FormModal formId="addCompany" buttonBody="Add company">
+          <form id="addCompany" onSubmit={submitHandler}>
+            <Form.Group>
+              <Form.Label className="mt-2">Name:</Form.Label>
+              <ModalInput
+                type="text"
+                placeholder="Name"
+                value={nameValue}
+                onChange={nameChangeHandler}
+                onBlur={nameBlurHandler}
+                hasError={nameHasError}
+              />
+              <Form.Label className="mt-2">City:</Form.Label>
+              <ModalInput
+                type="text"
+                placeholder="City"
+                value={cityValue}
+                onChange={cityChangeHandler}
+                onBlur={cityBlurHandler}
+                hasError={cityHasError}
+              />
+
+              <Form.Label className="mt-2">Postal Code:</Form.Label>
+              <ModalInput
+                type="text"
+                placeholder="Postal Code"
+                value={postalCodeValue}
+                onChange={postalCodeChangeHandler}
+                onBlur={postalCodeBlurHandler}
+                hasError={postalCodeHasError}
+              />
+
+              <Form.Label className="mt-2">Street:</Form.Label>
+              <ModalInput
+                type="text"
+                placeholder="Street"
+                value={streetValue}
+                onChange={streetChangeHandler}
+                onBlur={streetBlurHandler}
+                hasError={streetHasError}
+              />
+
+              <Form.Label className="mt-2">Building number:</Form.Label>
+              <ModalInput
+                type="number"
+                placeholder="Building number"
+                value={buildingNumberValue}
+                onChange={buildingNumberChangeHandler}
+                onBlur={buildingNumberBlurHandler}
+                hasError={buildingNumberHasError}
+              />
+            </Form.Group>
+          </form>
+        </FormModal>
       </div>
     </AuthenticatedView>
   );

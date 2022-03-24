@@ -1,8 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RegisterModal } from "../../components/Modals/RegisterModal";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";
 import { useEmployees } from "../../core/hooks/Employees/useEmployees";
+import { useSelectUser } from "../../core/hooks/SelectUser/useSelectUser";
 import { AuthenticatedView } from "../../core/wrappers/AuthenticatedView";
 import { RouterPathsKeys } from "../../types";
 import classes from "./Employees.module.css";
@@ -11,6 +12,13 @@ export const Employees = () => {
   const { employeesLoading, employees, registerEmployee } = useEmployees({
     fetchOnMount: true,
   });
+
+  const navigate = useNavigate();
+  const { role } = useSelectUser();
+
+  if (role === "Clients") {
+    navigate(RouterPathsKeys.MY_PROFILE);
+  }
 
   return (
     <AuthenticatedView>
