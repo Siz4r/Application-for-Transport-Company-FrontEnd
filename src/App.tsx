@@ -8,6 +8,7 @@ import { Companies } from "./view/Companies/Companies";
 import { CompanyDetails } from "./view/Companies/CompanyDetails/CompanyDetails";
 import { Employee } from "./view/Employees/EmployeeDetails/Employee";
 import { Employees } from "./view/Employees/Employees";
+import { Files } from "./view/Files/Files";
 import ForgotPassword from "./view/ForgotPassword/ForgotPassword";
 import { MyProfile } from "./view/MyProfile/MyProfile";
 import { OrderDetails } from "./view/Orders/OrderDetails/OrderDetails";
@@ -43,6 +44,7 @@ function App() {
               path={RouterPathsKeys.COMPANY + ":id"}
               element={<CompanyDetails />}
             />
+            <Route path={RouterPathsKeys.FILE} element={<Files />} />
           </Routes>
         </Router>
       </div>

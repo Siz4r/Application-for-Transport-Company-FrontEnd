@@ -65,7 +65,7 @@ export const NavBar = () => {
       <Link to={RouterPathsKeys.SIGN_IN} className={classes.link} key={"chat"}>
         Chat
       </Link>
-      <Link to={RouterPathsKeys.SIGN_IN} className={classes.link} key={"files"}>
+      <Link to={RouterPathsKeys.FILE} className={classes.link} key={"files"}>
         Your files
       </Link>
       <Link
