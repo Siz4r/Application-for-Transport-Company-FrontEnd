@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 import { clientsSlice } from "./Clients/slice";
 import { companiesSlice } from "./Companies/slice";
 import { employeesSlice } from "./Employees/slice";
+import { filesSlice } from "./Files/slice";
 import { ordersSlice } from "./Orders/slice";
 import { userSlice } from "./SignIn/slice";
 
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   clients: clientsSlice.reducer,
   orders: ordersSlice.reducer,
   companies: companiesSlice.reducer,
+  files: filesSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

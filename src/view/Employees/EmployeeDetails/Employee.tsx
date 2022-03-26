@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { OrderComponent } from "../../../components/Order/OrderComponent";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
@@ -10,6 +10,7 @@ import { RouterPathsKeys } from "../../../types";
 import { DeleteModal } from "../../../components/Modals/deleteModal";
 import { isBoolean } from "../../../utils/isCheckers/isBooleans";
 import { useSelectUser } from "../../../core/hooks/SelectUser/useSelectUser";
+import { useFiles } from "../../../core/hooks/Files/useFiles";
 
 const mapOrders = (isDone: boolean, orders: EmployeeAndClientOrders[]) => {
   return orders
@@ -45,6 +46,16 @@ export const Employee = () => {
   });
   const [isEmployeeLoading, setIsEmployeeLoading] = useState<boolean>(true);
   const [formError, setFormError] = useState<string | undefined>(undefined);
+  const [formData, setFormData] = useState<FormData>(new FormData());
+  const [selectedFileName, setSelectedFileName] = useState<string | undefined>(
+    undefined
+  );
+
+  const { user } = useSelectUser();
+
+  const { sendFile } = useFiles({
+    fetchOnMount: false,
+  });
 
   const [employee, setEmployee] = useState<
     boolean | Awaited<ReturnType<typeof fetchEmployeeById>>
@@ -78,6 +89,36 @@ export const Employee = () => {
     }
   };
 
+  const onSelectImageHandler = (files: FileList | null) => {
+    if (files) {
+      const file = files[0];
+      const updatedFormData = new FormData();
+      updatedFormData.append("file", file as File);
+      setSelectedFileName(file.name);
+      setFormData(updatedFormData);
+    }
+  };
+
+  const sendFileSubmitHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (id && !isBoolean(user) && selectedFileName) {
+      console.log("dupa");
+      try {
+        sendFile({
+          formData: formData,
+          toId: id,
+          fromId: user.id,
+          senderFirstName: user.firstName,
+          senderLastName: user.lastName,
+          name: selectedFileName,
+        });
+      } catch (error) {
+        parseErrorToString(error, setFormError);
+      }
+    }
+  };
+
   return (
     <AuthenticatedView>
       {!isEmployeeLoading && typeof employee !== "boolean" ? (
@@ -102,21 +143,39 @@ export const Employee = () => {
               <h4 className="text-secondary m-0">{employee.email}</h4>
             </div>
             <div className="col-7 align-self-center">
-              <div className="row justify-content-end">
+              <div className="row">
                 <div className="col-7 align-self-center">
-                  <div className="row w-50 ms-auto m-4">
+                  <form
+                    className="col w-50 ms-auto m-4 text-center"
+                    id="fileUpdateForm"
+                    onSubmit={sendFileSubmitHandler}
+                  >
+                    {selectedFileName && (
+                      <p className="mt-2">Selected file: {selectedFileName}</p>
+                    )}
                     <label
                       htmlFor="file-upload"
-                      className="text-center rounded bg-secondary"
+                      className="rounded bg-secondary w-100"
+                      style={{ cursor: "pointer" }}
                     >
                       Select file
                     </label>
-                    <input type="file" id="file-upload" />
-                  </div>
+                    <input
+                      type="file"
+                      id="file-upload"
+                      onChange={(e) =>
+                        onSelectImageHandler(e.currentTarget.files)
+                      }
+                    />
+                  </form>
                 </div>
-                <div className="col-5 ml-2">
+                <div className="col-5 ml-2 align-self-center">
                   <div className="row">
-                    <button className="p-3 py-4 text-center bg-secondary bg-gradient text-white text-weight-bold rounded">
+                    <button
+                      className="p-3 py-4 text-center bg-secondary bg-gradient text-white text-weight-bold rounded"
+                      form="fileUpdateForm"
+                      type="submit"
+                    >
                       Send file
                     </button>
                   </div>

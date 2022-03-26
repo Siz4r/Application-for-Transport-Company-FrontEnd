@@ -21,9 +21,9 @@ const isJwtExpired = (jwt: string) => {
     const decoded: { exp: number } = decode(jwt, { header: false });
     if (!decoded || !decoded.exp) return false;
 
-    if (decoded.exp * 1000 <= new Date().getTime()) return false;
+    if (decoded.exp * 1000 <= new Date().getTime()) return true;
 
-    return true;
+    return false;
   } catch (error) {
     return false;
   }
@@ -75,7 +75,6 @@ const authFetch = async (
   try {
     const { requestConfig: requestLibraryConfig } = args;
     let config = requestLibraryConfig;
-
     const tokens = await getTokens();
 
     if (!tokens) throw new Error("Refresh and access tokens expired!");
