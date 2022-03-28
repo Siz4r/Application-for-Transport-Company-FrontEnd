@@ -33,7 +33,6 @@ export const getFiles = createAsyncThunk<File[], void, {}>(
   "files/get",
   async (_, thunkAPI) => {
     try {
-      console.log("dupa");
       const response = await apiFetch<FileResponse[]>(
         "/api/files/",
         {
@@ -44,8 +43,6 @@ export const getFiles = createAsyncThunk<File[], void, {}>(
         },
         AuthorizationLevel.AUTHORIZED
       );
-
-      console.log(response);
 
       return serializeFiles(response);
     } catch (error: any) {

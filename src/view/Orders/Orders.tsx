@@ -41,12 +41,16 @@ export const Orders = () => {
     <AuthenticatedView>
       <div className={classes.container}>
         {!ordersLoading ? (
-          <React.Fragment>
-            <h3>In realization orders</h3>
-            {mappedInRealizationOrders}
-            <h3>Realized orders</h3>
-            {mappedRealizedOrders}
-          </React.Fragment>
+          orders.length >= 1 ? (
+            <React.Fragment>
+              <h3>In realization orders</h3>
+              {mappedInRealizationOrders}
+              <h3>Realized orders</h3>
+              {mappedRealizedOrders}
+            </React.Fragment>
+          ) : (
+            <p style={{ fontSize: "5vh" }}>You haven't got any orders yet!</p>
+          )
         ) : (
           <LoadingSpinner />
         )}

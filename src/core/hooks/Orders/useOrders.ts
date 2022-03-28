@@ -92,9 +92,12 @@ export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
     amount: number
   ) => {
     setOrdersLoading(true);
-    await typedDispatchAddOrder(
+    const result = await typedDispatchAddOrder(
       addOrder({ stuffId: stuffId, clientId: clientId, amount: amount })
     );
+    if (addOrder.rejected.match(result)) {
+      throw new Error(result.payload);
+    }
     setOrdersLoading(false);
   };
 

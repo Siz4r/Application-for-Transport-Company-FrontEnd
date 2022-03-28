@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { FileForm } from "../../../components/FileForm/FileForm";
 import { DeleteModal } from "../../../components/Modals/deleteModal";
 import { OrderComponent } from "../../../components/Order/OrderComponent";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
@@ -107,26 +108,7 @@ export const Client = () => {
               <h4 className="text-secondary m-0">{client.email}</h4>
             </div>
             <div className="col-7 align-self-center">
-              <div className="row justify-content-end">
-                <div className="col-7 align-self-center">
-                  <div className="row w-50 ms-auto m-4">
-                    <label
-                      htmlFor="file-upload"
-                      className="text-center rounded bg-secondary"
-                    >
-                      Select file
-                    </label>
-                    <input type="file" id="file-upload" />
-                  </div>
-                </div>
-                <div className="col-5 ml-2">
-                  <div className="row">
-                    <button className="p-3 py-4 text-center bg-secondary bg-gradient text-white text-weight-bold rounded">
-                      Send file
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <FileForm id={id} setFormError={setFormError} />
             </div>
           </div>
           <div className="">

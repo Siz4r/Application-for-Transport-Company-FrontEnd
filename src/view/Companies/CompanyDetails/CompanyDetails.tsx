@@ -122,6 +122,11 @@ export const CompanyDetails = () => {
 
         const payload = await addStuff(data);
 
+        if (stuffs.length === 0) {
+          setOrderQuantity(data.quantity / 2);
+          setTopQuantityRange(data.quantity);
+        }
+
         setStuffs((stuffs) => [
           ...stuffs,
           {
@@ -141,7 +146,7 @@ export const CompanyDetails = () => {
     if (!isBoolean(user)) {
       if (orderStuffId && orderQuantity && user.id) {
         try {
-          orderAStuff(orderStuffId, user.id, orderQuantity);
+          await orderAStuff(orderStuffId, user.id, orderQuantity);
           const stuff = stuffs.find((o) => o.id === orderStuffId);
           if (stuff) {
             const index = stuffs.indexOf(stuff);
@@ -154,8 +159,8 @@ export const CompanyDetails = () => {
               ...stuffs.slice(index + 1),
             ]);
           }
-        } catch (error) {
-          parseErrorToString(error, setFormError);
+        } catch (error: any) {
+          parseErrorToString(error.toString(), setFormError);
         }
       }
     }

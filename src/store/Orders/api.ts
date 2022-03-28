@@ -140,6 +140,6 @@ export const addOrder = createAsyncThunk<
       AuthorizationLevel.AUTHORIZED
     );
   } catch (error: any) {
-    throw thunkAPI.rejectWithValue(error);
+    return thunkAPI.rejectWithValue(error);
   }
 });
