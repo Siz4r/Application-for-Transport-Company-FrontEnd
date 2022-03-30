@@ -30,7 +30,7 @@ const mapOrders = (isDone: boolean, orders: Order[]) => {
 };
 
 export const Orders = () => {
-  const { ordersLoading, fetchOrders, orders } = useOrders({
+  const { ordersLoading, orders } = useOrders({
     fetchOnMount: true,
   });
 

@@ -9,7 +9,6 @@ import { CompanyDetails } from "./view/Companies/CompanyDetails/CompanyDetails";
 import { Employee } from "./view/Employees/EmployeeDetails/Employee";
 import { Employees } from "./view/Employees/Employees";
 import { Files } from "./view/Files/Files";
-import ForgotPassword from "./view/ForgotPassword/ForgotPassword";
 import { MyProfile } from "./view/MyProfile/MyProfile";
 import { OrderDetails } from "./view/Orders/OrderDetails/OrderDetails";
 import { Orders } from "./view/Orders/Orders";
@@ -21,11 +20,8 @@ function App() {
       <div className={classes.App}>
         <Router>
           <Routes>
+            <Route path="*" element={<MyProfile />} />
             <Route path={RouterPathsKeys.SIGN_IN} element={<SignIn />} />
-            <Route
-              path={RouterPathsKeys.FORGOT_PASSWORD}
-              element={<ForgotPassword />}
-            />
             <Route path={RouterPathsKeys.MY_PROFILE} element={<MyProfile />} />
             <Route path={RouterPathsKeys.EMPLOYEE} element={<Employees />} />
             <Route

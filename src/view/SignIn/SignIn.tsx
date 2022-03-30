@@ -13,6 +13,7 @@ export const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isCancelled, setIsCancelled] = useState(false);
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
 
@@ -29,12 +30,14 @@ export const SignIn = () => {
         if (loginWithCredentials.rejected.match(result)) {
           throw result.payload;
         }
+        setIsCancelled(true);
 
+        setIsLoading(false);
         navigate(RouterPathsKeys.MY_PROFILE);
       } catch (error) {
         parseErrorToString(error, setFormError);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }
   };
 
@@ -56,7 +59,9 @@ export const SignIn = () => {
           required
           disabled={isLoading}
         />
-        <Button disabled={isLoading}>Login</Button>
+        <Button disabled={isLoading} isCancelled={isCancelled}>
+          Login
+        </Button>
         <Link
           to={RouterPathsKeys.FORGOT_PASSWORD}
           className={classes.linkForgotPassword}

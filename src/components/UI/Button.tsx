@@ -4,17 +4,20 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 type Props = {
   children: React.ReactNode;
+  isCancelled: boolean;
   disabled?: boolean;
 };
 
 export const Button = (props: Props) => {
   const [style, setStyle] = useState(`${classes.but} align-self-center`);
 
-  const onClickHandler = (event: React.MouseEvent) => {
+  const onClickHandler = () => {
     setStyle(`${classes.but} ${classes.bump}`);
 
     setTimeout(() => {
-      setStyle(`${classes.but}`);
+      if (props.isCancelled) {
+        setStyle(`${classes.but}`);
+      }
     }, 300);
   };
 

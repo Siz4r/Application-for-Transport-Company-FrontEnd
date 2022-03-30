@@ -140,60 +140,62 @@ export const Companies = () => {
         ) : (
           <LoadingSpinner />
         )}
-        <FormModal formId="addCompany" buttonBody="Add company">
-          <form id="addCompany" onSubmit={submitHandler}>
-            <Form.Group>
-              <Form.Label className="mt-2">Name:</Form.Label>
-              <ModalInput
-                type="text"
-                placeholder="Name"
-                value={nameValue}
-                onChange={nameChangeHandler}
-                onBlur={nameBlurHandler}
-                hasError={nameHasError}
-              />
-              <Form.Label className="mt-2">City:</Form.Label>
-              <ModalInput
-                type="text"
-                placeholder="City"
-                value={cityValue}
-                onChange={cityChangeHandler}
-                onBlur={cityBlurHandler}
-                hasError={cityHasError}
-              />
+        {role === "Admins" && (
+          <FormModal formId="addCompany" buttonBody="Add company">
+            <form id="addCompany" onSubmit={submitHandler}>
+              <Form.Group>
+                <Form.Label className="mt-2">Name:</Form.Label>
+                <ModalInput
+                  type="text"
+                  placeholder="Name"
+                  value={nameValue}
+                  onChange={nameChangeHandler}
+                  onBlur={nameBlurHandler}
+                  hasError={nameHasError}
+                />
+                <Form.Label className="mt-2">City:</Form.Label>
+                <ModalInput
+                  type="text"
+                  placeholder="City"
+                  value={cityValue}
+                  onChange={cityChangeHandler}
+                  onBlur={cityBlurHandler}
+                  hasError={cityHasError}
+                />
 
-              <Form.Label className="mt-2">Postal Code:</Form.Label>
-              <ModalInput
-                type="text"
-                placeholder="Postal Code"
-                value={postalCodeValue}
-                onChange={postalCodeChangeHandler}
-                onBlur={postalCodeBlurHandler}
-                hasError={postalCodeHasError}
-              />
+                <Form.Label className="mt-2">Postal Code:</Form.Label>
+                <ModalInput
+                  type="text"
+                  placeholder="Postal Code"
+                  value={postalCodeValue}
+                  onChange={postalCodeChangeHandler}
+                  onBlur={postalCodeBlurHandler}
+                  hasError={postalCodeHasError}
+                />
 
-              <Form.Label className="mt-2">Street:</Form.Label>
-              <ModalInput
-                type="text"
-                placeholder="Street"
-                value={streetValue}
-                onChange={streetChangeHandler}
-                onBlur={streetBlurHandler}
-                hasError={streetHasError}
-              />
+                <Form.Label className="mt-2">Street:</Form.Label>
+                <ModalInput
+                  type="text"
+                  placeholder="Street"
+                  value={streetValue}
+                  onChange={streetChangeHandler}
+                  onBlur={streetBlurHandler}
+                  hasError={streetHasError}
+                />
 
-              <Form.Label className="mt-2">Building number:</Form.Label>
-              <ModalInput
-                type="number"
-                placeholder="Building number"
-                value={buildingNumberValue}
-                onChange={buildingNumberChangeHandler}
-                onBlur={buildingNumberBlurHandler}
-                hasError={buildingNumberHasError}
-              />
-            </Form.Group>
-          </form>
-        </FormModal>
+                <Form.Label className="mt-2">Building number:</Form.Label>
+                <ModalInput
+                  type="number"
+                  placeholder="Building number"
+                  value={buildingNumberValue}
+                  onChange={buildingNumberChangeHandler}
+                  onBlur={buildingNumberBlurHandler}
+                  hasError={buildingNumberHasError}
+                />
+              </Form.Group>
+            </form>
+          </FormModal>
+        )}
       </div>
     </AuthenticatedView>
   );

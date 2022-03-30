@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { RegisterModal } from "../../components/Modals/RegisterModal";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";

@@ -23,7 +23,9 @@ const correctTextInput = (value: string) =>
 
 export const CompanyDetails = () => {
   const navigate = useNavigate();
-  const { role } = useSelectUser();
+  const { role, user } = useSelectUser();
+
+  const isAdmin = role === "Admins";
 
   if (role === "Employees") {
     navigate(RouterPathsKeys.MY_PROFILE);
@@ -70,7 +72,6 @@ export const CompanyDetails = () => {
     undefined
   );
   const [orderStuffId, setOrderStuffId] = useState("");
-  const { user } = useSelectUser();
 
   const [company, setCompany] = useState<
     boolean | Awaited<ReturnType<typeof fetchCompanyById>>
@@ -250,95 +251,100 @@ export const CompanyDetails = () => {
                   <StuffItem
                     stuff={stuff}
                     key={stuff.id}
+                    isAdmin={isAdmin}
                     setFormError={setFormError}
                     onStuffDelete={onStuffDelete}
                   />
                 ))}
               </ul>
 
-              <div className="row align-items-end my-0">
-                <form
-                  className="shadowBox my-4 col-9 p-3"
-                  onSubmit={addStuffHandler}
-                >
-                  <div className="row">
-                    <div className="col-4">
-                      <input
-                        type="text"
-                        className={`mb-2 w-100 py-3 px-3 border border-2 ${
-                          !nameHasError ? "border-dark" : "border-danger"
-                        }`}
-                        placeholder="Name"
-                        value={nameValue}
-                        onChange={nameChangeHandler}
-                        onBlur={nameBlurHandler}
-                        style={{ fontSize: 20, fontWeight: "bold" }}
-                      />
-                      <input
-                        type="number"
-                        className={`mb-2 w-100 py-3 px-3 border border-2 ${
-                          !quantityHasError ? "border-dark" : "border-danger"
-                        }`}
-                        placeholder="Quantity"
-                        value={quantityValue}
-                        onChange={quantityChangeHandler}
-                        onBlur={quantityBlurHandler}
-                        style={{ fontSize: 20, fontWeight: "bold" }}
-                      />
+              {isAdmin && (
+                <div className="row align-items-end my-0">
+                  <form
+                    className="shadowBox my-4 col-9 p-3"
+                    onSubmit={addStuffHandler}
+                  >
+                    <div className="row">
+                      <div className="col-4">
+                        <input
+                          type="text"
+                          className={`mb-2 w-100 py-3 px-3 border border-2 ${
+                            !nameHasError ? "border-dark" : "border-danger"
+                          }`}
+                          placeholder="Name"
+                          value={nameValue}
+                          onChange={nameChangeHandler}
+                          onBlur={nameBlurHandler}
+                          style={{ fontSize: 20, fontWeight: "bold" }}
+                        />
+                        <input
+                          type="number"
+                          className={`mb-2 w-100 py-3 px-3 border border-2 ${
+                            !quantityHasError ? "border-dark" : "border-danger"
+                          }`}
+                          placeholder="Quantity"
+                          value={quantityValue}
+                          onChange={quantityChangeHandler}
+                          onBlur={quantityBlurHandler}
+                          style={{ fontSize: 20, fontWeight: "bold" }}
+                        />
 
-                      <input
-                        type="number"
-                        className={`mb-2 w-100 py-3 px-3 border border-2 ${
-                          !prizeHasError ? "border-dark" : "border-danger"
-                        }`}
-                        placeholder="Prize for ton"
-                        value={prizeValue}
-                        onChange={prizeChangeHandler}
-                        onBlur={prizeBlurHandler}
-                        style={{ fontSize: 20, fontWeight: "bold" }}
-                      />
-                      <button
-                        className="bg-success w-100 mt-5 border border-2 border-dark"
-                        style={{ fontSize: 20 }}
-                      >
-                        Add stuff
-                      </button>
+                        <input
+                          type="number"
+                          className={`mb-2 w-100 py-3 px-3 border border-2 ${
+                            !prizeHasError ? "border-dark" : "border-danger"
+                          }`}
+                          placeholder="Prize for ton"
+                          value={prizeValue}
+                          onChange={prizeChangeHandler}
+                          onBlur={prizeBlurHandler}
+                          style={{ fontSize: 20, fontWeight: "bold" }}
+                        />
+                        <button
+                          className="bg-success w-100 mt-5 border border-2 border-dark"
+                          style={{ fontSize: 20 }}
+                        >
+                          Add stuff
+                        </button>
+                      </div>
+                      <div className="col-8">
+                        <textarea
+                          placeholder="Description"
+                          className={`mb-2 w-100 h-100 py-3 px-3 border border-2 ${
+                            !descriptionHasError
+                              ? "border-dark"
+                              : "border-danger"
+                          }`}
+                          onBlur={descriptionBlurHandler}
+                          onChange={descriptionChangeHandler}
+                          value={descriptionValue}
+                          style={{ fontSize: 20, fontWeight: "bold" }}
+                        />
+                      </div>
                     </div>
-                    <div className="col-8">
-                      <textarea
-                        placeholder="Description"
-                        className={`mb-2 w-100 h-100 py-3 px-3 border border-2 ${
-                          !descriptionHasError ? "border-dark" : "border-danger"
-                        }`}
-                        onBlur={descriptionBlurHandler}
-                        onChange={descriptionChangeHandler}
-                        value={descriptionValue}
-                        style={{ fontSize: 20, fontWeight: "bold" }}
-                      />
-                    </div>
-                  </div>
-                </form>
-                <div className="col-3">
-                  <form id="deleteComp">
-                    <WarningModal
-                      body="Do you really want to delete this company?"
-                      buttonBody="Delete company"
-                      formId="deleteComp"
-                      onClick={async () => {
-                        if (id) {
-                          try {
-                            await removeCompany(id);
-                            navigate(RouterPathsKeys.COMPANY);
-                          } catch (error) {
-                            parseErrorToString(error, setFormError);
-                          }
-                        }
-                      }}
-                      style="w-100 bg-danger my-4 h5"
-                    />
                   </form>
+                  <div className="col-3">
+                    <form id="deleteComp">
+                      <WarningModal
+                        body="Do you really want to delete this company?"
+                        buttonBody="Delete company"
+                        formId="deleteComp"
+                        onClick={async () => {
+                          if (id) {
+                            try {
+                              await removeCompany(id);
+                              navigate(RouterPathsKeys.COMPANY);
+                            } catch (error) {
+                              parseErrorToString(error, setFormError);
+                            }
+                          }
+                        }}
+                        style="w-100 bg-danger my-4 h5"
+                      />
+                    </form>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         ) : (

@@ -115,11 +115,7 @@ export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
 
   useEffect(() => {
     if (fetchOnMount) {
-      try {
-        fetchOrders();
-      } catch (error: any) {
-        throw new Error(error);
-      }
+      fetchOrders();
     }
   }, []);
 

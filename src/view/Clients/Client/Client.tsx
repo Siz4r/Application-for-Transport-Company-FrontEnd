@@ -35,7 +35,7 @@ const mapOrders = (isDone: boolean, orders: EmployeeAndClientOrders[]) => {
 
 export const Client = () => {
   const { id } = useParams();
-  const { role } = useSelectUser();
+  const { role, user } = useSelectUser();
   const navigate = useNavigate();
 
   if (role === "Employees") {
@@ -86,7 +86,7 @@ export const Client = () => {
 
   return (
     <AuthenticatedView>
-      {!isClientLoading && typeof client !== "boolean" ? (
+      {!isClientLoading && typeof client !== "boolean" && !isBoolean(user) ? (
         <div className="container">
           <div className="row mx-2 mt-2">
             <h2 className="col mr-3">Client</h2>
@@ -108,7 +108,7 @@ export const Client = () => {
               <h4 className="text-secondary m-0">{client.email}</h4>
             </div>
             <div className="col-7 align-self-center">
-              <FileForm id={id} setFormError={setFormError} />
+              <FileForm id={client.userId} setFormError={setFormError} />
             </div>
           </div>
           <div className="">

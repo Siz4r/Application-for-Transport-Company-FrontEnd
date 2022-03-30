@@ -6,6 +6,7 @@ export const serializeSingleClient = (
 ): ClientGetById => {
   const client: ClientGetById = {
     id: apiClient.id,
+    userId: apiClient.userId,
     firstName: apiClient.userFirstName,
     lastName: apiClient.userLastName,
     phoneNumber: apiClient.userPhoneNumber,
