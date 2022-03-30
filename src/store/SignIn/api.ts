@@ -74,19 +74,9 @@ export const loginWithCredentials = createAsyncThunk<
 export const logout = createAsyncThunk<void, void, {}>(
   "user/logout",
   async (_) => {
-    // await apiFetch("/api/auth/logout", {
-    //   requestConfig: {
-    //     method: "POST",
-    //     withCredentials: true,
-    //   },
-    // });
-
     localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN);
-    // localStorage.removeItem();
     storage.removeItem("persist:root");
     localStorage.removeItem("persist:root");
-
-    return;
   }
 );
 

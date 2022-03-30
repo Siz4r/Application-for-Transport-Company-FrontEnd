@@ -66,6 +66,9 @@ export const CompanyDetails = () => {
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const [topQuantityRange, setTopQuantityRange] = useState(0);
   const [orderQuantity, setOrderQuantity] = useState(0);
+  const [newOrderAdded, setNewOrderAdded] = useState<string | undefined>(
+    undefined
+  );
   const [orderStuffId, setOrderStuffId] = useState("");
   const { user } = useSelectUser();
 
@@ -159,6 +162,8 @@ export const CompanyDetails = () => {
               ...stuffs.slice(index + 1),
             ]);
           }
+
+          setNewOrderAdded("Your order has been added!");
         } catch (error: any) {
           parseErrorToString(error.toString(), setFormError);
         }
@@ -235,6 +240,9 @@ export const CompanyDetails = () => {
                     </form>
                   </FormModal>
                 </div>
+                {newOrderAdded && (
+                  <p className="text-success text-center">{newOrderAdded}</p>
+                )}
               </div>
               <h1 className="py-2">Stuffs</h1>
               <ul className="m-0 p-0">

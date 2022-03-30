@@ -8,9 +8,7 @@ import { useTypedDispatch } from "../../core/hooks/TypedDispatch/useTypedDispatc
 import { parseErrorToString } from "../../core/parseErrorToString";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-type Props = {};
-
-export const SignIn = (props: Props) => {
+export const SignIn = () => {
   const login = useTypedDispatch<typeof loginWithCredentials, void>();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -27,16 +25,17 @@ export const SignIn = (props: Props) => {
         const result = await login(
           loginWithCredentials({ username, password })
         );
-        if (result.error) {
+
+        if (loginWithCredentials.rejected.match(result)) {
           throw result.payload;
         }
+
+        navigate(RouterPathsKeys.MY_PROFILE);
       } catch (error) {
         parseErrorToString(error, setFormError);
       }
       setIsLoading(false);
     }
-
-    navigate(RouterPathsKeys.MY_PROFILE);
   };
 
   return (
@@ -57,7 +56,6 @@ export const SignIn = (props: Props) => {
           required
           disabled={isLoading}
         />
-        {formError ? <p color="red">{formError}</p> : null}
         <Button disabled={isLoading}>Login</Button>
         <Link
           to={RouterPathsKeys.FORGOT_PASSWORD}
@@ -65,6 +63,11 @@ export const SignIn = (props: Props) => {
         >
           Forgot password
         </Link>
+        {formError ? (
+          <p color="red" className="mt-2 mb-0 w-100 text-center">
+            {formError}
+          </p>
+        ) : null}
       </form>
     </div>
   );

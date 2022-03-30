@@ -34,7 +34,6 @@ export const useFiles = (config: UseFilesConfig | undefined = undefined) => {
   useEffect(() => {
     if (fetchOnMount) {
       try {
-        console.log("elo");
         fetchFiles();
       } catch (error: any) {
         throw new Error(error);

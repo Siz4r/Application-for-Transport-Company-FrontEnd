@@ -7,6 +7,7 @@ import {
   updateUserData,
 } from "./api";
 import storage from "redux-persist/lib/storage";
+import { isBoolean } from "../../utils/isCheckers/isBooleans";
 
 export type UserEntity = User | boolean;
 
@@ -39,7 +40,14 @@ export const userSlice = createSlice<IuserSlice, {}>({
       localStorage.setItem("persist:root", "");
     });
 
-    builder.addCase(updateUserData.fulfilled, () => {});
+    builder.addCase(updateUserData.fulfilled, (state, action) => {
+      if (!isBoolean(state.user)) {
+        state.user = {
+          ...state.user,
+          ...action.meta.arg,
+        };
+      }
+    });
 
     builder.addMatcher(isAnyOf(loginWithCredentials.pending), (state) => {
       state.loading = true;

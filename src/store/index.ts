@@ -6,6 +6,7 @@ import { companiesSlice } from "./Companies/slice";
 import { employeesSlice } from "./Employees/slice";
 import { filesSlice } from "./Files/slice";
 import { ordersSlice } from "./Orders/slice";
+import { logout } from "./SignIn/api";
 import { userSlice } from "./SignIn/slice";
 
 const persistConfig = {
@@ -13,25 +14,7 @@ const persistConfig = {
   storage,
 };
 
-// const appReducer = combineReducers({
-//   user: userSlice.reducer,
-// });
-
-// const rootReducer = (
-//   state: CombinedState<{ user: IuserSlice }> | undefined,
-//   action: AnyAction
-// ) => {
-//   if (!state?.user) {
-//     // for all keys defined in your persistConfig(s)
-//     storage.removeItem("persist:root");
-//     // storage.removeItem('persist:otherKey')
-
-//     return appReducer(undefined, action);
-//   }
-//   return appReducer(state, action);
-// };
-
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   user: userSlice.reducer,
   employees: employeesSlice.reducer,
   clients: clientsSlice.reducer,
@@ -39,6 +22,16 @@ const rootReducer = combineReducers({
   companies: companiesSlice.reducer,
   files: filesSlice.reducer,
 });
+
+const rootReducer = (state: any, action: any) => {
+  if (action.type === logout) {
+    storage.removeItem("persist:root");
+
+    return appReducer(undefined, action);
+  }
+
+  return appReducer(state, action);
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

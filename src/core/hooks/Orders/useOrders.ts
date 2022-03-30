@@ -17,7 +17,10 @@ type UseOrdersConfig = {
 };
 
 export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
-  const typedDispatchGetOrders = useTypedDispatch<typeof getOrders, Order[]>();
+  const typedDispatchGetOrders = useTypedDispatch<
+    typeof getOrders,
+    Order[] | string
+  >();
 
   const typedDispatchGetOrderById = useTypedDispatch<
     typeof getOrderById,
@@ -52,9 +55,12 @@ export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
 
   const fetchOrders = async (): Promise<Order[]> => {
     setOrdersLoading(true);
-    const { payload } = await typedDispatchGetOrders(getOrders());
+    const response = await typedDispatchGetOrders(getOrders());
+    if (getOrders.rejected.match(response)) {
+      throw new Error(response.payload as string);
+    }
     setOrdersLoading(false);
-    return payload;
+    return response.payload as Order[];
   };
 
   const fetchOrderById = async (id: string): Promise<OrderDetails> => {
@@ -68,8 +74,14 @@ export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
 
   const updateOrderQuantity = async (id: string, quantity: number) => {
     setOrdersLoading(true);
-    await typedDispatchUpdateOrder(updateOrder({ id: id, quantity: quantity }));
+    const result = await typedDispatchUpdateOrder(
+      updateOrder({ id: id, quantity: quantity })
+    );
     setOrdersLoading(false);
+
+    if (updateOrder.rejected.match(result)) {
+      throw new Error(result.payload);
+    }
   };
 
   const assigneEmployee = async (id: string, employee: Employee) => {

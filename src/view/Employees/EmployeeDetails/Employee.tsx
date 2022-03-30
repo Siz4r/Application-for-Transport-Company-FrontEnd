@@ -36,7 +36,7 @@ const mapOrders = (isDone: boolean, orders: EmployeeAndClientOrders[]) => {
 export const Employee = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { role } = useSelectUser();
+  const { role, user } = useSelectUser();
 
   if (role === "Clients") {
     navigate(RouterPathsKeys.MY_PROFILE);
@@ -82,7 +82,9 @@ export const Employee = () => {
 
   return (
     <AuthenticatedView>
-      {!isEmployeeLoading && typeof employee !== "boolean" ? (
+      {!isEmployeeLoading &&
+      typeof employee !== "boolean" &&
+      !isBoolean(user) ? (
         <div className="container">
           <div className="row mx-2 mt-2">
             <h2 className="col mr-3">Employee</h2>
@@ -104,7 +106,9 @@ export const Employee = () => {
               <h4 className="text-secondary m-0">{employee.email}</h4>
             </div>
             <div className="col-7 align-self-center">
-              <FileForm id={id} setFormError={setFormError} />
+              {user.email !== employee.email && (
+                <FileForm id={employee.userId} setFormError={setFormError} />
+              )}
             </div>
           </div>
           <div>
@@ -120,13 +124,15 @@ export const Employee = () => {
               <h3 className="row m-3">This employee hasn't done any orders!</h3>
             )}
           </div>
-          <DeleteModal
-            buttonBody="Delete employee"
-            body="Do you really want to delete this employee? All his data and related orders will be lost!"
-            onClick={deleteEmployee}
-            placeInRightBottomCorner={true}
-            style="w-50"
-          />
+          {role === "Admins" && (
+            <DeleteModal
+              buttonBody="Delete employee"
+              body="Do you really want to delete this employee? All his data and related orders will be lost!"
+              onClick={deleteEmployee}
+              placeInRightBottomCorner={true}
+              style="w-50"
+            />
+          )}
         </div>
       ) : (
         <LoadingSpinner />

@@ -168,6 +168,7 @@ export const MyProfile = () => {
                   onChange={phoneNumberChangeHandler}
                   onBlur={phoneNumberBlurHandler}
                   hasError={phoneNumberHasError}
+                  disabled={false}
                 />
                 <Input
                   id="city"
@@ -178,6 +179,7 @@ export const MyProfile = () => {
                   onChange={cityChangeHandler}
                   onBlur={cityBlurHandler}
                   hasError={cityHasError}
+                  disabled={false}
                 />
               </div>
               <div className={classes.col}>
@@ -190,6 +192,7 @@ export const MyProfile = () => {
                   onChange={postalCodeChangeHandler}
                   onBlur={postalCodeBlurHandler}
                   hasError={postalCodeHasError}
+                  disabled={false}
                 />
                 <Input
                   id="street"
@@ -200,6 +203,7 @@ export const MyProfile = () => {
                   onChange={streetChangeHandler}
                   onBlur={streetBlurHandler}
                   hasError={streetHasError}
+                  disabled={false}
                 />
               </div>
 
@@ -213,6 +217,7 @@ export const MyProfile = () => {
                   onBlur={buildingNumberBlurHandler}
                   onChange={buildingNumberChangeHandler}
                   hasError={buildingNumberHasError}
+                  disabled={false}
                 />
 
                 <button className={classes.updateAddressBut}>
@@ -222,7 +227,9 @@ export const MyProfile = () => {
             </div>
             {formError && <p className={classes.error}>{formError}</p>}
             {isNewDataSet && (
-              <p className={classes.newDataInfo}>New data has been setted!</p>
+              <h3 className="text-success text-center">
+                New data has been setted!
+              </h3>
             )}
           </form>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import useInput from "../../core/hooks/Inputs/useInputs";
+import { parseErrorToString } from "../../core/parseErrorToString";
 import { RegisterData } from "../../utils/types";
 import {
   correctTextInput,
@@ -46,22 +47,26 @@ export const RegisterModal = (props: Props) => {
   } = useInput(hasOnlyNumbers, "");
 
   const [userRegistered, setUserRegistered] = useState(false);
+  const [formError, setFormError] = useState<undefined | string>(undefined);
 
   const formIsValid =
     firstNameIsValid && phoneNumberIsValid && emailIsValid && lastNameIsValid;
 
-  const submitHandler = (e: React.FormEvent) => {
+  const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formIsValid) {
-      props.submit({
-        firstName: firstNameValue,
-        lastName: lastNameValue,
-        phoneNumber: phoneNumberValue,
-        email: emailValue,
-      });
-
-      setUserRegistered(true);
+      try {
+        await props.submit({
+          firstName: firstNameValue,
+          lastName: lastNameValue,
+          phoneNumber: phoneNumberValue,
+          email: emailValue,
+        });
+        setUserRegistered(true);
+      } catch (error: any) {
+        parseErrorToString(error.toString(), setFormError);
+      }
     }
   };
 
@@ -70,6 +75,7 @@ export const RegisterModal = (props: Props) => {
       {userRegistered && (
         <p className="text-success">User registered succesfully!</p>
       )}
+      {formError && <p className="text-danger">{formError}</p>}
       <FormModal formId="form" buttonBody={props.buttonBody}>
         <form id="form" onSubmit={submitHandler}>
           <Form.Group>

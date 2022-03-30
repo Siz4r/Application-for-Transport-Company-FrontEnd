@@ -10,6 +10,7 @@ type Props = {
   onChange: (event: React.FormEvent<HTMLInputElement>) => void;
   onBlur: (event: React.FormEvent) => void;
   hasError: boolean;
+  disabled: boolean;
 };
 
 export const Input = (props: Props) => {
@@ -30,6 +31,7 @@ export const Input = (props: Props) => {
         value={props.value}
         onBlur={props.onBlur}
         onChange={props.onChange}
+        disabled={props.disabled}
       />
     </div>
   );

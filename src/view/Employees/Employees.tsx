@@ -75,10 +75,12 @@ export const Employees = () => {
         ) : (
           <LoadingSpinner />
         )}
-        <RegisterModal
-          submit={registerEmployee}
-          buttonBody={"Register an employee"}
-        />
+        {role === "Admins" && (
+          <RegisterModal
+            submit={registerEmployee}
+            buttonBody={"Register an employee"}
+          />
+        )}
       </div>
     </AuthenticatedView>
   );

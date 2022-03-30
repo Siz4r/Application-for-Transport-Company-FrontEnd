@@ -33,7 +33,10 @@ export const useEmployees = (
     Required<EmployeeGetById>
   >();
 
-  const typedDispatchAddEmployee = useTypedDispatch<typeof addEmployee, void>();
+  const typedDispatchAddEmployee = useTypedDispatch<
+    typeof addEmployee,
+    string
+  >();
 
   const fetchOnMount = config && config.fetchOnMount === false ? false : true;
   const [employeesLoading, setEmployeesLoading] = useState(
@@ -70,8 +73,12 @@ export const useEmployees = (
 
   const registerEmployee = async (data: RegisterData) => {
     setEmployeesLoading(true);
-    await typedDispatchAddEmployee(addEmployee(data));
+    const result = await typedDispatchAddEmployee(addEmployee(data));
     setEmployeesLoading(false);
+
+    if (addEmployee.rejected.match(result)) {
+      throw new Error(result.error.message);
+    }
   };
 
   useEffect(() => {

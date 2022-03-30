@@ -2,7 +2,7 @@ import { AuthenticatedView } from "../../../core/wrappers/AuthenticatedView";
 import "./OrderDetails.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useOrders } from "../../../core/hooks/Orders/useOrders";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { RouterPathsKeys } from "../../../types";
 import { isBoolean } from "../../../utils/isCheckers/isBooleans";
@@ -14,12 +14,14 @@ import { useEmployees } from "../../../core/hooks/Employees/useEmployees";
 import { Employee } from "../../../store/Orders/types";
 import { WarningModal } from "../../../components/Modals/warningModal";
 import { Form } from "react-bootstrap";
+import { useSelectUser } from "../../../core/hooks/SelectUser/useSelectUser";
 
 const hasOnlyNumbers = (value: string) => /^\d+$/.test(value);
 const quantityValidation = (value: string) =>
   hasOnlyNumbers(value) && parseInt(value) > 0;
 
 export const OrderDetails = () => {
+  const { role } = useSelectUser();
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const [employee, setEmployee] = useState<Employee | undefined>(undefined);
 
@@ -40,6 +42,9 @@ export const OrderDetails = () => {
   const [order, setOrder] = useState<
     boolean | Awaited<ReturnType<typeof fetchOrderById>>
   >(false);
+  const [orderUpdated, setOrderUpdated] = useState<undefined | string>(
+    undefined
+  );
 
   const {
     value: quantityValue,
@@ -72,12 +77,13 @@ export const OrderDetails = () => {
     }
   }, []);
 
-  const updateOrder = () => {
+  const updateOrder = async () => {
     if (id !== undefined && quantityIsValid) {
       try {
-        updateOrderQuantity(id, parseInt(quantityValue));
+        await updateOrderQuantity(id, parseInt(quantityValue));
+        setOrderUpdated("Order has been updated!");
       } catch (error: any) {
-        parseErrorToString(error, setFormError);
+        parseErrorToString(error.toString(), setFormError);
       }
     }
   };
@@ -119,8 +125,6 @@ export const OrderDetails = () => {
   if (freeEmployees.length > 0 && !employee) {
     setEmployee(freeEmployees[0]);
   }
-
-  console.log(employee);
 
   const isDoneClasses = order.done ? "text-success" : "text-danger";
 
@@ -178,19 +182,30 @@ export const OrderDetails = () => {
                     onChange={quantityChangeHandler}
                     onBlur={quantityBlurHandler}
                     hasError={quantityHasError}
+                    disabled={role === "Employees"}
                   />
                 </div>
               </div>
             </div>
-            <div className="col align-self-center text-center">
-              <button
-                className="text-center m-4 px-5 bg-warning"
-                onClick={updateOrder}
-              >
-                Update order
-              </button>
-              <h1 className={isDoneClasses}>DONE</h1>
-            </div>
+            {role !== "Employees" && (
+              <div className="col align-self-center text-center">
+                {formError && (
+                  <h3 className="text-danger text-center mb-0">{formError}</h3>
+                )}
+                {orderUpdated && (
+                  <h3 className="text-success text-center mb-0">
+                    {orderUpdated}
+                  </h3>
+                )}
+                <button
+                  className="text-center m-4 px-5 bg-warning"
+                  onClick={updateOrder}
+                >
+                  Update order
+                </button>
+                <h1 className={isDoneClasses}>DONE</h1>
+              </div>
+            )}
           </div>
 
           <h2 className="mt-3">Client:</h2>
@@ -266,59 +281,64 @@ export const OrderDetails = () => {
                 </div>
               </div>
             </div>
-            <form
-              className="col align-items-start"
-              onSubmit={submitHandler}
-              id="newEmployee"
-            >
-              <div className="row mt-4">
-                <label
-                  htmlFor="employee-choice"
-                  className="bg-white border-0 text-center"
+            {role === "Admins" && (
+              <Fragment>
+                <form
+                  className="col align-items-start"
+                  onSubmit={submitHandler}
+                  id="newEmployee"
                 >
-                  Choose an employee
-                </label>
-                <Form.Select
-                  id="employees"
-                  className="text-center mt-2"
-                  onChange={getEmployee}
-                >
-                  {freeEmployees.length > 0 ? (
-                    freeEmployees.map((e) => (
-                      <option key={e.id} value={e.id}>
-                        {e.firstName} {e.lastName}
-                      </option>
-                    ))
-                  ) : (
-                    <option key="0" value="">
-                      There is no free employees!
-                    </option>
-                  )}
-                </Form.Select>
+                  <div className="row mt-4">
+                    <label
+                      htmlFor="employee-choice"
+                      className="bg-white border-0 text-center"
+                    >
+                      Choose an employee
+                    </label>
+                    <Form.Select
+                      id="employees"
+                      className="text-center mt-2"
+                      onChange={getEmployee}
+                    >
+                      {freeEmployees.length > 0 ? (
+                        freeEmployees.map((e) => (
+                          <option key={e.id} value={e.id}>
+                            {e.firstName} {e.lastName}
+                          </option>
+                        ))
+                      ) : (
+                        <option key="0" value="">
+                          There is no free employees!
+                        </option>
+                      )}
+                    </Form.Select>
 
-                <WarningModal
-                  onClick={() => {}}
-                  body="Are you sure you want to assign this employee? Once you do this you wont be able to leave order without assigned worker!"
-                  buttonBody="Assign new employee"
-                  style="mt-4 py-2 bg-secondary bg-gradient text-white text-weight-bold"
-                  formId="newEmployee"
-                />
-              </div>
-            </form>
-            <div className="col align-self-center text-center">
-              <button
-                onClick={changeOrderState}
-                className={`mt-0 p-4 bg-${
-                  order.done ? "danger" : "success"
-                } bg-gradient text-white`}
-              >
-                <h3 className="p-0">
-                  {order.done ? "Mark order as not done" : "Mark order as done"}
-                </h3>
-              </button>
-            </div>
+                    <WarningModal
+                      onClick={() => {}}
+                      body="Are you sure you want to assign this employee? Once you do this you wont be able to leave order without assigned worker!"
+                      buttonBody="Assign new employee"
+                      style="mt-4 py-2 bg-secondary bg-gradient text-white text-weight-bold"
+                      formId="newEmployee"
+                    />
+                  </div>
+                </form>
+                <div className="col align-self-center text-center">
+                  <button
+                    onClick={changeOrderState}
+                    className={`mt-0 p-4 bg-${
+                      order.done ? "danger" : "success"
+                    } bg-gradient text-white`}
+                  >
+                    <h3 className="p-0">
+                      {order.done
+                        ? "Mark order as not done"
+                        : "Mark order as done"}
+                    </h3>
+                  </button>
+                </div>
+              </Fragment>
+            )}
           </div>
-          {formError && <p>{formError}</p>}
         </div>
       ) : (
         <LoadingSpinner />

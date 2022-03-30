@@ -13,6 +13,7 @@ export interface Employee {
 
 export interface EmployeeGetByIdResponse {
   id: string;
+  userId: string;
   userFirstName: string;
   userLastName: string;
   userEmail: string;
@@ -23,6 +24,7 @@ export interface EmployeeGetByIdResponse {
 
 export interface EmployeeGetById {
   id: string;
+  userId: string;
   firstName: string;
   lastName: string;
   email: string;

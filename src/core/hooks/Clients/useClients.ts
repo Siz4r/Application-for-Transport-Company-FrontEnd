@@ -68,9 +68,12 @@ export const useClients = (
 
   const registerClient = async (data: RegisterData) => {
     setclientsLoading(true);
-    console.log("Elo");
-    typedDispatchAddClient(addClient(data));
+    const result = await typedDispatchAddClient(addClient(data));
     setclientsLoading(false);
+
+    if (addClient.rejected.match(result)) {
+      throw new Error(result.error.message);
+    }
   };
 
   useEffect(() => {

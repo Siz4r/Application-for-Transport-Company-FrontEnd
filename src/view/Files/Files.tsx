@@ -41,9 +41,11 @@ export const Files = () => {
                 </div>
                 <div className="col-3 text-center">
                   <h1>Send:</h1>
-                  <h1>{f.createdAt}</h1>
+                  <h3>{f.createdAt.toLocaleString()}</h3>
                 </div>
                 <div className="col-4 text-center">
+                  <h1>Name:</h1>
+                  <h3>{f.name}</h3>
                   <button
                     className="border-none p-3 px-5 bg-secondary rounded"
                     onClick={openWindowWithFile}
