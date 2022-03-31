@@ -4,57 +4,55 @@ import { useSelectUser } from "../../core/hooks/SelectUser/useSelectUser";
 import { RouterPathsKeys } from "../../types";
 import classes from "./NavBar.module.css";
 
-const LINKS = [
-  {
-    groups: ["Admins"],
-    Link: (
-      <Link to={RouterPathsKeys.ORDER} className={classes.link} key={"order"}>
-        Orders
-      </Link>
-    ),
-  },
-  {
-    groups: ["Admins", "Employees"],
-    Link: (
-      <Link
-        to={RouterPathsKeys.EMPLOYEE}
-        className={classes.link}
-        key={"employees"}
-      >
-        Employees
-      </Link>
-    ),
-  },
-  {
-    groups: ["Admins", "Clients"],
-    Link: (
-      <Link
-        to={RouterPathsKeys.CLIENT}
-        className={classes.link}
-        key={"clients"}
-      >
-        Clients
-      </Link>
-    ),
-  },
-  {
-    groups: ["Admins", "Clients"],
-    Link: (
-      <Link
-        to={RouterPathsKeys.COMPANY}
-        className={classes.link}
-        key={"companys"}
-      >
-        Companys
-      </Link>
-    ),
-  },
-];
-
 export const NavBar = () => {
   const loginOut = useLogout();
   const { role } = useSelectUser();
-
+  const LINKS = [
+    {
+      groups: ["Admins", "Clients"],
+      Link: (
+        <Link to={RouterPathsKeys.ORDER} className={classes.link} key={"order"}>
+          {role === "Admins" ? "Orders" : "Your orders"}
+        </Link>
+      ),
+    },
+    {
+      groups: ["Admins", "Employees"],
+      Link: (
+        <Link
+          to={RouterPathsKeys.EMPLOYEE}
+          className={classes.link}
+          key={"employees"}
+        >
+          Employees
+        </Link>
+      ),
+    },
+    {
+      groups: ["Admins", "Clients"],
+      Link: (
+        <Link
+          to={RouterPathsKeys.CLIENT}
+          className={classes.link}
+          key={"clients"}
+        >
+          Clients
+        </Link>
+      ),
+    },
+    {
+      groups: ["Admins", "Clients"],
+      Link: (
+        <Link
+          to={RouterPathsKeys.COMPANY}
+          className={classes.link}
+          key={"companys"}
+        >
+          Companys
+        </Link>
+      ),
+    },
+  ];
   const userLinks = LINKS.filter((l) => l.groups.includes(role)).map(
     (l) => l.Link
   );

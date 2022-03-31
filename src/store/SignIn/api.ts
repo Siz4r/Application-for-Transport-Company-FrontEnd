@@ -73,10 +73,24 @@ export const loginWithCredentials = createAsyncThunk<
 
 export const logout = createAsyncThunk<void, void, {}>(
   "user/logout",
-  async (_) => {
-    localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN);
-    storage.removeItem("persist:root");
-    localStorage.removeItem("persist:root");
+  async (_, thunkAPI) => {
+    try {
+      await apiFetch(
+        "/auth/logout/",
+        {
+          requestConfig: {
+            method: "POST",
+            withCredentials: true,
+          },
+        },
+        AuthorizationLevel.AUTHORIZED
+      );
+      localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN);
+      storage.removeItem("persist:root");
+      localStorage.removeItem("persist:root");
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
   }
 );
 

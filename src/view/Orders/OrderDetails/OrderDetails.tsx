@@ -82,8 +82,10 @@ export const OrderDetails = () => {
       try {
         await updateOrderQuantity(id, parseInt(quantityValue));
         setOrderUpdated("Order has been updated!");
+        setFormError(undefined);
       } catch (error: any) {
         parseErrorToString(error.toString(), setFormError);
+        setOrderUpdated(undefined);
       }
     }
   };

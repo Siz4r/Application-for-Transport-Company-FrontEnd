@@ -20,7 +20,7 @@ function App() {
       <div className={classes.App}>
         <Router>
           <Routes>
-            <Route path="*" element={<MyProfile />} />
+            <Route path="*" element={<SignIn />} />
             <Route path={RouterPathsKeys.SIGN_IN} element={<SignIn />} />
             <Route path={RouterPathsKeys.MY_PROFILE} element={<MyProfile />} />
             <Route path={RouterPathsKeys.EMPLOYEE} element={<Employees />} />
