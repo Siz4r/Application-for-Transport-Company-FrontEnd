@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import classes from "./App.module.css";
 import { BootstrapAuthentication } from "./core/wrappers/BootstrapAuthentication";
 import { RouterPathsKeys } from "./types";
+import { Chat } from "./view/Chat/Chat";
 import { Client } from "./view/Clients/Client/Client";
 import { Clients } from "./view/Clients/Clients";
 import { Companies } from "./view/Companies/Companies";
@@ -41,6 +42,7 @@ function App() {
               element={<CompanyDetails />}
             />
             <Route path={RouterPathsKeys.FILE} element={<Files />} />
+            <Route path={RouterPathsKeys.CHAT} element={<Chat />} />
           </Routes>
         </Router>
       </div>

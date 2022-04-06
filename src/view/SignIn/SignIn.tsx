@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "../../components/UI/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { RouterPathsKeys } from "../../types";
@@ -7,8 +7,6 @@ import { loginWithCredentials } from "../../store/SignIn/api";
 import { useTypedDispatch } from "../../core/hooks/TypedDispatch/useTypedDispatch";
 import { parseErrorToString } from "../../core/parseErrorToString";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useSelectUser } from "../../core/hooks/SelectUser/useSelectUser";
-import { isBoolean } from "../../utils/isCheckers/isBooleans";
 
 export const SignIn = () => {
   const login = useTypedDispatch<typeof loginWithCredentials, void>();
@@ -18,7 +16,6 @@ export const SignIn = () => {
   const [isCancelled, setIsCancelled] = useState(false);
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
-  const { user } = useSelectUser();
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,13 +40,6 @@ export const SignIn = () => {
       }
     }
   };
-
-  // useEffect(() => {
-  //   if (!isBoolean(user)) {
-  //     console.log("elo");
-  //     navigate(RouterPathsKeys.MY_PROFILE);
-  //   }
-  // });
 
   return (
     <div className={classes.container}>

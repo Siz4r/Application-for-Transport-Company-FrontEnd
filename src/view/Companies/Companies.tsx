@@ -1,6 +1,5 @@
 import "react-bootstrap";
 import { Form } from "react-bootstrap";
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FormModal } from "../../components/Modals/FormModal";
 import { ModalInput } from "../../components/Modals/ModalInput";
@@ -9,7 +8,6 @@ import { useCompanies } from "../../core/hooks/Company/useCompanies";
 import useInput from "../../core/hooks/Inputs/useInputs";
 import { AuthenticatedView } from "../../core/wrappers/AuthenticatedView";
 import { RouterPathsKeys } from "../../types";
-import { parseErrorToString } from "../../core/parseErrorToString";
 import {
   correctTextInput,
   hasOnlyNumbers,
@@ -28,8 +26,6 @@ export const Companies = () => {
   if (role === "Employees") {
     navigate(RouterPathsKeys.MY_PROFILE);
   }
-
-  const [formError, setFormError] = useState<string | undefined>(undefined);
 
   const {
     value: nameValue,
@@ -88,9 +84,7 @@ export const Companies = () => {
           street: streetValue,
           city: cityValue,
         });
-      } catch (error) {
-        parseErrorToString(error, setFormError);
-      }
+      } catch (error) {}
     }
   };
 

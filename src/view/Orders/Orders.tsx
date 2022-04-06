@@ -4,9 +4,7 @@ import { AuthenticatedView } from "../../core/wrappers/AuthenticatedView";
 import { Order } from "../../store/Orders/types";
 
 import classes from "./Orders.module.css";
-import { Button, Form, Modal } from "react-bootstrap";
-import React, { useState } from "react";
-import useInput from "../../core/hooks/Inputs/useInputs";
+import React from "react";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";
 
 const mapOrders = (isDone: boolean, orders: Order[]) => {

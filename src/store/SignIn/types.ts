@@ -47,3 +47,10 @@ export interface ApiRegisterResponse {
   status: number;
   timestamp: string; // Datetime string
 }
+
+export interface UserChatDto {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}

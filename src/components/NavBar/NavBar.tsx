@@ -60,7 +60,7 @@ export const NavBar = () => {
   return (
     <div className={classes.container}>
       {userLinks}
-      <Link to={RouterPathsKeys.SIGN_IN} className={classes.link} key={"chat"}>
+      <Link to={RouterPathsKeys.CHAT} className={classes.link} key={"chat"}>
         Chat
       </Link>
       <Link to={RouterPathsKeys.FILE} className={classes.link} key={"files"}>

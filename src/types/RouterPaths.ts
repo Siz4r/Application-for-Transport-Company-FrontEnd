@@ -5,6 +5,7 @@ export enum AuthenticatedPaths {
   ORDER = "/order/",
   COMPANY = "/company/",
   FILE = "/file/",
+  CHAT = "/chat/",
 }
 
 export enum UnAuthenticatedPaths {

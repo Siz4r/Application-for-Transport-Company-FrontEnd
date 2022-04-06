@@ -7,17 +7,11 @@ export const Files = () => {
     fetchOnMount: true,
   });
 
-  const openWindowWithFile = () => {
-    window.open(
-      "https://res.cloudinary.com/siz4rimag/image/upload/v1645195731/toppng.com-left-arrow-comments-transparent-background-arrow-png-white-980x472_j1f61q.png"
-    );
-  };
-
   return (
     <AuthenticatedView>
       <ul className="container">
         {!fileLoading ? (
-          files.length != 0 ? (
+          files.length !== 0 ? (
             files.map((f) => (
               <li
                 className="row shadowBox m-2 mt-3 align-items-center"
@@ -48,7 +42,7 @@ export const Files = () => {
                   <h3>{f.name}</h3>
                   <button
                     className="border-none p-3 px-5 bg-secondary rounded"
-                    onClick={openWindowWithFile}
+                    onClick={() => window.open(f.url)}
                   >
                     <h1 className="link-light">Download</h1>
                   </button>

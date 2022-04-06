@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { chatSlice } from "./Chat/slice";
 import { clientsSlice } from "./Clients/slice";
 import { companiesSlice } from "./Companies/slice";
 import { employeesSlice } from "./Employees/slice";
@@ -21,6 +22,7 @@ const appReducer = combineReducers({
   orders: ordersSlice.reducer,
   companies: companiesSlice.reducer,
   files: filesSlice.reducer,
+  chat: chatSlice.reducer,
 });
 
 const rootReducer = (state: any, action: any) => {
