@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addUserToChat } from "../../../store/Chat/api";
+import { addUserToChat, deleteUserFromChat } from "../../../store/Chat/api";
 import { NewChatUserRequestData } from "../../../store/Chat/type";
 import { UserChatDto } from "../../../store/SignIn/types";
 import { apiFetch } from "../../apiFetch";
@@ -11,11 +11,28 @@ export const useChat = () => {
     void
   >();
 
+  const typedDispatchDeleteUserFromChat = useTypedDispatch<
+    typeof deleteUserFromChat,
+    void
+  >();
+
   const [chatLoading, setChatLoading] = useState(false);
 
   const addNewUserToChat = async (data: NewChatUserRequestData) => {
     setChatLoading(true);
     const response = await typedDispatchAddUserToChar(addUserToChat(data));
+    setChatLoading(false);
+
+    if (addUserToChat.rejected.match(response)) {
+      throw new Error(response.error.message);
+    }
+  };
+
+  const deleteUser = async (id: string) => {
+    setChatLoading(true);
+    const response = await typedDispatchDeleteUserFromChat(
+      deleteUserFromChat({ id: id })
+    );
     setChatLoading(false);
 
     if (addUserToChat.rejected.match(response)) {
@@ -47,6 +64,7 @@ export const useChat = () => {
   };
 
   return {
+    deleteUser,
     addNewUserToChat,
     addAllUsersToChat,
     chatLoading,

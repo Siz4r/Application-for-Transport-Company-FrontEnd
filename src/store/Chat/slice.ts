@@ -1,5 +1,5 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { addUserToChat } from "./api";
+import { addUserToChat, deleteUserFromChat } from "./api";
 
 interface IchatSlice {
   loading: boolean;
@@ -13,13 +13,22 @@ export const chatSlice = createSlice<IchatSlice, {}>({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(addUserToChat.fulfilled, () => {});
-
-    builder.addMatcher(isAnyOf(addUserToChat.pending), (state) => {
-      state.loading = true;
-    });
+    builder.addCase(deleteUserFromChat.fulfilled, () => {});
 
     builder.addMatcher(
-      isAnyOf(addUserToChat.fulfilled, addUserToChat.rejected),
+      isAnyOf(addUserToChat.pending, deleteUserFromChat.pending),
+      (state) => {
+        state.loading = true;
+      }
+    );
+
+    builder.addMatcher(
+      isAnyOf(
+        addUserToChat.fulfilled,
+        addUserToChat.rejected,
+        deleteUserFromChat.fulfilled,
+        deleteUserFromChat.rejected
+      ),
       (state) => {
         state.loading = false;
       }

@@ -9,6 +9,7 @@ import {
 } from "../../../store/Clients/api";
 import { Client, ClientGetById } from "../../../store/Clients/types";
 import { RegisterData } from "../../../utils/types";
+import { useChat } from "../Chat/useChat";
 import { useTypedDispatch } from "../TypedDispatch/useTypedDispatch";
 
 type UseProjectsConfig = {
@@ -22,6 +23,8 @@ export const useClients = (
     typeof getClients,
     Client[]
   >();
+
+  const { addNewUserToChat, deleteUser } = useChat();
 
   const typedDispatchGetClientById = useTypedDispatch<
     typeof getClientById,
@@ -63,6 +66,7 @@ export const useClients = (
   const removeClient = async (id: string) => {
     setclientsLoading(true);
     typedDispatchDeleteClient(deleteClient({ id }));
+    deleteUser(id);
     setclientsLoading(false);
   };
 
@@ -74,6 +78,12 @@ export const useClients = (
     if (addClient.rejected.match(result)) {
       throw new Error(result.error.message);
     }
+
+    addNewUserToChat({
+      ...data,
+      username: data.email,
+      secret: result.payload,
+    });
   };
 
   useEffect(() => {

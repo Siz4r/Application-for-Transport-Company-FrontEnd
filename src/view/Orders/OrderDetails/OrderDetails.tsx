@@ -37,6 +37,7 @@ export const OrderDetails = () => {
   const { employees } = useEmployees({
     fetchOnMount: true,
   });
+
   const [freeEmployees, setFreeEmployees] = useState<Employee[]>([]);
   const [isOrderLoading, setIsOrderLoading] = useState<boolean>(false);
   const [order, setOrder] = useState<
