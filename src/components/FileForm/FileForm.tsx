@@ -16,13 +16,14 @@ export const FileForm = (props: Props) => {
     fetchOnMount: false,
   });
 
+  const [formError, setFormError] = useState<undefined | string>(undefined);
   const [formData, setFormData] = useState<FormData>(new FormData());
   const [selectedFileName, setSelectedFileName] = useState<string | undefined>(
     undefined
   );
 
   const onSelectImageHandler = (files: FileList | null) => {
-    if (files) {
+    if (files && files.length === 1) {
       const file = files[0];
       const updatedFormData = new FormData();
       updatedFormData.append("file", file as File);
@@ -31,12 +32,12 @@ export const FileForm = (props: Props) => {
     }
   };
 
-  const sendFileSubmitHandler = (e: React.FormEvent) => {
+  const sendFileSubmitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (props.id && !isBoolean(user) && selectedFileName) {
       try {
-        sendFile({
+        await sendFile({
           formData: formData,
           toId: props.id,
           fromId: user.id,
@@ -45,7 +46,7 @@ export const FileForm = (props: Props) => {
           name: selectedFileName,
         });
       } catch (error) {
-        parseErrorToString(error, props.setFormError);
+        parseErrorToString(error, setFormError);
       }
     }
   };
@@ -59,11 +60,13 @@ export const FileForm = (props: Props) => {
           onSubmit={sendFileSubmitHandler}
         >
           {selectedFileName && (
-            <p className="mt-2">Selected file: {selectedFileName}</p>
+            <p className="mt-2 text-capitalize">
+              Selected file: {selectedFileName}
+            </p>
           )}
           <label
             htmlFor="file-upload"
-            className="rounded bg-secondary w-100"
+            className="rounded bg-dark bg-gradient w-100 text-light p-2"
             style={{ cursor: "pointer" }}
           >
             Select file
@@ -73,6 +76,9 @@ export const FileForm = (props: Props) => {
             id="file-upload"
             onChange={(e) => onSelectImageHandler(e.currentTarget.files)}
           />
+          {formError && (
+            <p className="mt-2 text-capitalize text-danger">{formError}</p>
+          )}
         </form>
       </div>
       <div className="col-5 ml-2 align-self-center">

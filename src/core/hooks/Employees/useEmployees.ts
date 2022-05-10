@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { deleteUserFromChat } from "../../../store/Chat/api";
 import {
   addEmployee,
   deleteEmployee,
@@ -10,7 +9,6 @@ import {
 } from "../../../store/Employees/api";
 import { Employee, EmployeeGetById } from "../../../store/Employees/types";
 import { RegisterData } from "../../../utils/types";
-import { useChat } from "../Chat/useChat";
 import { useTypedDispatch } from "../TypedDispatch/useTypedDispatch";
 
 type UseProjectsConfig = {
@@ -24,8 +22,6 @@ export const useEmployees = (
     typeof getEmployees,
     Employee[]
   >();
-
-  const { addNewUserToChat, deleteUser } = useChat();
 
   const typedDispatchGetEmployeeById = useTypedDispatch<
     typeof getEmployeeById,
@@ -72,7 +68,6 @@ export const useEmployees = (
   const removeEmployee = async (id: string) => {
     setEmployeesLoading(true);
     await typedDispatchDeleteEmployee(deleteEmployee({ id }));
-    await deleteUser(id);
     setEmployeesLoading(false);
   };
 
@@ -84,11 +79,6 @@ export const useEmployees = (
     if (addEmployee.rejected.match(result)) {
       throw new Error(result.error.message);
     }
-    addNewUserToChat({
-      ...data,
-      username: data.email,
-      secret: result.payload,
-    });
   };
 
   useEffect(() => {

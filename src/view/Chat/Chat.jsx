@@ -1,19 +1,20 @@
-import { ChatEngine } from "react-chat-engine";
+import { OpenConversation } from "../../components/Chat/OpenConversation";
+import { Sidebar } from "../../components/Chat/Sidebar";
+import { useConversations } from "../../core/contexts/ConversationsProviders";
 import { useSelectUser } from "../../core/hooks/SelectUser/useSelectUser";
 import { AuthenticatedView } from "../../core/wrappers/AuthenticatedView";
 import { isBoolean } from "../../utils/isCheckers/isBooleans";
 
 export const Chat = () => {
   const { user } = useSelectUser();
+  const { selectedConversation } = useConversations();
 
   return !isBoolean(user) ? (
     <AuthenticatedView>
-      <ChatEngine
-        height="100vh"
-        projectID="62fb8780-4142-4475-87fb-5ec7f764c07e"
-        userName={`${user.firstName}_${user.lastName}`}
-        userSecret={user.id}
-      />
+      <div className="d-flex" style={{ height: "100vh" }}>
+        <Sidebar />
+        {selectedConversation && <OpenConversation />}
+      </div>
     </AuthenticatedView>
   ) : (
     <p>Something gone wrong!</p>

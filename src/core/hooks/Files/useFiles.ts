@@ -13,7 +13,7 @@ export const useFiles = (config: UseFilesConfig | undefined = undefined) => {
   const fetchOnMount = config && config.fetchOnMount === false ? false : true;
   const [fileLoading, setFileLoading] = useState(fetchOnMount ? true : false);
 
-  const typedDispatchUpdateFile = useTypedDispatch<typeof updateFile, void>();
+  const typedDispatchUpdateFile = useTypedDispatch<typeof updateFile, string>();
   const typedDispatchGetFiles = useTypedDispatch<typeof getFiles, File[]>();
 
   const files = useSelector<RootState>(({ files }) => {
@@ -21,7 +21,12 @@ export const useFiles = (config: UseFilesConfig | undefined = undefined) => {
   }) as File[];
 
   const sendFile = async (data: UpdateFile) => {
-    await typedDispatchUpdateFile(updateFile(data));
+    const response = await typedDispatchUpdateFile(updateFile(data));
+
+    console.log(response.payload);
+    if (updateFile.rejected.match(response)) {
+      throw response.payload;
+    }
   };
 
   const fetchFiles = async () => {

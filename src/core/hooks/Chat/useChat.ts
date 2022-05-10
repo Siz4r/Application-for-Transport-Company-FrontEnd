@@ -1,72 +1,53 @@
-import { useState } from "react";
-import { addUserToChat, deleteUserFromChat } from "../../../store/Chat/api";
-import { NewChatUserRequestData } from "../../../store/Chat/type";
-import { UserChatDto } from "../../../store/SignIn/types";
-import { apiFetch } from "../../apiFetch";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import { getContacts } from "../../../store/Chat/api";
+import { Contact } from "../../../store/Chat/type";
 import { useTypedDispatch } from "../TypedDispatch/useTypedDispatch";
 
-export const useChat = () => {
-  const typedDispatchAddUserToChar = useTypedDispatch<
-    typeof addUserToChat,
-    void
+type UseProjectsConfig = {
+  fetchOnMount?: boolean;
+};
+
+export const useChat = (config: UseProjectsConfig | undefined = undefined) => {
+  const fetchOnMount = config && config.fetchOnMount === false ? false : true;
+
+  const [contactsLoading, setContactsLoading] = useState(
+    fetchOnMount ? true : false
+  );
+
+  const typedDispatchGetAllContacts = useTypedDispatch<
+    typeof getContacts,
+    Contact[]
   >();
 
-  const typedDispatchDeleteUserFromChat = useTypedDispatch<
-    typeof deleteUserFromChat,
-    void
-  >();
+  const contacts = useSelector<RootState>(({ chat }) => {
+    return chat.contacts;
+  }) as Contact[];
 
-  const [chatLoading, setChatLoading] = useState(false);
-
-  const addNewUserToChat = async (data: NewChatUserRequestData) => {
-    setChatLoading(true);
-    const response = await typedDispatchAddUserToChar(addUserToChat(data));
-    setChatLoading(false);
-
-    if (addUserToChat.rejected.match(response)) {
-      throw new Error(response.error.message);
-    }
+  const fetchContacts = async (): Promise<Contact[]> => {
+    setContactsLoading(true);
+    const { payload } = await typedDispatchGetAllContacts(getContacts());
+    console.log(payload);
+    setContactsLoading(false);
+    return payload;
   };
 
-  const deleteUser = async (id: string) => {
-    setChatLoading(true);
-    const response = await typedDispatchDeleteUserFromChat(
-      deleteUserFromChat({ id: id })
-    );
-    setChatLoading(false);
-
-    if (addUserToChat.rejected.match(response)) {
-      throw new Error(response.error.message);
+  useEffect(() => {
+    if (fetchOnMount) {
+      try {
+        fetchContacts();
+      } catch (error) {
+        console.log(error);
+      }
     }
-  };
+  }, []);
 
-  const addAllUsersToChat = async () => {
-    try {
-      const response = await apiFetch<UserChatDto[]>("/api/user/", {
-        requestConfig: {
-          method: "GET",
-          withCredentials: true,
-        },
-      });
-
-      response.forEach((u) => {
-        typedDispatchAddUserToChar(
-          addUserToChat({
-            ...u,
-            username: `${u.firstName}_${u.lastName}`,
-            secret: u.id,
-          })
-        );
-      });
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  };
+  console.log(contacts);
 
   return {
-    deleteUser,
-    addNewUserToChat,
-    addAllUsersToChat,
-    chatLoading,
+    contactsLoading,
+    contacts,
+    fetchContacts,
   };
 };

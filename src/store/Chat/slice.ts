@@ -1,34 +1,30 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { addUserToChat, deleteUserFromChat } from "./api";
+import { getContacts } from "./api";
+import { Contact } from "./type";
 
-interface IchatSlice {
+export interface IchatSlice {
   loading: boolean;
+  contacts: Contact[];
 }
 
 export const chatSlice = createSlice<IchatSlice, {}>({
   name: "employees",
   initialState: {
     loading: false,
+    contacts: [],
   },
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(addUserToChat.fulfilled, () => {});
-    builder.addCase(deleteUserFromChat.fulfilled, () => {});
+    builder.addCase(getContacts.fulfilled, (state, action) => {
+      state.contacts = action.payload;
+    });
+
+    builder.addMatcher(isAnyOf(getContacts.pending), (state) => {
+      state.loading = true;
+    });
 
     builder.addMatcher(
-      isAnyOf(addUserToChat.pending, deleteUserFromChat.pending),
-      (state) => {
-        state.loading = true;
-      }
-    );
-
-    builder.addMatcher(
-      isAnyOf(
-        addUserToChat.fulfilled,
-        addUserToChat.rejected,
-        deleteUserFromChat.fulfilled,
-        deleteUserFromChat.rejected
-      ),
+      isAnyOf(getContacts.fulfilled, getContacts.rejected),
       (state) => {
         state.loading = false;
       }
