@@ -13,17 +13,17 @@ import { Company, CompanyDetails, Stuff } from "./types";
 
 type CompanyEntity = CompanyDetails | boolean;
 
-interface IcompanySlice {
-  companies: Company[];
+export interface IcompanySlice {
   company: CompanyEntity;
+  companies: Company[];
   loading: boolean;
 }
 
 export const companiesSlice = createSlice<IcompanySlice, {}>({
   name: "companies",
   initialState: {
-    companies: [],
     company: false,
+    companies: [],
     loading: false,
   },
   reducers: {},

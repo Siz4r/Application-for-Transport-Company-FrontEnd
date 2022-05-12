@@ -25,7 +25,7 @@ export const Employees = () => {
         {!employeesLoading ? (
           <div className="row m-2 d.flex flex-row-center mb-0">
             {employees.length < 1 ? (
-              <p style={{ fontSize: "5vh" }}>You don't have any employees!</p>
+              <p style={{ fontSize: "5vh" }}>Nie masz żadnego pracownika!</p>
             ) : (
               <ul className="list-group">
                 {employees.map((e) => (
@@ -50,7 +50,7 @@ export const Employees = () => {
                           to={RouterPathsKeys.EMPLOYEE + e.id}
                           className={classes.link}
                         >
-                          Employee Details
+                          Informacje o pracowniku
                         </Link>
                       </div>
                       <div className="col align-self-center text-center">
@@ -60,9 +60,7 @@ export const Employees = () => {
                             background: e.isAvailable ? "#20E81C" : "red",
                           }}
                         >
-                          {e.isAvailable
-                            ? "Employee is available"
-                            : "Employee isn't available"}
+                          {e.isAvailable ? "Dostępny" : "Niedostępny"}
                         </div>
                       </div>
                     </div>
@@ -77,7 +75,7 @@ export const Employees = () => {
         {role === "Admins" && (
           <RegisterModal
             submit={registerEmployee}
-            buttonBody={"Register an employee"}
+            buttonBody={"Zarejestruj pracownika"}
           />
         )}
       </div>

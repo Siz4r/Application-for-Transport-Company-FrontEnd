@@ -23,7 +23,6 @@ export const useFiles = (config: UseFilesConfig | undefined = undefined) => {
   const sendFile = async (data: UpdateFile) => {
     const response = await typedDispatchUpdateFile(updateFile(data));
 
-    console.log(response.payload);
     if (updateFile.rejected.match(response)) {
       throw response.payload;
     }

@@ -120,7 +120,7 @@ export const Companies = () => {
                           to={RouterPathsKeys.COMPANY + c.id}
                           className="text-primary"
                         >
-                          <h1>Company Details</h1>
+                          <h1>Informacje o firmie</h1>
                         </Link>
                       </div>
                     </div>
@@ -129,58 +129,58 @@ export const Companies = () => {
               </ul>
             </div>
           ) : (
-            <h2>You have no registered companys!</h2>
+            <h2>Nie posiadasz żadnych firm!</h2>
           )
         ) : (
           <LoadingSpinner />
         )}
         {role === "Admins" && (
-          <FormModal formId="addCompany" buttonBody="Add company">
+          <FormModal formId="addCompany" buttonBody="Dodaj firmę">
             <form id="addCompany" onSubmit={submitHandler}>
               <Form.Group>
-                <Form.Label className="mt-2">Name:</Form.Label>
+                <Form.Label className="mt-2">Nazwa:</Form.Label>
                 <ModalInput
                   type="text"
-                  placeholder="Name"
+                  placeholder="Nazwa"
                   value={nameValue}
                   onChange={nameChangeHandler}
                   onBlur={nameBlurHandler}
                   hasError={nameHasError}
                 />
-                <Form.Label className="mt-2">City:</Form.Label>
+                <Form.Label className="mt-2">Miasto:</Form.Label>
                 <ModalInput
                   type="text"
-                  placeholder="City"
+                  placeholder="Miasto"
                   value={cityValue}
                   onChange={cityChangeHandler}
                   onBlur={cityBlurHandler}
                   hasError={cityHasError}
                 />
 
-                <Form.Label className="mt-2">Postal Code:</Form.Label>
+                <Form.Label className="mt-2">Kod pocztowy:</Form.Label>
                 <ModalInput
                   type="text"
-                  placeholder="Postal Code"
+                  placeholder="Kod pocztowy"
                   value={postalCodeValue}
                   onChange={postalCodeChangeHandler}
                   onBlur={postalCodeBlurHandler}
                   hasError={postalCodeHasError}
                 />
 
-                <Form.Label className="mt-2">Street:</Form.Label>
+                <Form.Label className="mt-2">Ulica:</Form.Label>
                 <ModalInput
                   type="text"
-                  placeholder="Street"
+                  placeholder="Ulica"
                   value={streetValue}
                   onChange={streetChangeHandler}
                   onBlur={streetBlurHandler}
                   hasError={streetHasError}
                 />
 
-                <Form.Label className="mt-2">Building number:</Form.Label>
+                <Form.Label className="mt-2">Numer budynku:</Form.Label>
                 <ModalInput
                   type="number"
-                  placeholder="Building number"
+                  placeholder="Numer budynku"
                   value={buildingNumberValue}
                   onChange={buildingNumberChangeHandler}
                   onBlur={buildingNumberBlurHandler}

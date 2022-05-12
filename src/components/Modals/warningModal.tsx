@@ -7,6 +7,7 @@ type Props = {
   onClick: () => void;
   style: string;
   formId: string;
+  disableButton: boolean;
 };
 
 export const WarningModal = (props: Props) => {
@@ -24,7 +25,12 @@ export const WarningModal = (props: Props) => {
 
   return (
     <div className="row m-0">
-      <button className={props.style} type="button" onClick={handleShow}>
+      <button
+        className={props.style}
+        type="button"
+        disabled={props.disableButton}
+        onClick={handleShow}
+      >
         {props.buttonBody}
       </button>
 

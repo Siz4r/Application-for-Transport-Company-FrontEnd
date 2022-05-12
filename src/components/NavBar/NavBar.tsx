@@ -12,7 +12,7 @@ export const NavBar = () => {
       groups: ["Admins", "Clients"],
       Link: (
         <Link to={RouterPathsKeys.ORDER} className={classes.link} key={"order"}>
-          {role === "Admins" ? "Orders" : "Your orders"}
+          {role === "Admins" ? "Zamówienia" : "Twoje zamówienia"}
         </Link>
       ),
     },
@@ -24,7 +24,7 @@ export const NavBar = () => {
           className={classes.link}
           key={"employees"}
         >
-          Employees
+          Pracownicy
         </Link>
       ),
     },
@@ -36,7 +36,7 @@ export const NavBar = () => {
           className={classes.link}
           key={"clients"}
         >
-          Clients
+          Klienci
         </Link>
       ),
     },
@@ -48,7 +48,7 @@ export const NavBar = () => {
           className={classes.link}
           key={"companys"}
         >
-          Companys
+          Firmy
         </Link>
       ),
     },
@@ -64,14 +64,14 @@ export const NavBar = () => {
         Chat
       </Link>
       <Link to={RouterPathsKeys.FILE} className={classes.link} key={"files"}>
-        Your files
+        Twoje pliki
       </Link>
       <Link
         to={RouterPathsKeys.MY_PROFILE}
         className={classes.link}
         key={"profile"}
       >
-        Your profile
+        Twój profil
       </Link>
       <Link
         to={RouterPathsKeys.SIGN_IN}
@@ -79,7 +79,7 @@ export const NavBar = () => {
         onClick={() => loginOut.logout()}
         key={"logout"}
       >
-        Log out
+        Wyloguj się
       </Link>
     </div>
   );

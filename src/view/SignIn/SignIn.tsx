@@ -43,7 +43,7 @@ export const SignIn = () => {
 
   return (
     <div className={classes.container}>
-      <h2>Sign in</h2>
+      <h2>Logowanie</h2>
       <form className={classes.inputForm} onSubmit={submitHandler}>
         <input
           type="text"
@@ -54,20 +54,14 @@ export const SignIn = () => {
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Hasło"
           onChange={(event) => setPassword(event.target.value)}
           required
           disabled={isLoading}
         />
         <Button disabled={isLoading} isCancelled={isCancelled}>
-          Login
+          Zaloguj sie
         </Button>
-        <Link
-          to={RouterPathsKeys.FORGOT_PASSWORD}
-          className={classes.linkForgotPassword}
-        >
-          Forgot password
-        </Link>
         {formError ? (
           <p color="red" className="mt-2 mb-0 w-100 text-center">
             {formError}

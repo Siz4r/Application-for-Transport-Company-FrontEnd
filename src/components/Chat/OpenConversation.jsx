@@ -11,15 +11,14 @@ export const OpenConversation = () => {
   }, []);
   const { sendMessage, selectedConversation } = useConversations();
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("elo");
     sendMessage(
       selectedConversation.recipients.map((r) => r.id),
       text
     );
     setText("");
-  }
+  };
 
   return (
     <div className="d-flex flex-column flex-grow-1">

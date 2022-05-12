@@ -77,6 +77,8 @@ export const CompanyDetails = () => {
     boolean | Awaited<ReturnType<typeof fetchCompanyById>>
   >(false);
 
+  const { editStuffData } = useCompanies({ fetchOnMount: false });
+
   const [stuffs, setStuffs] = useState<Stuff[]>([]);
 
   const { fetchCompanyById, addStuff, removeCompany, companiesLoading } =
@@ -88,6 +90,50 @@ export const CompanyDetails = () => {
     fetchOnMount: false,
   });
 
+  const editStuffHandler = async (
+    e: React.FormEvent,
+    newQuantity: number,
+    newPrize: number,
+    stuff: Stuff,
+    setEdited: (b: boolean) => void,
+    parseErrorToString: any
+  ) => {
+    e.preventDefault();
+
+    if (newQuantity >= 0 && newPrize > 0 && id) {
+      try {
+        await editStuffData({
+          quantity: newQuantity,
+          prize: newPrize,
+          id: stuff.id,
+        });
+
+        const stuffToEdit = stuffs.find((s) => s.id === stuff.id);
+
+        if (stuffToEdit) {
+          const index = stuffs.indexOf(stuffToEdit);
+          setStuffs((stuffs) => [
+            ...stuffs.slice(0, index),
+            {
+              ...stuffToEdit,
+              quantity: newQuantity,
+              prize: newPrize,
+            },
+            ...stuffs.slice(index + 1),
+          ]);
+          if (index === 0) {
+            setTopQuantityRange(newQuantity);
+            setOrderQuantity(newQuantity / 2);
+          }
+          // setStuffs((await fetchCompanyById(id)).stuffs);
+        }
+        setEdited(true);
+      } catch (error) {
+        parseErrorToString(error, setFormError);
+      }
+    }
+  };
+
   useEffect(() => {
     if (id === undefined) {
       navigate(RouterPathsKeys.COMPANY);
@@ -97,6 +143,7 @@ export const CompanyDetails = () => {
           setCompany(company);
           setStuffs(company.stuffs);
           const temp = company.stuffs[0];
+          console.log(temp);
           if (temp) {
             setTopQuantityRange(temp.quantity);
             setOrderStuffId(temp.id);
@@ -106,7 +153,7 @@ export const CompanyDetails = () => {
         }
       });
     }
-  }, []);
+  }, [setStuffs]);
 
   const addStuffFormIsValid =
     quantityIsValid && descriptionIsValid && nameIsValid && prizeIsValid;
@@ -182,7 +229,7 @@ export const CompanyDetails = () => {
         {formError && <p>{formError}</p>}
         {!companiesLoading && !isBoolean(company) ? (
           <div>
-            <h1 className="mx-3 my-2">Company</h1>
+            <h1 className="mx-3 my-2">Firma</h1>
             <div className="col shadowBox m-2 px-3">
               <div className="row my-2 align-items-center">
                 <div className="col-2">
@@ -203,10 +250,10 @@ export const CompanyDetails = () => {
                   </h5>
                 </div>
                 <div className="col-8 d-flex flex-row-reverse mb-5">
-                  <FormModal formId="orderForm" buttonBody="Order a stuff">
+                  <FormModal formId="orderForm" buttonBody="Złóż zamówienie">
                     <form onSubmit={addOrderHandler} id="orderForm">
                       <Form.Group>
-                        <Form.Label className="mt-2">Stuff</Form.Label>
+                        <Form.Label className="mt-2">Towar</Form.Label>
                         <Form.Select
                           className="mt-0"
                           onChange={(e) => {
@@ -227,7 +274,7 @@ export const CompanyDetails = () => {
                           ))}
                         </Form.Select>
                         <Form.Label className="mt-2">
-                          Quantity: {orderQuantity}
+                          Ilość w tonach: {orderQuantity}
                         </Form.Label>
                         <Form.Range
                           min={1}
@@ -245,7 +292,7 @@ export const CompanyDetails = () => {
                   <p className="text-success text-center">{newOrderAdded}</p>
                 )}
               </div>
-              <h1 className="py-2">Stuffs</h1>
+              <h1 className="py-2">Towary</h1>
               <ul className="m-0 p-0">
                 {stuffs.map((stuff) => (
                   <StuffItem
@@ -254,6 +301,7 @@ export const CompanyDetails = () => {
                     isAdmin={isAdmin}
                     setFormError={setFormError}
                     onStuffDelete={onStuffDelete}
+                    editStuffHandler={editStuffHandler}
                   />
                 ))}
               </ul>
@@ -271,7 +319,7 @@ export const CompanyDetails = () => {
                           className={`mb-2 w-100 py-3 px-3 border border-2 ${
                             !nameHasError ? "border-dark" : "border-danger"
                           }`}
-                          placeholder="Name"
+                          placeholder="Nazwa"
                           value={nameValue}
                           onChange={nameChangeHandler}
                           onBlur={nameBlurHandler}
@@ -282,7 +330,7 @@ export const CompanyDetails = () => {
                           className={`mb-2 w-100 py-3 px-3 border border-2 ${
                             !quantityHasError ? "border-dark" : "border-danger"
                           }`}
-                          placeholder="Quantity"
+                          placeholder="Ilość"
                           value={quantityValue}
                           onChange={quantityChangeHandler}
                           onBlur={quantityBlurHandler}
@@ -294,7 +342,7 @@ export const CompanyDetails = () => {
                           className={`mb-2 w-100 py-3 px-3 border border-2 ${
                             !prizeHasError ? "border-dark" : "border-danger"
                           }`}
-                          placeholder="Prize for ton"
+                          placeholder="Cena za tone"
                           value={prizeValue}
                           onChange={prizeChangeHandler}
                           onBlur={prizeBlurHandler}
@@ -304,12 +352,12 @@ export const CompanyDetails = () => {
                           className="bg-success w-100 mt-5 border border-2 border-dark"
                           style={{ fontSize: 20 }}
                         >
-                          Add stuff
+                          Dodaj towar
                         </button>
                       </div>
                       <div className="col-8">
                         <textarea
-                          placeholder="Description"
+                          placeholder="Opis"
                           className={`mb-2 w-100 h-100 py-3 px-3 border border-2 ${
                             !descriptionHasError
                               ? "border-dark"
@@ -326,8 +374,8 @@ export const CompanyDetails = () => {
                   <div className="col-3">
                     <form id="deleteComp">
                       <WarningModal
-                        body="Do you really want to delete this company?"
-                        buttonBody="Delete company"
+                        body="Czy napewno chcesz usunąć tą firmę?"
+                        buttonBody="Usuń firme"
                         formId="deleteComp"
                         onClick={async () => {
                           if (id) {
@@ -339,6 +387,7 @@ export const CompanyDetails = () => {
                             }
                           }
                         }}
+                        disableButton={false}
                         style="w-100 bg-danger my-4 h5"
                       />
                     </form>

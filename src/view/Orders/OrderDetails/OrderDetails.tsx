@@ -34,7 +34,7 @@ export const OrderDetails = () => {
     fetchOnMount: false,
   });
 
-  const { employees } = useEmployees({
+  const { employees, fetchEmployees } = useEmployees({
     fetchOnMount: true,
   });
 
@@ -69,6 +69,7 @@ export const OrderDetails = () => {
           if (!isBoolean(order)) {
             setOrder(order);
             quantitySetValue(order.quantity.toString());
+            console.log(employees);
             setFreeEmployees([...employees.filter((e) => e.isAvailable)]);
           } else {
             navigate(RouterPathsKeys.ORDER);
@@ -91,24 +92,26 @@ export const OrderDetails = () => {
     }
   };
 
-  const changeOrderState = () => {
+  const changeOrderState = async () => {
     if (id !== undefined && !isBoolean(order)) {
       try {
-        updateOrderState(id);
+        await updateOrderState(id);
         setOrder({ ...order, done: !order.done });
+        await fetchEmployees();
       } catch (error: any) {
         parseErrorToString(error, setFormError);
       }
     }
   };
 
-  const submitHandler = (event: React.FormEvent) => {
+  const submitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (employee && id && !isBoolean(order)) {
       try {
-        assigneEmployee(id, employee);
+        await assigneEmployee(id, employee);
         setOrder({ ...order, employee: employee });
+        await fetchEmployees();
       } catch (error: any) {
         parseErrorToString(error, setFormError);
       }
@@ -135,7 +138,7 @@ export const OrderDetails = () => {
     <AuthenticatedView>
       {!isOrderLoading && typeof order !== "boolean" ? (
         <div className="container">
-          <h2>Company and Stuff:</h2>
+          <h2>Firma i towar:</h2>
           <div className="row shadowBox mx-3">
             <div className="col-4 p-0">
               <div className="row p-4">
@@ -150,20 +153,17 @@ export const OrderDetails = () => {
                   <strong>
                     <h3 className="mt-3">{order.company.name}</h3>
                   </strong>
-                  {order.company.address.buildingNumber !== 0 ? (
-                    <div>
-                      <p className="mb-0 mt-2 text-secondary">
-                        {order.company.address.street}{" "}
-                        {order.company.address.buildingNumber}
-                      </p>
-                      <p className="text-secondary">
-                        {order.company.address.postalCode}{" "}
-                        {order.company.address.city}
-                      </p>
-                    </div>
-                  ) : (
-                    <p>Company hasn't yet setted it's own address!</p>
-                  )}
+
+                  <div>
+                    <p className="mb-0 mt-2 text-secondary">
+                      {order.company.address.street}{" "}
+                      {order.company.address.buildingNumber}
+                    </p>
+                    <p className="text-secondary">
+                      {order.company.address.postalCode}{" "}
+                      {order.company.address.city}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -171,16 +171,16 @@ export const OrderDetails = () => {
               <div className="row">
                 <div className="col">
                   <h2 className="text-center">
-                    Order on: <br />
+                    Zamówienie na: <br />
                     {order.stuffName}
                   </h2>
                 </div>
                 <div className="col w-100 text-center">
                   <Input
                     id="quantity"
-                    placeholder="Quantity"
+                    placeholder="Ilość"
                     type="number"
-                    labelText="Quantity:"
+                    labelText="Ilość:"
                     value={quantityValue}
                     onChange={quantityChangeHandler}
                     onBlur={quantityBlurHandler}
@@ -204,14 +204,14 @@ export const OrderDetails = () => {
                   className="text-center m-4 px-5 bg-warning"
                   onClick={updateOrder}
                 >
-                  Update order
+                  Aktualizuj zamówienie
                 </button>
-                <h1 className={isDoneClasses}>DONE</h1>
+                <h1 className={isDoneClasses}>Wykonane</h1>
               </div>
             )}
           </div>
 
-          <h2 className="mt-3">Client:</h2>
+          <h2 className="mt-3">Klient:</h2>
 
           <div className="row shadowBox mx-3">
             <div className="col-4 p-0">
@@ -241,7 +241,7 @@ export const OrderDetails = () => {
                       </p>
                     </div>
                   ) : (
-                    <p>Client hasn't yet setted it's own address!</p>
+                    <p>Klient nie ustawił jeszcze swojego adresu!</p>
                   )}
                 </div>
               </div>
@@ -251,13 +251,13 @@ export const OrderDetails = () => {
             </div>
             <div className="col align-self-center text-center">
               <h1>
-                Order date: <br />
+                Data zamówienia: <br />
                 {order.orderDate.toLocaleDateString()}
               </h1>
             </div>
           </div>
 
-          <h2 className="mt-3">Employee:</h2>
+          <h2 className="mt-3">Pracownik:</h2>
           <div className="row shadowBox mx-3">
             <div className="col-4 p-0">
               <div className="row p-4">
@@ -275,7 +275,9 @@ export const OrderDetails = () => {
                         {order.employee.firstName} {order.employee.lastName}
                       </h3>
                     ) : (
-                      <p>This order hasn't yet got assigned employee!</p>
+                      <p>
+                        To zamówienie nie ma jeszcze przypisanego pracownika!
+                      </p>
                     )}
                   </strong>
                   <p className="mb-0 mt-2 text-secondary">
@@ -296,7 +298,7 @@ export const OrderDetails = () => {
                       htmlFor="employee-choice"
                       className="bg-white border-0 text-center"
                     >
-                      Choose an employee
+                      Wybierz pracownika
                     </label>
                     <Form.Select
                       id="employees"
@@ -311,17 +313,18 @@ export const OrderDetails = () => {
                         ))
                       ) : (
                         <option key="0" value="">
-                          There is no free employees!
+                          Nie ma wolnych pracowników!
                         </option>
                       )}
                     </Form.Select>
 
                     <WarningModal
                       onClick={() => {}}
-                      body="Are you sure you want to assign this employee? Once you do this you wont be able to leave order without assigned worker!"
-                      buttonBody="Assign new employee"
+                      body="Czy jesteś pewny, że chcesz przypisać pracownika do zamówienia? Gdy to zrobisz nie będziesz mógł pozostawić operacji bez robotnika!"
+                      buttonBody="Przypisz"
                       style="mt-4 py-2 bg-secondary bg-gradient text-white text-weight-bold"
                       formId="newEmployee"
+                      disableButton={freeEmployees.length === 0}
                     />
                   </div>
                 </form>
@@ -334,8 +337,8 @@ export const OrderDetails = () => {
                   >
                     <h3 className="p-0">
                       {order.done
-                        ? "Mark order as not done"
-                        : "Mark order as done"}
+                        ? "Ustaw jako niewykonane"
+                        : "Ustaw jako wykonane"}
                     </h3>
                   </button>
                 </div>

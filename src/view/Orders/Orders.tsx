@@ -41,13 +41,15 @@ export const Orders = () => {
         {!ordersLoading ? (
           orders.length >= 1 ? (
             <React.Fragment>
-              <h3>In realization orders</h3>
+              <h3>Zamówienia w trakcie realizacji</h3>
               {mappedInRealizationOrders}
-              <h3>Realized orders</h3>
+              <h3>Zrealizowane zamówienia</h3>
               {mappedRealizedOrders}
             </React.Fragment>
           ) : (
-            <p style={{ fontSize: "5vh" }}>You haven't got any orders yet!</p>
+            <p style={{ fontSize: "5vh" }}>
+              Nie otrzymałeś na ten moment żadnego zamówienia!
+            </p>
           )
         ) : (
           <LoadingSpinner />

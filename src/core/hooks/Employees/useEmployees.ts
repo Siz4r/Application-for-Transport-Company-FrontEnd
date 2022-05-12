@@ -49,6 +49,7 @@ export const useEmployees = (
 
   const fetchEmployees = async (): Promise<Employee[]> => {
     setEmployeesLoading(true);
+    console.log("elo");
     const { payload } = await typedDispatchGetEmployees(getEmployees());
     setEmployeesLoading(false);
     return payload;

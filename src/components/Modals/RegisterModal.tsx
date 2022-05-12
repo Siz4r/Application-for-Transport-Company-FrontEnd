@@ -79,19 +79,19 @@ export const RegisterModal = (props: Props) => {
       <FormModal formId="form" buttonBody={props.buttonBody}>
         <form id="form" onSubmit={submitHandler}>
           <Form.Group>
-            <Form.Label className="mt-2">First Name:</Form.Label>
+            <Form.Label className="mt-2">Imię:</Form.Label>
             <ModalInput
               type="text"
-              placeholder="First name"
+              placeholder="Imię"
               value={firstNameValue}
               onChange={firstNameChangeHandler}
               onBlur={firstNameBlurHandler}
               hasError={firstNameHasError}
             />
-            <Form.Label className="mt-2">Last Name:</Form.Label>
+            <Form.Label className="mt-2">Nazwisko:</Form.Label>
             <ModalInput
               type="text"
-              placeholder="Last Name"
+              placeholder="Nazwisko"
               value={lastNameValue}
               onChange={lastNameChangeHandler}
               onBlur={lastNameBlurHandler}
@@ -108,10 +108,10 @@ export const RegisterModal = (props: Props) => {
               hasError={emailHasError}
             />
 
-            <Form.Label className="mt-2">Phonenumber:</Form.Label>
+            <Form.Label className="mt-2">Numer telefonu:</Form.Label>
             <ModalInput
               type="text"
-              placeholder="Phonenumber"
+              placeholder="Numer telefonu"
               value={phoneNumberValue}
               onChange={phoneNumberChangeHandler}
               onBlur={phoneNumberBlurHandler}

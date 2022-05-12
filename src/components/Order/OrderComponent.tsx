@@ -19,14 +19,14 @@ export const OrderComponent = (props: Props) => {
       <div className={classes.order}>
         {props.clientFirstName && props.clientLastName ? (
           <div className={classes.client}>
-            Client: <br></br> {props.clientFirstName} {props.clientLastName}
+            Klient: <br></br> {props.clientFirstName} {props.clientLastName}
           </div>
         ) : (
           ""
         )}
         <div className={classes.dest}>
           <div className={classes.from}>
-            From: <br></br>
+            Od: <br></br>
             {props.companyFrom}
           </div>
           <div className={classes.truck} />
@@ -37,14 +37,14 @@ export const OrderComponent = (props: Props) => {
         </div>
         {props.employeeFirstName && props.employeeLastName ? (
           <div className={classes.assignedEmployee}>
-            Assigned Employee: <br /> {props.employeeFirstName + " "}
+            Przypisany pracownik: <br /> {props.employeeFirstName + " "}
             {props.employeeLastName}
           </div>
         ) : (
           ""
         )}
         <Link className={classes.details} to={RouterPathsKeys.ORDER + props.id}>
-          Details
+          Szczegóły
         </Link>
       </div>
     </div>

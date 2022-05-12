@@ -21,6 +21,9 @@ export const FileForm = (props: Props) => {
   const [selectedFileName, setSelectedFileName] = useState<string | undefined>(
     undefined
   );
+  const [fileSendSuccess, setFileSendSuccess] = useState<undefined | string>(
+    undefined
+  );
 
   const onSelectImageHandler = (files: FileList | null) => {
     if (files && files.length === 1) {
@@ -34,6 +37,8 @@ export const FileForm = (props: Props) => {
 
   const sendFileSubmitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFileSendSuccess(undefined);
+    setFormError(undefined);
 
     if (props.id && !isBoolean(user) && selectedFileName) {
       try {
@@ -45,6 +50,7 @@ export const FileForm = (props: Props) => {
           senderLastName: user.lastName,
           name: selectedFileName,
         });
+        setFileSendSuccess("Pomyślnie wysłano plik!");
       } catch (error) {
         parseErrorToString(error, setFormError);
       }
@@ -61,15 +67,15 @@ export const FileForm = (props: Props) => {
         >
           {selectedFileName && (
             <p className="mt-2 text-capitalize">
-              Selected file: {selectedFileName}
+              Wybrany plik: {selectedFileName}
             </p>
           )}
           <label
             htmlFor="file-upload"
-            className="rounded bg-dark bg-gradient w-100 text-light p-2"
+            className="rounded bg-dark bg-gradient w-100 text-light p-2 h5"
             style={{ cursor: "pointer" }}
           >
-            Select file
+            Wybierz plik
           </label>
           <input
             type="file"
@@ -79,16 +85,21 @@ export const FileForm = (props: Props) => {
           {formError && (
             <p className="mt-2 text-capitalize text-danger">{formError}</p>
           )}
+          {fileSendSuccess && (
+            <p className="mt-2 text-capitalize text-success">
+              {fileSendSuccess}
+            </p>
+          )}
         </form>
       </div>
       <div className="col-5 ml-2 align-self-center">
         <div className="row">
           <button
-            className="p-3 py-4 text-center bg-secondary bg-gradient text-white text-weight-bold rounded"
+            className="p-3 py-4 text-center bg-secondary bg-gradient text-white text-weight-bold rounded h4"
             form="fileUpdateForm"
             type="submit"
           >
-            Send file
+            Wyślij
           </button>
         </div>
       </div>

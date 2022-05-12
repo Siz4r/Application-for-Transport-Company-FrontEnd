@@ -86,7 +86,7 @@ export const Employee = () => {
       !isBoolean(user) ? (
         <div className="container">
           <div className="row mx-2 mt-2">
-            <h2 className="col mr-3">Employee</h2>
+            <h2 className="col mr-3">Pracownik</h2>
             {formError && <h3 className="col text-danger">{formError}</h3>}
           </div>
           <div className="row mx-2 shadowBox p-3">
@@ -113,19 +113,21 @@ export const Employee = () => {
           <div>
             {employee.orders.length > 0 ? (
               <div>
-                <h3>In Realization</h3>
+                <h3>W trakcie realizacji</h3>
                 {mapOrders(false, employee.orders)}
 
-                <h3>Done</h3>
+                <h3>Wykonane</h3>
                 {mapOrders(true, employee.orders)}
               </div>
             ) : (
-              <h3 className="row m-3">This employee hasn't done any orders!</h3>
+              <h3 className="row m-3">
+                Ten pracownik nie wykonał żadnych zamówień!
+              </h3>
             )}
           </div>
           {role === "Admins" && (
             <DeleteModal
-              buttonBody="Delete employee"
+              buttonBody="Usuń pracownika"
               body="Do you really want to delete this employee? All his data and related orders will be lost!"
               onClick={deleteEmployee}
               placeInRightBottomCorner={true}

@@ -161,9 +161,9 @@ export const MyProfile = () => {
               <div className={classes.col}>
                 <Input
                   id="phone"
-                  placeholder="Phone number"
+                  placeholder="Numer telefonu"
                   type="text"
-                  labelText="Phone number:"
+                  labelText="Numer telefonu:"
                   value={phoneNumberValue}
                   onChange={phoneNumberChangeHandler}
                   onBlur={phoneNumberBlurHandler}
@@ -172,9 +172,9 @@ export const MyProfile = () => {
                 />
                 <Input
                   id="city"
-                  placeholder="City"
+                  placeholder="Miasto"
                   type="text"
-                  labelText="City:"
+                  labelText="Miasto:"
                   value={cityValue}
                   onChange={cityChangeHandler}
                   onBlur={cityBlurHandler}
@@ -185,9 +185,9 @@ export const MyProfile = () => {
               <div className={classes.col}>
                 <Input
                   id="postalCode"
-                  placeholder="Postal code"
+                  placeholder="Kod pocztowy"
                   type="text"
-                  labelText="Postal-code:"
+                  labelText="Kod pocztowy:"
                   value={postalCodeValue}
                   onChange={postalCodeChangeHandler}
                   onBlur={postalCodeBlurHandler}
@@ -196,9 +196,9 @@ export const MyProfile = () => {
                 />
                 <Input
                   id="street"
-                  placeholder="Street"
+                  placeholder="Ulica"
                   type="text"
-                  labelText="Street:"
+                  labelText="Ulica:"
                   value={streetValue}
                   onChange={streetChangeHandler}
                   onBlur={streetBlurHandler}
@@ -210,9 +210,9 @@ export const MyProfile = () => {
               <div className={classes.col}>
                 <Input
                   id="number"
-                  placeholder="Building number"
+                  placeholder="Numer budynku"
                   type="text"
-                  labelText="Building number:"
+                  labelText="Numer budynku:"
                   value={buildingNumberValue}
                   onBlur={buildingNumberBlurHandler}
                   onChange={buildingNumberChangeHandler}
@@ -221,14 +221,14 @@ export const MyProfile = () => {
                 />
 
                 <button className={classes.updateAddressBut}>
-                  Set new data
+                  Ustan nowy adres
                 </button>
               </div>
             </div>
             {formError && <p className={classes.error}>{formError}</p>}
             {isNewDataSet && (
               <h3 className="text-success text-center">
-                New data has been setted!
+                Pomyślnie ustawiono nowy adres!
               </h3>
             )}
           </form>

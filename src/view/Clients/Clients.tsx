@@ -25,7 +25,7 @@ export const Clients = () => {
           <div className="row m-2 d.flex flex-row-center mb-0">
             {clients.length < 1 ? (
               <p style={{ fontSize: "5vh" }} className="text-center">
-                You don't have any clients!
+                Nie posiadasz żadnych klientów!
               </p>
             ) : (
               <ul className="list-group">
@@ -51,7 +51,7 @@ export const Clients = () => {
                           to={RouterPathsKeys.CLIENT + e.id}
                           className={classes.link}
                         >
-                          Client Details
+                          Informacje o kliencie
                         </Link>
                       </div>
                     </div>
@@ -63,7 +63,10 @@ export const Clients = () => {
         ) : (
           <LoadingSpinner />
         )}
-        <RegisterModal submit={registerClient} buttonBody="Register a client" />
+        <RegisterModal
+          submit={registerClient}
+          buttonBody="Zarejestruj klienta"
+        />
       </div>
     </AuthenticatedView>
   );

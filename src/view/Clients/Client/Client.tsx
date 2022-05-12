@@ -114,19 +114,19 @@ export const Client = () => {
           <div className="">
             {client.orders.length > 0 ? (
               <div className="m-2">
-                <h3 className="row m-2">In Realization</h3>
+                <h3 className="row m-2">W trakcie</h3>
                 {mapOrders(false, client.orders)}
 
-                <h3 className="row m-2">Done</h3>
+                <h3 className="row m-2">Wykonane</h3>
                 {mapOrders(true, client.orders)}
               </div>
             ) : (
-              <h3 className="m-2">This client hasn't got any orders!</h3>
+              <h3 className="m-2">Ten klient nie złożył żadnych zamówień!</h3>
             )}
           </div>
           <DeleteModal
-            buttonBody="Delete client"
-            body="Do you really want to delete this client? All his data and related orders will be lost!"
+            buttonBody="Usuń klienta"
+            body="Czy napewno chcesz usunąć tego klienta? Wszystkie jego dane oraz zamówienia zostaną stracone!"
             onClick={deleteClient}
             placeInRightBottomCorner={true}
             style="w-50"
