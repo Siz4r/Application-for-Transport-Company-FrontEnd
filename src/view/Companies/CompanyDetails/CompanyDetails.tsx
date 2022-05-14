@@ -250,7 +250,11 @@ export const CompanyDetails = () => {
                   </h5>
                 </div>
                 <div className="col-8 d-flex flex-row-reverse mb-5">
-                  <FormModal formId="orderForm" buttonBody="Złóż zamówienie">
+                  <FormModal
+                    formId="orderForm"
+                    buttonBody="Złóż zamówienie"
+                    topText="Wybierz towar"
+                  >
                     <form onSubmit={addOrderHandler} id="orderForm">
                       <Form.Group>
                         <Form.Label className="mt-2">Towar</Form.Label>
@@ -330,7 +334,7 @@ export const CompanyDetails = () => {
                           className={`mb-2 w-100 py-3 px-3 border border-2 ${
                             !quantityHasError ? "border-dark" : "border-danger"
                           }`}
-                          placeholder="Ilość"
+                          placeholder="Ilość w tonach"
                           value={quantityValue}
                           onChange={quantityChangeHandler}
                           onBlur={quantityBlurHandler}

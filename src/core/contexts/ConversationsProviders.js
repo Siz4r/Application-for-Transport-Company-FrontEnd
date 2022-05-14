@@ -10,10 +10,11 @@ export const useConversations = () => {
 };
 
 export function ConversationsProvider({ id, children }) {
-  const [conversations, setConversations] = useLocalStorage(
-    "conversations",
-    []
-  );
+  const { convs } = useChat({
+    fetchOnMount: true,
+  });
+
+  const [conversations, setConversations] = useState(convs);
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(0);
   const { contacts } = useChat();
   const socket = useSocket();

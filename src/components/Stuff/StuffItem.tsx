@@ -43,7 +43,7 @@ export const StuffItem = (props: Props) => {
       </div>
       <div className="col-2 text-center">
         <h2 className="m-0">{stuff.name}</h2>
-        <h4>Ilość:</h4>
+        <h4>Ilość w tonach:</h4>
         <form
           id={`${stuff.id}`}
           onSubmit={(e) =>

@@ -12,7 +12,7 @@ export const Chat = () => {
   return !isBoolean(user) ? (
     <AuthenticatedView>
       <div className="d-flex" style={{ height: "100vh" }}>
-        <Sidebar />
+        <Sidebar id={user.id} />
         {selectedConversation && <OpenConversation />}
       </div>
     </AuthenticatedView>

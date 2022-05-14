@@ -135,7 +135,11 @@ export const Companies = () => {
           <LoadingSpinner />
         )}
         {role === "Admins" && (
-          <FormModal formId="addCompany" buttonBody="Dodaj firmę">
+          <FormModal
+            formId="addCompany"
+            buttonBody="Dodaj firmę"
+            topText="Wypełnij formularz"
+          >
             <form id="addCompany" onSubmit={submitHandler}>
               <Form.Group>
                 <Form.Label className="mt-2">Nazwa:</Form.Label>

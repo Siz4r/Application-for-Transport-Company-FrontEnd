@@ -5,6 +5,7 @@ type Props = {
   formId: string;
   children: React.ReactNode;
   buttonBody: string;
+  topText: string;
 };
 
 export const FormModal = (props: Props) => {
@@ -13,12 +14,12 @@ export const FormModal = (props: Props) => {
   return (
     <React.Fragment>
       <Button onClick={() => setIsOpenModal(true)} className="py-3 w-50 mb-5">
-        {props.buttonBody}
+        <p className="h4">{props.buttonBody}</p>
       </Button>
 
       <Modal show={isOpenModal} onHide={() => setIsOpenModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Choose the stuff</Modal.Title>
+          <Modal.Title>{props.topText}</Modal.Title>
         </Modal.Header>
         <Modal.Body>{props.children}</Modal.Body>
         <Modal.Footer>
@@ -30,7 +31,7 @@ export const FormModal = (props: Props) => {
               setIsOpenModal(false);
             }}
           >
-            Submit
+            Potwierdź
           </Button>
         </Modal.Footer>
       </Modal>

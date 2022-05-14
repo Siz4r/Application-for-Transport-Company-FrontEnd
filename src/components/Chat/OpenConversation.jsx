@@ -2,6 +2,11 @@ import { useCallback, useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useConversations } from "../../core/contexts/ConversationsProviders";
 
+import SockJS from "sockjs-client";
+import { over } from "stompjs";
+
+var stompClient = null;
+
 export const OpenConversation = () => {
   const [text, setText] = useState("");
   const setRef = useCallback((node) => {
@@ -19,6 +24,19 @@ export const OpenConversation = () => {
     );
     setText("");
   };
+
+  const connect = () => {
+    let Sock = new SockJS("http://localhost:5000/chat");
+    stompClient = over(Sock);
+    stompClient.connect(
+      {},
+      () => {},
+      (err) => console.log(err)
+    );
+    console.log("elo");
+  };
+
+  connect();
 
   return (
     <div className="d-flex flex-column flex-grow-1">

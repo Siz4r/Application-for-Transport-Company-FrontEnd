@@ -11,7 +11,7 @@ export function SocketProvider({ id, children }) {
   const [socket, setSocket] = useState();
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5001", { query: { id } });
+    const newSocket = io("chat", { query: { id } });
     setSocket(newSocket);
 
     return () => newSocket.close();

@@ -61,7 +61,9 @@ export const Clients = () => {
             )}
           </div>
         ) : (
-          <LoadingSpinner />
+          <div className="row m-2 d.flex flex-row-center">
+            <LoadingSpinner />
+          </div>
         )}
         <RegisterModal
           submit={registerClient}

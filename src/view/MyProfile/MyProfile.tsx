@@ -221,7 +221,7 @@ export const MyProfile = () => {
                 />
 
                 <button className={classes.updateAddressBut}>
-                  Ustan nowy adres
+                  Ustaw nowy adres
                 </button>
               </div>
             </div>

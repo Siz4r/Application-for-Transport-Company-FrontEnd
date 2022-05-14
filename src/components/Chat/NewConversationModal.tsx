@@ -41,7 +41,7 @@ export const NewConversationModal = (props: Props) => {
               <Form.Check
                 type="checkbox"
                 value={contact.id}
-                label={contact.name}
+                label={`${contact.firstName} ${contact.lastName}`}
                 onChange={() => handleCheckboxChange(contact.id)}
               />
             </Form.Group>

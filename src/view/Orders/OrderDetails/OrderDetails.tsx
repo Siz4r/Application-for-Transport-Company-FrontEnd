@@ -18,7 +18,7 @@ import { useSelectUser } from "../../../core/hooks/SelectUser/useSelectUser";
 
 const hasOnlyNumbers = (value: string) => /^\d+$/.test(value);
 const quantityValidation = (value: string) =>
-  hasOnlyNumbers(value) && parseInt(value) > 0;
+  hasOnlyNumbers(value) && parseInt(value) >= 0;
 
 export const OrderDetails = () => {
   const { role } = useSelectUser();
@@ -80,10 +80,13 @@ export const OrderDetails = () => {
   }, []);
 
   const updateOrder = async () => {
-    if (id !== undefined && quantityIsValid) {
+    if (id !== undefined && quantityIsValid && !isBoolean(order)) {
       try {
         await updateOrderQuantity(id, parseInt(quantityValue));
-        setOrderUpdated("Order has been updated!");
+        if (parseInt(quantityValue) === 0) {
+          setOrder({ ...order, done: true });
+        }
+        setOrderUpdated("Zamówienie zostało zaktualizowane!");
         setFormError(undefined);
       } catch (error: any) {
         parseErrorToString(error.toString(), setFormError);

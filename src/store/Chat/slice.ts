@@ -1,10 +1,11 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { getContacts } from "./api";
-import { Contact } from "./type";
+import { getContacts, getConv } from "./api";
+import { Contact, Conversation } from "./type";
 
 export interface IchatSlice {
   loading: boolean;
   contacts: Contact[];
+  conversations: Conversation[];
 }
 
 export const chatSlice = createSlice<IchatSlice, {}>({
@@ -12,6 +13,7 @@ export const chatSlice = createSlice<IchatSlice, {}>({
   initialState: {
     loading: false,
     contacts: [],
+    conversations: [],
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -19,12 +21,24 @@ export const chatSlice = createSlice<IchatSlice, {}>({
       state.contacts = action.payload;
     });
 
-    builder.addMatcher(isAnyOf(getContacts.pending), (state) => {
-      state.loading = true;
+    builder.addCase(getConv.fulfilled, (state, action) => {
+      state.conversations = action.payload;
     });
 
     builder.addMatcher(
-      isAnyOf(getContacts.fulfilled, getContacts.rejected),
+      isAnyOf(getContacts.pending, getConv.pending),
+      (state) => {
+        state.loading = true;
+      }
+    );
+
+    builder.addMatcher(
+      isAnyOf(
+        getContacts.fulfilled,
+        getContacts.rejected,
+        getConv.fulfilled,
+        getConv.rejected
+      ),
       (state) => {
         state.loading = false;
       }

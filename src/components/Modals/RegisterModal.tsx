@@ -54,6 +54,8 @@ export const RegisterModal = (props: Props) => {
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(undefined);
+    setUserRegistered(false);
 
     if (formIsValid) {
       try {
@@ -73,10 +75,14 @@ export const RegisterModal = (props: Props) => {
   return (
     <React.Fragment>
       {userRegistered && (
-        <p className="text-success">User registered succesfully!</p>
+        <p className="text-success">Pomyślnie zarejestrowano użytkownika!</p>
       )}
       {formError && <p className="text-danger">{formError}</p>}
-      <FormModal formId="form" buttonBody={props.buttonBody}>
+      <FormModal
+        formId="form"
+        buttonBody={props.buttonBody}
+        topText={"Wypełnij formularz"}
+      >
         <form id="form" onSubmit={submitHandler}>
           <Form.Group>
             <Form.Label className="mt-2">Imię:</Form.Label>

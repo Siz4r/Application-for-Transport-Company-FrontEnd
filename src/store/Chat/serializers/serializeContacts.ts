@@ -4,8 +4,7 @@ export const serializeContacts = (apiEmployees: ContactDto[]): Contact[] => {
   const contacts: Contact[] = apiEmployees.map(
     (c) =>
       ({
-        name: c.firstName + " " + c.lastName,
-        id: c.id,
+        ...c,
       } as Contact)
   );
   return contacts;
