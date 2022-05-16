@@ -2,20 +2,43 @@ import React, { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import { useConversations } from "../../core/contexts/ConversationsProviders";
 import { useChat } from "../../core/hooks/Chat/useChat";
+import useInput from "../../core/hooks/Inputs/useInputs";
+import { parseErrorToString } from "../../core/parseErrorToString";
+import { Input } from "../UI/Input";
 
 type Props = {
   closeModal: () => void;
 };
 
+export const isNotEmpty = (value: string) => value.trim().length > 2;
+export const hasOnlyLetters = (value: string) =>
+  !/[^a-zżźółćśęąń ]/i.test(value);
+export const correctTextInput = (value: string) =>
+  isNotEmpty(value) && hasOnlyLetters(value);
+
 export const NewConversationModal = (props: Props) => {
   const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
-  const { contacts } = useChat({ fetchOnMount: true });
-  const { createConversation } = useConversations();
+  const { contacts, addConv } = useChat({ fetchOnMount: true });
+  const [formError, setFormError] = useState<undefined | string>(undefined);
+
+  const {
+    value: nameValue,
+    isValid: nameIsValid,
+    hasError: nameIsHasError,
+    valueChangeHandler: nameIsChangeHandler,
+    inputBlurHandler: nameIsBlurHandler,
+  } = useInput(correctTextInput, "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    createConversation(selectedContactIds);
+    setFormError(undefined);
+    if (selectedContactIds.length > 0 && nameIsValid) {
+      try {
+        addConv(nameValue, selectedContactIds);
+      } catch (error: any) {
+        parseErrorToString(error, setFormError);
+      }
+    }
     props.closeModal();
   };
 
@@ -46,7 +69,22 @@ export const NewConversationModal = (props: Props) => {
               />
             </Form.Group>
           ))}
-          <Button type="submit">Create</Button>
+          <div className="col w-50 h5">
+            <Input
+              id="name"
+              placeholder="Nazwa konwersacji"
+              type="text"
+              labelText="Nazwa konwersacji:"
+              value={nameValue}
+              onBlur={nameIsBlurHandler}
+              onChange={nameIsChangeHandler}
+              hasError={nameIsHasError}
+              disabled={false}
+            />
+          </div>
+          <Button type="submit" disabled={selectedContactIds.length < 1}>
+            Create
+          </Button>
         </Form>
       </Modal.Body>
     </>

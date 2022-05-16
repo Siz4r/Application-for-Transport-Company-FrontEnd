@@ -1,5 +1,5 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { getContacts, getConv } from "./api";
+import { createConv, getContacts, getConv } from "./api";
 import { Contact, Conversation } from "./type";
 
 export interface IchatSlice {
@@ -25,8 +25,17 @@ export const chatSlice = createSlice<IchatSlice, {}>({
       state.conversations = action.payload;
     });
 
+    builder.addCase(createConv.fulfilled, (state, action) => {
+      const args = action.meta.arg;
+      const contacts = state.contacts.filter((c) => args.users.includes(c.id));
+      state.conversations = [
+        ...state.conversations,
+        { name: args.name, users: contacts, messages: [], id: action.payload },
+      ];
+    });
+
     builder.addMatcher(
-      isAnyOf(getContacts.pending, getConv.pending),
+      isAnyOf(getContacts.pending, getConv.pending, createConv.pending),
       (state) => {
         state.loading = true;
       }
@@ -37,7 +46,9 @@ export const chatSlice = createSlice<IchatSlice, {}>({
         getContacts.fulfilled,
         getContacts.rejected,
         getConv.fulfilled,
-        getConv.rejected
+        getConv.rejected,
+        createConv.fulfilled,
+        createConv.rejected
       ),
       (state) => {
         state.loading = false;

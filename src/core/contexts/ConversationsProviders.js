@@ -1,7 +1,11 @@
 import React, { useContext, useState, useEffect, useCallback } from "react";
 import { useChat } from "../hooks/Chat/useChat";
-import useLocalStorage from "../hooks/Chat/useLocalStorage";
 import { useSocket } from "./SockerProvider";
+
+import SockJS from "sockjs-client";
+import { over } from "stompjs";
+
+var stompClient = null;
 
 const ConversationsContext = React.createContext();
 
@@ -17,22 +21,17 @@ export function ConversationsProvider({ id, children }) {
   const [conversations, setConversations] = useState(convs);
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(0);
   const { contacts } = useChat();
-  const socket = useSocket();
-
-  function createConversation(recipients) {
-    setConversations((prevConversations) => {
-      return [...prevConversations, { recipients, messages: [] }];
-    });
-  }
 
   const addMessageToConversation = useCallback(
-    ({ recipients, text, sender }) => {
+    ({ conversationId, text, senderId }) => {
+      console.log(conversationId);
+      console.log(text);
+      console.log(senderId);
       setConversations((prevConversations) => {
-        let madeChange = false;
-        const newMessage = { sender, text };
+        const newMessage = { senderId, text };
         const newConversations = prevConversations.map((conversation) => {
-          if (arrayEquality(conversation.recipients, recipients)) {
-            madeChange = true;
+          if (conversation.conversationId === conversationId) {
+            console.log(newMessage);
             return {
               ...conversation,
               messages: [...conversation.messages, newMessage],
@@ -42,45 +41,76 @@ export function ConversationsProvider({ id, children }) {
           return conversation;
         });
 
-        if (madeChange) {
-          return newConversations;
-        } else {
-          return [...prevConversations, { recipients, messages: [newMessage] }];
-        }
+        return newConversations;
       });
     },
     [setConversations]
   );
 
-  useEffect(() => {
-    if (socket == null) return;
+  useEffect(async () => {
+    connect();
+    if (stompClient == null) return;
 
-    socket.on("receive-message", addMessageToConversation);
+    setConversations(convs);
+  }, [stompClient, addMessageToConversation, setConversations]);
 
-    return () => socket.off("receive-message");
-  }, [socket, addMessageToConversation]);
+  function connect() {
+    const Sock = new SockJS("http://localhost:5000/chat");
+    stompClient = over(Sock);
+    stompClient.connect({}, onConnected, (err) => console.log(err));
+  }
 
-  function sendMessage(recipients, text) {
-    socket.emit("send-message", { recipients, text });
+  const onConnected = () => {
+    conversations.forEach((c) =>
+      stompClient.subscribe(
+        `/conversation/${c.conversationId}/private`,
+        onMessageReceived
+      )
+    );
+  };
 
-    addMessageToConversation({ recipients, text, sender: id });
+  const onMessageReceived = (payload) => {
+    const body = JSON.parse(payload.body);
+
+    console.log("BODY" + body.convId);
+
+    addMessageToConversation({
+      conversationId: body.convId,
+      text: body.text,
+      senderId: body.sender,
+    });
+  };
+
+  function sendMessage(conversationId, text, senderId) {
+    console.log(senderId);
+    const message = {
+      convID: conversationId,
+      senderID: id,
+      content: text,
+    };
+
+    stompClient.send(`/app/conversationMessage/`, {}, JSON.stringify(message));
+
+    // addMessageToConversation({ conversationId, text, senderId: id });
   }
 
   const formattedConversations = conversations.map((conversation, index) => {
-    const recipients = conversation.recipients.map((recipient) => {
+    const recipients = conversation.users.map((user) => {
       const contact = contacts.find((contact) => {
-        return contact.id === recipient;
+        return contact.id === user.id;
       });
-      const name = (contact && contact.name) || recipient;
-      return { id: recipient, name };
+      const name = contact.firstName + " " + contact.lastName;
+      return { id: user.id, name };
     });
 
     const messages = conversation.messages.map((message) => {
       const contact = contacts.find((contact) => {
-        return contact.id === message.sender;
+        return contact.id === message.senderId;
       });
-      const name = (contact && contact.name) || message.sender;
-      const fromMe = id === message.sender;
+      const name =
+        (contact && contact.firstName + " " + contact.lastName) ||
+        message.sender;
+      const fromMe = id === message.senderId;
       return { ...message, senderName: name, fromMe };
     });
 
@@ -93,7 +123,6 @@ export function ConversationsProvider({ id, children }) {
     selectedConversation: formattedConversations[selectedConversationIndex],
     sendMessage,
     selectConversationIndex: setSelectedConversationIndex,
-    createConversation,
   };
 
   return (
@@ -105,11 +134,12 @@ export function ConversationsProvider({ id, children }) {
 
 function arrayEquality(a, b) {
   if (a.length !== b.length) return false;
+  const arr1 = [...a];
+  const arr2 = [...b];
+  arr1.sort();
+  arr2.sort();
 
-  a.sort();
-  b.sort();
-
-  return a.every((element, index) => {
-    return element === b[index];
+  return arr1.every((element, index) => {
+    return element === arr2[index];
   });
 }

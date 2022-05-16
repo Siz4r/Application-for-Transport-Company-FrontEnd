@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import io from "socket.io-client";
+import SockJS from "sockjs-client";
+import { over } from "stompjs";
 
+var stompClient = null;
 const SocketContext = React.createContext();
 
 export function useSocket() {
@@ -10,12 +12,17 @@ export function useSocket() {
 export function SocketProvider({ id, children }) {
   const [socket, setSocket] = useState();
 
-  useEffect(() => {
-    const newSocket = io("chat", { query: { id } });
-    setSocket(newSocket);
+  // useEffect(async () => {
+  //   let Sock = new SockJS("http://localhost:5000/chat");
+  //   stompClient = over(Sock);
+  //   await stompClient.connect({}, onConnected, (err) => console.log(err));
 
-    return () => newSocket.close();
-  }, [id]);
+  //   setSocket(stompClient);
+  // }, [id]);
+
+  // const onConnected = () => {
+  //   // stompClient.subscribe("/chatroom/public", onMessageReceived);
+  // };
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>

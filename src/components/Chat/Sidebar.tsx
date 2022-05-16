@@ -5,7 +5,7 @@ import { Conversations } from "./Conversations";
 import { NewConversationModal } from "./NewConversationModal";
 
 type Props = {
-  id: string;
+  name: string;
 };
 
 const CONVERSATIONS_KEY = "conversations";
@@ -40,7 +40,7 @@ export const Sidebar = (props: Props) => {
           </Tab.Pane>
         </Tab.Content>
         <div className="p-2 border-top border-right small">
-          Your Id: <span className="text-muted">{props.id}</span>
+          Your name: <span className="text-muted">{props.name}</span>
         </div>
         <Button onClick={() => setModalOpen(true)} className="rounded-0">
           New {conversationsOpen ? "Conversation" : "Contact"}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { getContacts, getConv } from "../../../store/Chat/api";
+import { createConv, getContacts, getConv } from "../../../store/Chat/api";
 import { Contact, Conversation } from "../../../store/Chat/type";
 import { useTypedDispatch } from "../TypedDispatch/useTypedDispatch";
 
@@ -26,6 +26,8 @@ export const useChat = (config: UseProjectsConfig | undefined = undefined) => {
     Conversation[]
   >();
 
+  const typedDispatchCreateConv = useTypedDispatch<typeof createConv, string>();
+
   const contacts = useSelector<RootState>(({ chat }) => {
     return chat.contacts;
   }) as Contact[];
@@ -48,6 +50,15 @@ export const useChat = (config: UseProjectsConfig | undefined = undefined) => {
     return payload;
   };
 
+  const addConv = async (name: string, users: string[]) => {
+    setContactsLoading(true);
+    const { payload } = await typedDispatchCreateConv(
+      createConv({ name, users })
+    );
+    setContactsLoading(false);
+    return payload;
+  };
+
   useEffect(() => {
     if (fetchOnMount) {
       try {
@@ -64,5 +75,6 @@ export const useChat = (config: UseProjectsConfig | undefined = undefined) => {
     contacts,
     convs,
     fetchContacts,
+    addConv,
   };
 };

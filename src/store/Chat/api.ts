@@ -46,3 +46,27 @@ export const getConv = createAsyncThunk<Conversation[], void, {}>(
     }
   }
 );
+
+export const createConv = createAsyncThunk<
+  string,
+  { name: string; users: string[] },
+  {}
+>("conversations/create", async (data, thunkAPI) => {
+  try {
+    const response = await apiFetch<string>(
+      "/api/conversations/",
+      {
+        requestConfig: {
+          method: "POST",
+          withCredentials: true,
+          data: JSON.stringify(data),
+        },
+      },
+      AuthorizationLevel.AUTHORIZED
+    );
+
+    return response;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});

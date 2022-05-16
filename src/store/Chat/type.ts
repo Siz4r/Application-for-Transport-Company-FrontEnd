@@ -16,14 +16,14 @@ export interface ConversationDTO {
   name: string;
   messages: Message[];
   id: string;
-  users: Contact;
+  users: Contact[];
 }
 
 export interface Conversation {
   name: string;
   messages: Message[];
   id: string;
-  users: Contact;
+  users: Contact[];
 }
 
 export interface Message {
