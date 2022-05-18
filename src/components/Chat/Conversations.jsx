@@ -1,23 +1,37 @@
 import { ListGroup } from "react-bootstrap";
 import { useConversations } from "../../core/contexts/ConversationsProviders";
 
-export const Conversations = () => {
-  const { conversations, selectConversationIndex } = useConversations();
+import SockJS from "sockjs-client";
+import { over } from "stompjs";
+import { useEffect, useState } from "react";
+import { useChat } from "../../core/hooks/Chat/useChat";
 
-  // console.log(conversations);
+var stompClient = undefined;
+
+export const Conversations = (props) => {
+  const { selectConversationIndex, selectedConversation } = useConversations();
+  const { convs, contactsLoading } = useChat({ fetchOnMount: true });
+
+  console.log(selectedConversation);
+
+  const [conversations, setConversations] = useState(convs);
 
   return (
     <ListGroup variant="flush">
-      {conversations.map((conversation, index) => (
-        <ListGroup.Item
-          key={index}
-          action
-          onClick={() => selectConversationIndex(index)}
-          active={conversation.selected}
-        >
-          {conversation.conversationName}
-        </ListGroup.Item>
-      ))}
+      {!contactsLoading &&
+        convs.map((conversation, index) => (
+          <ListGroup.Item
+            key={index}
+            action
+            onClick={() => selectConversationIndex(index)}
+            active={
+              conversation.conversationId ===
+              selectedConversation.conversationId
+            }
+          >
+            {conversation.conversationName}
+          </ListGroup.Item>
+        ))}
     </ListGroup>
   );
 };

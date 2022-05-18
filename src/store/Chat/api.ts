@@ -1,7 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { apiFetch, AuthorizationLevel } from "../../core/apiFetch";
+
 import { serializeContacts } from "./serializers/serializeContacts";
 import { Contact, ContactDto, Conversation, ConversationDTO } from "./type";
+import SockJS from "sockjs-client";
+import { over } from "stompjs";
+import { useSelectUser } from "../../core/hooks/SelectUser/useSelectUser";
+import { isBoolean } from "../../utils/isCheckers/isBooleans";
 
 export const getContacts = createAsyncThunk<Contact[], void, {}>(
   "contacts/get",
@@ -48,12 +53,12 @@ export const getConv = createAsyncThunk<Conversation[], void, {}>(
 );
 
 export const createConv = createAsyncThunk<
-  string,
+  ConversationDTO,
   { name: string; users: string[] },
   {}
 >("conversations/create", async (data, thunkAPI) => {
   try {
-    const response = await apiFetch<string>(
+    const response = await apiFetch<ConversationDTO>(
       "/api/conversations/",
       {
         requestConfig: {
@@ -70,3 +75,10 @@ export const createConv = createAsyncThunk<
     return thunkAPI.rejectWithValue(error);
   }
 });
+
+export const onConvReceived = createAsyncThunk<ConversationDTO, string, {}>(
+  "conversations/received",
+  async (data, thunkAPI) => {
+    return JSON.parse(data);
+  }
+);

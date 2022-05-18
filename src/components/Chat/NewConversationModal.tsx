@@ -29,12 +29,12 @@ export const NewConversationModal = (props: Props) => {
     inputBlurHandler: nameIsBlurHandler,
   } = useInput(correctTextInput, "");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(undefined);
     if (selectedContactIds.length > 0 && nameIsValid) {
       try {
-        addConv(nameValue, selectedContactIds);
+        await addConv(nameValue, selectedContactIds);
       } catch (error: any) {
         parseErrorToString(error, setFormError);
       }

@@ -1,5 +1,5 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { createConv, getContacts, getConv } from "./api";
+import { createConv, getContacts, getConv, onConvReceived } from "./api";
 import { Contact, Conversation } from "./type";
 
 export interface IchatSlice {
@@ -26,16 +26,40 @@ export const chatSlice = createSlice<IchatSlice, {}>({
     });
 
     builder.addCase(createConv.fulfilled, (state, action) => {
-      const args = action.meta.arg;
-      const contacts = state.contacts.filter((c) => args.users.includes(c.id));
+      // const args = action.meta.arg;
+      // const contacts = state.contacts.filter((c) => args.users.includes(c.id));
+      // state.conversations = [
+      //   ...state.conversations,
+      //   {
+      //     conversationName: args.name,
+      //     users: contacts,
+      //     messages: [],
+      //     conversationId: action.payload.conversationId,
+      //   },
+      // ];
+    });
+
+    builder.addCase(onConvReceived.fulfilled, (state, action) => {
+      const args = action.payload;
+
       state.conversations = [
         ...state.conversations,
-        { name: args.name, users: contacts, messages: [], id: action.payload },
+        {
+          conversationName: args.conversationName,
+          users: args.users,
+          messages: [],
+          conversationId: action.payload.conversationId,
+        },
       ];
     });
 
     builder.addMatcher(
-      isAnyOf(getContacts.pending, getConv.pending, createConv.pending),
+      isAnyOf(
+        getContacts.pending,
+        getConv.pending,
+        createConv.pending,
+        onConvReceived.pending
+      ),
       (state) => {
         state.loading = true;
       }
@@ -48,7 +72,9 @@ export const chatSlice = createSlice<IchatSlice, {}>({
         getConv.fulfilled,
         getConv.rejected,
         createConv.fulfilled,
-        createConv.rejected
+        createConv.rejected,
+        onConvReceived.fulfilled,
+        onConvReceived.rejected
       ),
       (state) => {
         state.loading = false;

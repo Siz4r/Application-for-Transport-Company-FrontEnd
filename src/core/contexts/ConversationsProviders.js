@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect, useCallback } from "react";
 import { useChat } from "../hooks/Chat/useChat";
-import { useSocket } from "./SockerProvider";
 
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
+import { onConvReceived } from "../../store/Chat/api";
 
 var stompClient = null;
 
@@ -14,19 +14,20 @@ export const useConversations = () => {
 };
 
 export function ConversationsProvider({ id, children }) {
-  const { convs } = useChat({
+  const { convs, onConvGet } = useChat({
     fetchOnMount: true,
   });
 
   const [conversations, setConversations] = useState(convs);
+
+  // console.log("Zrealodowalo do tego: " + conversations);
+  // console.log(conversations);
+  // console.log(convs);
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(0);
   const { contacts } = useChat();
 
   const addMessageToConversation = useCallback(
     ({ conversationId, text, senderId }) => {
-      console.log(conversationId);
-      console.log(text);
-      console.log(senderId);
       setConversations((prevConversations) => {
         const newMessage = { senderId, text };
         const newConversations = prevConversations.map((conversation) => {
@@ -47,6 +48,20 @@ export function ConversationsProvider({ id, children }) {
     [setConversations]
   );
 
+  const onMessageReceived = (payload) => {
+    const body = JSON.parse(payload.body);
+
+    addMessageToConversation({
+      conversationId: body.convId,
+      text: body.text,
+      senderId: body.sender,
+    });
+  };
+
+  if (conversations.length != 0 && conversations.length < convs.length) {
+    setConversations(convs);
+  }
+
   useEffect(async () => {
     connect();
     if (stompClient == null) return;
@@ -61,28 +76,27 @@ export function ConversationsProvider({ id, children }) {
   }
 
   const onConnected = () => {
-    conversations.forEach((c) =>
+    conversations.forEach((c) => {
       stompClient.subscribe(
         `/conversation/${c.conversationId}/private`,
         onMessageReceived
-      )
+      );
+    });
+
+    stompClient.subscribe(`/conversation/${id}/new`, onNewConvGet);
+  };
+
+  const onNewConvGet = async (payload) => {
+    onConvGet(payload);
+    const data = JSON.parse(payload.body);
+    console.log(payload);
+    stompClient.subscribe(
+      `/conversation/${data.conversationId}/private`,
+      onMessageReceived
     );
   };
 
-  const onMessageReceived = (payload) => {
-    const body = JSON.parse(payload.body);
-
-    console.log("BODY" + body.convId);
-
-    addMessageToConversation({
-      conversationId: body.convId,
-      text: body.text,
-      senderId: body.sender,
-    });
-  };
-
   function sendMessage(conversationId, text, senderId) {
-    console.log(senderId);
     const message = {
       convID: conversationId,
       senderID: id,
@@ -117,6 +131,9 @@ export function ConversationsProvider({ id, children }) {
     const selected = index === selectedConversationIndex;
     return { ...conversation, messages, recipients, selected };
   });
+
+  console.log(convs);
+  console.log(formattedConversations);
 
   const value = {
     conversations: formattedConversations,

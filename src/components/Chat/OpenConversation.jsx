@@ -16,7 +16,7 @@ export const OpenConversation = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(selectedConversation);
+    // console.log(selectedConversation);
     sendMessage(selectedConversation.conversationId, text, user.id);
     setText("");
   };

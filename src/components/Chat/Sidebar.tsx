@@ -6,6 +6,7 @@ import { NewConversationModal } from "./NewConversationModal";
 
 type Props = {
   name: string;
+  id: string;
 };
 
 const CONVERSATIONS_KEY = "conversations";
@@ -33,7 +34,7 @@ export const Sidebar = (props: Props) => {
         </Nav>
         <Tab.Content className="border-right overflow-auto flex-grow-1">
           <Tab.Pane eventKey={CONVERSATIONS_KEY}>
-            <Conversations />
+            <Conversations userId={props.id} />
           </Tab.Pane>
           <Tab.Pane eventKey={CONTACTS_KEY}>
             <Contacts />
