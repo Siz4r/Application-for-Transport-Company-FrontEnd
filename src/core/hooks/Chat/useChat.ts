@@ -73,11 +73,7 @@ export const useChat = (config: UseProjectsConfig | undefined = undefined) => {
     return payload;
   };
 
-  const onConvGet = async (
-    payload: any,
-    stompClient: any,
-    onMessageReceived: any
-  ) => {
+  const onConvGet = async (payload: any) => {
     typedDispatchOnReceivedConv(onConvReceived(payload.body));
   };
 

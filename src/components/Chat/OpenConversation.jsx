@@ -3,7 +3,7 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import { useConversations } from "../../core/contexts/ConversationsProviders";
 import { useSelectUser } from "../../core/hooks/SelectUser/useSelectUser";
 
-export const OpenConversation = () => {
+export const OpenConversation = (props) => {
   const [text, setText] = useState("");
   const setRef = useCallback((node) => {
     if (node) {
@@ -17,7 +17,7 @@ export const OpenConversation = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // console.log(selectedConversation);
-    sendMessage(selectedConversation.conversationId, text, user.id);
+    props.sendMessage(selectedConversation.conversationId, text, user.id);
     setText("");
   };
 

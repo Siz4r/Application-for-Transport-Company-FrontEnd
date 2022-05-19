@@ -1,6 +1,24 @@
-import { createSlice, isAnyOf } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { createConv, getContacts, getConv, onConvReceived } from "./api";
 import { Contact, Conversation } from "./type";
+
+// const onMessageReceived = (payload: any) => {
+
+//   addMessageToConversation({
+//     conversationId: body.conversationId,
+//     text: body.text,
+//     senderId: body.senderId,
+//   });
+// };
+
+const addMessageToConversation = createAsyncThunk<
+  { conversationId: string; text: string; senderId: string },
+  { payload: any },
+  {}
+>("conversations/addMessage", async (data, thunkAPI) => {
+  const body = JSON.parse(data.payload.body);
+  return body;
+});
 
 export interface IchatSlice {
   loading: boolean;
@@ -37,6 +55,21 @@ export const chatSlice = createSlice<IchatSlice, {}>({
       //     conversationId: action.payload.conversationId,
       //   },
       // ];
+    });
+
+    builder.addCase(addMessageToConversation.fulfilled, (state, action) => {
+      const payload = action.payload;
+      const newMessage = { senderId: payload.senderId, text: payload.text };
+      state.conversations = state.conversations.map((conversation) => {
+        if (conversation.conversationId === payload.conversationId) {
+          return {
+            ...conversation,
+            messages: [...conversation.messages, newMessage],
+          };
+        }
+
+        return conversation;
+      });
     });
 
     builder.addCase(onConvReceived.fulfilled, (state, action) => {

@@ -3,10 +3,6 @@ import { apiFetch, AuthorizationLevel } from "../../core/apiFetch";
 
 import { serializeContacts } from "./serializers/serializeContacts";
 import { Contact, ContactDto, Conversation, ConversationDTO } from "./type";
-import SockJS from "sockjs-client";
-import { over } from "stompjs";
-import { useSelectUser } from "../../core/hooks/SelectUser/useSelectUser";
-import { isBoolean } from "../../utils/isCheckers/isBooleans";
 
 export const getContacts = createAsyncThunk<Contact[], void, {}>(
   "contacts/get",
@@ -44,7 +40,6 @@ export const getConv = createAsyncThunk<Conversation[], void, {}>(
         },
         AuthorizationLevel.AUTHORIZED
       );
-
       return response.map((c) => ({ ...c } as Conversation));
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error);

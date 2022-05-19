@@ -3,7 +3,7 @@ import { useChat } from "../hooks/Chat/useChat";
 
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
-import { onConvReceived } from "../../store/Chat/api";
+import { apiFetch, AuthorizationLevel } from "../apiFetch";
 
 var stompClient = null;
 
@@ -14,15 +14,23 @@ export const useConversations = () => {
 };
 
 export function ConversationsProvider({ id, children }) {
-  const { convs, onConvGet } = useChat({
-    fetchOnMount: true,
-  });
+  const { onConvGet, convs } = useChat();
 
   const [conversations, setConversations] = useState(convs);
+  const onMessageReceived = (payload) => {
+    const body = JSON.parse(payload.body);
 
-  // console.log("Zrealodowalo do tego: " + conversations);
-  // console.log(conversations);
-  // console.log(convs);
+    addMessageToConversation({
+      conversationId: body.conversationId,
+      text: body.text,
+      senderId: body.senderId,
+    });
+  };
+
+  if (conversations.length < convs.length) {
+    setConversations(convs);
+  }
+
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(0);
   const { contacts } = useChat();
 
@@ -32,7 +40,6 @@ export function ConversationsProvider({ id, children }) {
         const newMessage = { senderId, text };
         const newConversations = prevConversations.map((conversation) => {
           if (conversation.conversationId === conversationId) {
-            console.log(newMessage);
             return {
               ...conversation,
               messages: [...conversation.messages, newMessage],
@@ -48,25 +55,12 @@ export function ConversationsProvider({ id, children }) {
     [setConversations]
   );
 
-  const onMessageReceived = (payload) => {
-    const body = JSON.parse(payload.body);
-
-    addMessageToConversation({
-      conversationId: body.convId,
-      text: body.text,
-      senderId: body.sender,
-    });
-  };
-
-  if (conversations.length != 0 && conversations.length < convs.length) {
-    setConversations(convs);
-  }
-
   useEffect(async () => {
-    connect();
-    if (stompClient == null) return;
-
-    setConversations(convs);
+    // if (convs.length === conversations.length) {
+    // connect();
+    // if (stompClient == null) return;
+    // }
+    // setConversations(convs);
   }, [stompClient, addMessageToConversation, setConversations]);
 
   function connect() {
@@ -82,21 +76,19 @@ export function ConversationsProvider({ id, children }) {
         onMessageReceived
       );
     });
-
     stompClient.subscribe(`/conversation/${id}/new`, onNewConvGet);
   };
 
   const onNewConvGet = async (payload) => {
     onConvGet(payload);
     const data = JSON.parse(payload.body);
-    console.log(payload);
     stompClient.subscribe(
       `/conversation/${data.conversationId}/private`,
       onMessageReceived
     );
   };
 
-  function sendMessage(conversationId, text, senderId) {
+  function sendMessage(conversationId, text) {
     const message = {
       convID: conversationId,
       senderID: id,
@@ -104,8 +96,6 @@ export function ConversationsProvider({ id, children }) {
     };
 
     stompClient.send(`/app/conversationMessage/`, {}, JSON.stringify(message));
-
-    // addMessageToConversation({ conversationId, text, senderId: id });
   }
 
   const formattedConversations = conversations.map((conversation, index) => {
@@ -132,14 +122,12 @@ export function ConversationsProvider({ id, children }) {
     return { ...conversation, messages, recipients, selected };
   });
 
-  console.log(convs);
-  console.log(formattedConversations);
-
   const value = {
     conversations: formattedConversations,
     selectedConversation: formattedConversations[selectedConversationIndex],
     sendMessage,
     selectConversationIndex: setSelectedConversationIndex,
+    onMessageReceived,
   };
 
   return (

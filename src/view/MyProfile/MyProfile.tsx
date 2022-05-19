@@ -10,6 +10,7 @@ import { useTypedDispatch } from "../../core/hooks/TypedDispatch/useTypedDispatc
 import { updateUserData } from "../../store/SignIn/api";
 import { useState } from "react";
 import { parseErrorToString } from "../../core/parseErrorToString";
+import { useChat } from "../../core/hooks/Chat/useChat";
 
 export const isNotEmpty = (value: string) => value.trim().length > 2;
 export const hasOnlyNumbers = (value: string) => /^\d+$/.test(value);

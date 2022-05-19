@@ -9,17 +9,17 @@ import { useChat } from "../../core/hooks/Chat/useChat";
 var stompClient = undefined;
 
 export const Conversations = (props) => {
-  const { selectConversationIndex, selectedConversation } = useConversations();
-  const { convs, contactsLoading } = useChat({ fetchOnMount: true });
+  const { selectConversationIndex, selectedConversation, conversations } =
+    useConversations();
+  const { contactsLoading } = useChat();
 
-  console.log(selectedConversation);
-
-  const [conversations, setConversations] = useState(convs);
+  // const [conversations, setConversations] = useState(convs);
 
   return (
     <ListGroup variant="flush">
       {!contactsLoading &&
-        convs.map((conversation, index) => (
+        conversations &&
+        conversations.map((conversation, index) => (
           <ListGroup.Item
             key={index}
             action

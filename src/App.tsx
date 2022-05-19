@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import classes from "./App.module.css";
 import { ConversationsProvider } from "./core/contexts/ConversationsProviders";
 import { SocketProvider } from "./core/contexts/SockerProvider";
+import { useChat } from "./core/hooks/Chat/useChat";
 import { useSelectUser } from "./core/hooks/SelectUser/useSelectUser";
 import { BootstrapAuthentication } from "./core/wrappers/BootstrapAuthentication";
 import { RouterPathsKeys } from "./types";
@@ -21,6 +22,7 @@ import { SignIn } from "./view/SignIn/SignIn";
 
 function App() {
   const { user } = useSelectUser();
+  // const { convs } = useChat({ fetchOnMount: true });
   let id;
 
   if (!isBoolean(user)) {
