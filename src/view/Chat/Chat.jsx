@@ -14,7 +14,7 @@ let stompClient = null;
 export const Chat = () => {
   const { user } = useSelectUser();
   const { selectedConversation, onMessageReceived } = useConversations();
-  const { convs, onConvGet } = useChat();
+  const { convs, onConvGet } = useChat({ fetchOnMount: true });
 
   function connect() {
     const Sock = new SockJS("http://localhost:5000/chat");
