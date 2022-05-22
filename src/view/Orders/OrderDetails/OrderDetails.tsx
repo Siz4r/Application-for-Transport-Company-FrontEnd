@@ -134,6 +134,7 @@ export const OrderDetails = () => {
   if (freeEmployees.length > 0 && !employee) {
     setEmployee(freeEmployees[0]);
   }
+  console.log(order.client);
 
   const isDoneClasses = order.done ? "text-success" : "text-danger";
 

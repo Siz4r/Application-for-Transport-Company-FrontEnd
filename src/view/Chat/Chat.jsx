@@ -14,7 +14,7 @@ let stompClient = null;
 export const Chat = () => {
   const { user } = useSelectUser();
   const { selectedConversation, onMessageReceived } = useConversations();
-  const { convs, onConvGet } = useChat({ fetchOnMount: true });
+  const { convs, onConvGet, contactsLoading } = useChat({ fetchOnMount: true });
 
   function connect() {
     const Sock = new SockJS("http://localhost:5000/chat");
@@ -29,6 +29,7 @@ export const Chat = () => {
         onMessageReceived
       );
     });
+    console.log(user.id);
     stompClient.subscribe(`/conversation/${user.id}/new`, onNewConvGet);
   };
 
@@ -41,7 +42,8 @@ export const Chat = () => {
     );
   };
 
-  if (stompClient === null && convs.length > 0) {
+  if (stompClient === null && !contactsLoading) {
+    console.log();
     connect();
   }
 
@@ -54,6 +56,8 @@ export const Chat = () => {
 
     stompClient.send(`/app/conversationMessage/`, {}, JSON.stringify(message));
   }
+
+  console.log("elo");
 
   return !isBoolean(user) ? (
     <AuthenticatedView>

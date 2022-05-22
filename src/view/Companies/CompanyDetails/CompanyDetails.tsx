@@ -71,7 +71,9 @@ export const CompanyDetails = () => {
   const [newOrderAdded, setNewOrderAdded] = useState<string | undefined>(
     undefined
   );
-  const [orderStuffId, setOrderStuffId] = useState("");
+  const [orderStuffId, setOrderStuffId] = useState<undefined | string>(
+    undefined
+  );
 
   const [company, setCompany] = useState<
     boolean | Awaited<ReturnType<typeof fetchCompanyById>>
@@ -185,6 +187,8 @@ export const CompanyDetails = () => {
             id: payload,
           },
         ]);
+
+        console.log(stuffs);
       } catch (error) {
         parseErrorToString(error, setFormError);
       }
@@ -193,11 +197,21 @@ export const CompanyDetails = () => {
 
   const addOrderHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    let stuffId;
     if (!isBoolean(user)) {
-      if (orderStuffId && orderQuantity && user.id) {
+      console.log(stuffs);
+      if (!orderStuffId) {
+        stuffId = stuffs[0].id;
+      } else {
+        stuffId = orderStuffId;
+      }
+      console.log(orderStuffId);
+      console.log(orderQuantity);
+      console.log(user.id);
+      if (orderQuantity && user.id && stuffId) {
+        console.log("eloeleoleo");
         try {
-          await orderAStuff(orderStuffId, user.id, orderQuantity);
+          await orderAStuff(stuffId, user.id, orderQuantity);
           const stuff = stuffs.find((o) => o.id === orderStuffId);
           if (stuff) {
             const index = stuffs.indexOf(stuff);
