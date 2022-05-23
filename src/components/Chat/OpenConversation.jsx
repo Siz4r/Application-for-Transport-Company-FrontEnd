@@ -12,7 +12,7 @@ export const OpenConversation = (props) => {
   }, []);
 
   const { user } = useSelectUser();
-  const { sendMessage, selectedConversation } = useConversations();
+  const { selectedConversation } = useConversations();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -50,7 +50,11 @@ export const OpenConversation = (props) => {
                     message.fromMe ? "text-right" : ""
                   }`}
                 >
-                  {message.fromMe ? "You" : message.senderName}
+                  {message.fromMe
+                    ? "Ty, " + message.createdAt.toLocaleString()
+                    : `${
+                        message.senderName
+                      }, ${message.createdAt.toLocaleString()}`}
                 </div>
               </div>
             );
@@ -69,8 +73,8 @@ export const OpenConversation = (props) => {
             />
             <div className="input-group mb-3">
               <div className="input-group-append">
-                <Button className="btn btn-outline-secondary" type="submit">
-                  Send
+                <Button className="btn m-1 mb-0" type="submit">
+                  Wyślij
                 </Button>
               </div>
             </div>

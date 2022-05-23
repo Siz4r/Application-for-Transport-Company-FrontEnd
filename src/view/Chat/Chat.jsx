@@ -8,13 +8,28 @@ import { isBoolean } from "../../utils/isCheckers/isBooleans";
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
 import { useChat } from "../../core/hooks/Chat/useChat";
+import { addMessageToConversation } from "../../store/Chat/slice";
 
 let stompClient = null;
 
 export const Chat = () => {
   const { user } = useSelectUser();
-  const { selectedConversation, onMessageReceived } = useConversations();
+  const { selectedConversation, onMessageReceived: onMessageReceivedClient } =
+    useConversations();
   const { convs, onConvGet, contactsLoading } = useChat({ fetchOnMount: true });
+
+  const onMessageReceived = (payload) => {
+    const body = JSON.parse(payload.body);
+
+    addMessageToConversation({
+      conversationId: body.conversationId,
+      text: body.text,
+      senderId: body.senderId,
+      createdAt: body.createdAt,
+    });
+
+    onMessageReceivedClient(payload);
+  };
 
   function connect() {
     const Sock = new SockJS("http://localhost:5000/chat");
@@ -29,7 +44,6 @@ export const Chat = () => {
         onMessageReceived
       );
     });
-    console.log(user.id);
     stompClient.subscribe(`/conversation/${user.id}/new`, onNewConvGet);
   };
 
@@ -43,7 +57,7 @@ export const Chat = () => {
   };
 
   if (stompClient === null && !contactsLoading) {
-    console.log();
+    console.log("cze");
     connect();
   }
 
@@ -56,8 +70,6 @@ export const Chat = () => {
 
     stompClient.send(`/app/conversationMessage/`, {}, JSON.stringify(message));
   }
-
-  console.log("elo");
 
   return !isBoolean(user) ? (
     <AuthenticatedView>

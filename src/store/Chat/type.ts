@@ -14,7 +14,7 @@ export interface ContactDto {
 
 export interface ConversationDTO {
   conversationName: string;
-  messages: Message[];
+  messages: MessageDTO[];
   conversationId: string;
   users: Contact[];
 }
@@ -26,7 +26,14 @@ export interface Conversation {
   users: Contact[];
 }
 
+export interface MessageDTO {
+  senderId: string;
+  text: string;
+  createdAt: string;
+}
+
 export interface Message {
   senderId: string;
   text: string;
+  createdAt: Date;
 }

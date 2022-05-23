@@ -1,8 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import dayjs from "dayjs";
 import { apiFetch, AuthorizationLevel } from "../../core/apiFetch";
 
 import { serializeContacts } from "./serializers/serializeContacts";
-import { Contact, ContactDto, Conversation, ConversationDTO } from "./type";
+import {
+  Contact,
+  ContactDto,
+  Conversation,
+  ConversationDTO,
+  Message,
+} from "./type";
 
 export const getContacts = createAsyncThunk<Contact[], void, {}>(
   "contacts/get",
@@ -40,7 +47,17 @@ export const getConv = createAsyncThunk<Conversation[], void, {}>(
         },
         AuthorizationLevel.AUTHORIZED
       );
-      return response.map((c) => ({ ...c } as Conversation));
+
+      return response.map(
+        (c) =>
+          ({
+            ...c,
+            messages: c.messages.map(
+              (m) =>
+                ({ ...m, createdAt: dayjs(m.createdAt).toDate() } as Message)
+            ),
+          } as Conversation)
+      );
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error);
     }

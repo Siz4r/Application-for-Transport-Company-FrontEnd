@@ -8,6 +8,7 @@ import { Input } from "../UI/Input";
 
 type Props = {
   closeModal: () => void;
+  userId: string;
 };
 
 export const isNotEmpty = (value: string) => value.trim().length > 2;
@@ -34,7 +35,7 @@ export const NewConversationModal = (props: Props) => {
     setFormError(undefined);
     if (selectedContactIds.length > 0 && nameIsValid) {
       try {
-        await addConv(nameValue, selectedContactIds);
+        await addConv(nameValue, [...selectedContactIds, props.userId]);
       } catch (error: any) {
         parseErrorToString(error, setFormError);
       }
@@ -56,19 +57,22 @@ export const NewConversationModal = (props: Props) => {
 
   return (
     <>
-      <Modal.Header closeButton>Create Conversation</Modal.Header>
+      <Modal.Header closeButton>Stwórz konwersacje</Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          {contacts.map((contact) => (
-            <Form.Group controlId={contact.id} key={contact.id}>
-              <Form.Check
-                type="checkbox"
-                value={contact.id}
-                label={`${contact.firstName} ${contact.lastName}`}
-                onChange={() => handleCheckboxChange(contact.id)}
-              />
-            </Form.Group>
-          ))}
+          {contacts.map(
+            (contact) =>
+              contact.id !== props.userId && (
+                <Form.Group controlId={contact.id} key={contact.id}>
+                  <Form.Check
+                    type="checkbox"
+                    value={contact.id}
+                    label={`${contact.firstName} ${contact.lastName}`}
+                    onChange={() => handleCheckboxChange(contact.id)}
+                  />
+                </Form.Group>
+              )
+          )}
           <div className="col w-50 h5">
             <Input
               id="name"
@@ -83,7 +87,7 @@ export const NewConversationModal = (props: Props) => {
             />
           </div>
           <Button type="submit" disabled={selectedContactIds.length < 1}>
-            Create
+            Stwórz
           </Button>
         </Form>
       </Modal.Body>

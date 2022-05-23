@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
+import dayjs from "dayjs";
 import { createConv, getContacts, getConv, onConvReceived } from "./api";
 import { Contact, Conversation } from "./type";
 
@@ -11,8 +12,8 @@ import { Contact, Conversation } from "./type";
 //   });
 // };
 
-const addMessageToConversation = createAsyncThunk<
-  { conversationId: string; text: string; senderId: string },
+export const addMessageToConversation = createAsyncThunk<
+  { conversationId: string; text: string; senderId: string; createdAt: string },
   { payload: any },
   {}
 >("conversations/addMessage", async (data, thunkAPI) => {
@@ -59,7 +60,11 @@ export const chatSlice = createSlice<IchatSlice, {}>({
 
     builder.addCase(addMessageToConversation.fulfilled, (state, action) => {
       const payload = action.payload;
-      const newMessage = { senderId: payload.senderId, text: payload.text };
+      const newMessage = {
+        senderId: payload.senderId,
+        text: payload.text,
+        createdAt: dayjs(payload.createdAt).toDate(),
+      };
       state.conversations = state.conversations.map((conversation) => {
         if (conversation.conversationId === payload.conversationId) {
           return {

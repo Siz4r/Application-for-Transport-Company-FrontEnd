@@ -26,10 +26,10 @@ export const Sidebar = (props: Props) => {
       <Tab.Container>
         <Nav variant="tabs" className="justify-content-center">
           <Nav.Item>
-            <Nav.Link eventKey={CONVERSATIONS_KEY}>Conversations</Nav.Link>
+            <Nav.Link eventKey={CONVERSATIONS_KEY}>Konwersacje</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link eventKey={CONTACTS_KEY}>Contacts</Nav.Link>
+            <Nav.Link eventKey={CONTACTS_KEY}>Kontakty</Nav.Link>
           </Nav.Item>
         </Nav>
         <Tab.Content className="border-right overflow-auto flex-grow-1">
@@ -41,15 +41,15 @@ export const Sidebar = (props: Props) => {
           </Tab.Pane>
         </Tab.Content>
         <div className="p-2 border-top border-right small">
-          Your name: <span className="text-muted">{props.name}</span>
+          Hej, <span>{props.name}</span>
         </div>
         <Button onClick={() => setModalOpen(true)} className="rounded-0">
-          New {conversationsOpen ? "Conversation" : "Contact"}
+          Nowa {conversationsOpen ? "konwersacja" : "Contact"}
         </Button>
       </Tab.Container>
 
       <Modal show={modalOpen} onHide={closeModal}>
-        <NewConversationModal closeModal={closeModal} /> :
+        <NewConversationModal closeModal={closeModal} userId={props.id} /> :
       </Modal>
     </div>
   );
