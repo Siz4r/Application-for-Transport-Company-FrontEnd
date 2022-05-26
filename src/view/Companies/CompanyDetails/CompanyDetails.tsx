@@ -199,15 +199,11 @@ export const CompanyDetails = () => {
     e.preventDefault();
     let stuffId;
     if (!isBoolean(user)) {
-      console.log(stuffs);
       if (!orderStuffId) {
         stuffId = stuffs[0].id;
       } else {
         stuffId = orderStuffId;
       }
-      console.log(orderStuffId);
-      console.log(orderQuantity);
-      console.log(user.id);
       if (orderQuantity && user.id && stuffId) {
         console.log("eloeleoleo");
         try {
@@ -271,7 +267,9 @@ export const CompanyDetails = () => {
                   >
                     <form onSubmit={addOrderHandler} id="orderForm">
                       <Form.Group>
-                        <Form.Label className="mt-2">Towar</Form.Label>
+                        <Form.Label className="mt-2">
+                          <p>Towar</p>
+                        </Form.Label>
                         <Form.Select
                           className="mt-0"
                           onChange={(e) => {

@@ -20,7 +20,7 @@ type Props = {
 };
 
 export const StuffItem = (props: Props) => {
-  const { removeStuff, editStuffData } = useCompanies({ fetchOnMount: false });
+  const { removeStuff } = useCompanies({ fetchOnMount: false });
 
   const { stuff } = props;
 
@@ -30,7 +30,7 @@ export const StuffItem = (props: Props) => {
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
   return (
-    <li className="row shadowBox p-3 align-items-center m-0">
+    <li className="row shadowBox p-1 align-items-center m-0">
       {formError && <p className="text-danger my-0">{formError}</p>}
       {edited && <p className="text-success my-0">Stuff succesfully edited!</p>}
       <div className="col-2">
@@ -38,10 +38,10 @@ export const StuffItem = (props: Props) => {
           src="https://res.cloudinary.com/siz4rimag/image/upload/v1645197029/commodity-icon-12_1_q8memw.png"
           alt=""
           className="img-fluid"
-          style={{ maxWidth: 150 }}
+          style={{ maxHeight: 150 }}
         />
       </div>
-      <div className="col-2 text-center">
+      <div className="col-2 text-center m-0">
         <h2 className="m-0">{stuff.name}</h2>
         <h4>Ilość w tonach:</h4>
         <form
@@ -81,7 +81,7 @@ export const StuffItem = (props: Props) => {
         </form>
       </div>
       <div className="col-5 text-center">
-        <p>{stuff.description}</p>
+        <h5>{stuff.description}</h5>
       </div>
       {props.isAdmin && (
         <div className="col-3">
@@ -93,11 +93,14 @@ export const StuffItem = (props: Props) => {
               await removeStuff(stuff.id);
               props.onStuffDelete(stuff.id);
             }}
-            style="w-100 bg-danger my-3"
+            style="w-100 bg-danger my-3 h5 py-2"
             disableButton={false}
           />
 
-          <button className="bg-warning w-100 my-3" form={`${stuff.id}`}>
+          <button
+            className="bg-warning w-100 my-3 h5 py-2"
+            form={`${stuff.id}`}
+          >
             Edytuj towar
           </button>
         </div>
