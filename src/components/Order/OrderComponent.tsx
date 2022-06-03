@@ -18,14 +18,14 @@ export const OrderComponent = (props: Props) => {
     <div className={props.realized ? classes.realized : classes.inRealization}>
       <div className={classes.order}>
         {props.clientFirstName && props.clientLastName ? (
-          <div className={classes.client}>
-            Klient: <br></br> {props.clientFirstName} {props.clientLastName}
+          <div className="m-3 h5">
+            Klient: <br /> {props.clientFirstName} {props.clientLastName}
           </div>
         ) : (
           ""
         )}
         <div className={classes.dest}>
-          <div className={classes.from}>
+          <div className="h5 mx-5">
             Od: <br></br>
             {props.companyFrom}
           </div>
@@ -33,7 +33,7 @@ export const OrderComponent = (props: Props) => {
         </div>
         <div className={classes.stuff}>
           <div className={classes.stuffImage} />
-          <p>{props.stuffName}</p>
+          <h5>{props.stuffName}</h5>
         </div>
         {props.employeeFirstName && props.employeeLastName ? (
           <div className={classes.assignedEmployee}>
@@ -43,7 +43,7 @@ export const OrderComponent = (props: Props) => {
         ) : (
           ""
         )}
-        <Link className={classes.details} to={RouterPathsKeys.ORDER + props.id}>
+        <Link className="h5 px-5 mx-5" to={RouterPathsKeys.ORDER + props.id}>
           Szczegóły
         </Link>
       </div>

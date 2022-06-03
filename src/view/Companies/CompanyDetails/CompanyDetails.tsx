@@ -68,6 +68,7 @@ export const CompanyDetails = () => {
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const [topQuantityRange, setTopQuantityRange] = useState(0);
   const [orderQuantity, setOrderQuantity] = useState(0);
+  const [chossenOrderPrize, setChossenOrderPrize] = useState(0);
   const [newOrderAdded, setNewOrderAdded] = useState<string | undefined>(
     undefined
   );
@@ -149,6 +150,7 @@ export const CompanyDetails = () => {
           if (temp) {
             setTopQuantityRange(temp.quantity);
             setOrderStuffId(temp.id);
+            setChossenOrderPrize(temp.prize);
           }
         } else {
           navigate(RouterPathsKeys.COMPANY);
@@ -177,6 +179,7 @@ export const CompanyDetails = () => {
 
         if (stuffs.length === 0) {
           setOrderQuantity(data.quantity / 2);
+          setChossenOrderPrize(data.prize);
           setTopQuantityRange(data.quantity);
         }
 
@@ -204,6 +207,10 @@ export const CompanyDetails = () => {
       } else {
         stuffId = orderStuffId;
       }
+<<<<<<< HEAD
+=======
+
+>>>>>>> temp-branch
       if (orderQuantity && user.id && stuffId) {
         console.log("eloeleoleo");
         try {
@@ -221,7 +228,7 @@ export const CompanyDetails = () => {
             ]);
           }
 
-          setNewOrderAdded("Your order has been added!");
+          setNewOrderAdded("Twoje zamówienie zostało złożone!");
         } catch (error: any) {
           parseErrorToString(error.toString(), setFormError);
         }
@@ -278,6 +285,7 @@ export const CompanyDetails = () => {
                             );
                             if (stuff) {
                               setTopQuantityRange(stuff.quantity);
+                              setChossenOrderPrize(stuff.prize);
                               setOrderQuantity(stuff.quantity / 2);
                               setOrderStuffId(stuff.id);
                             }
@@ -300,12 +308,16 @@ export const CompanyDetails = () => {
                           }
                           value={orderQuantity}
                         />
+                        <Form.Label className="mt-1">
+                          Kwota do zapłaty (zł):
+                          {" " + orderQuantity * chossenOrderPrize}
+                        </Form.Label>
                       </Form.Group>
                     </form>
                   </FormModal>
                 </div>
                 {newOrderAdded && (
-                  <p className="text-success text-center">{newOrderAdded}</p>
+                  <p className="text-success text-center h3">{newOrderAdded}</p>
                 )}
               </div>
               <h1 className="py-2">Towary</h1>
