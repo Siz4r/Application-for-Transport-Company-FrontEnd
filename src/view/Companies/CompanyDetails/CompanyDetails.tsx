@@ -207,10 +207,7 @@ export const CompanyDetails = () => {
       } else {
         stuffId = orderStuffId;
       }
-<<<<<<< HEAD
-=======
 
->>>>>>> temp-branch
       if (orderQuantity && user.id && stuffId) {
         console.log("eloeleoleo");
         try {
