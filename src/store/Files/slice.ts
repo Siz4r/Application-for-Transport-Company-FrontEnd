@@ -26,7 +26,6 @@ export const filesSlice = createSlice<IfilesSlice, {}>({
     });
 
     builder.addCase(getFiles.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.files = action.payload;
     });
 
