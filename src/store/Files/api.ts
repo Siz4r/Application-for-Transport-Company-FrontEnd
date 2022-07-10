@@ -8,7 +8,7 @@ export const updateFile = createAsyncThunk<UpdateFileResponse, UpdateFile, {}>(
   async (data, thunkAPI) => {
     try {
       const response = await apiFetch<UpdateFileResponse>(
-        `/api/files/${data.fromId}/${data.toId}`,
+        `/api/files/${data.toId}`,
         {
           requestConfig: {
             data: data.formData,
