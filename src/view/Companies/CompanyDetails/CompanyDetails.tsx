@@ -128,7 +128,6 @@ export const CompanyDetails = () => {
             setTopQuantityRange(newQuantity);
             setOrderQuantity(newQuantity / 2);
           }
-          // setStuffs((await fetchCompanyById(id)).stuffs);
         }
         setEdited(true);
       } catch (error) {
@@ -146,7 +145,6 @@ export const CompanyDetails = () => {
           setCompany(company);
           setStuffs(company.stuffs);
           const temp = company.stuffs[0];
-          console.log(temp);
           if (temp) {
             setTopQuantityRange(temp.quantity);
             setOrderStuffId(temp.id);
@@ -190,8 +188,6 @@ export const CompanyDetails = () => {
             id: payload,
           },
         ]);
-
-        console.log(stuffs);
       } catch (error) {
         parseErrorToString(error, setFormError);
       }
@@ -212,7 +208,6 @@ export const CompanyDetails = () => {
 
 >>>>>>> temp-branch
       if (orderQuantity && user.id && stuffId) {
-        console.log("eloeleoleo");
         try {
           await orderAStuff(stuffId, user.id, orderQuantity);
           const stuff = stuffs.find((o) => o.id === orderStuffId);
