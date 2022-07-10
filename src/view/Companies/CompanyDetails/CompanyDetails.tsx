@@ -204,6 +204,7 @@ export const CompanyDetails = () => {
       stuffId = orderStuffId;
     }
 
+
     if (orderQuantity && stuffId) {
       try {
         await orderAStuff(stuffId, orderQuantity);
@@ -265,7 +266,9 @@ export const CompanyDetails = () => {
                   >
                     <form onSubmit={addOrderHandler} id="orderForm">
                       <Form.Group>
-                        <Form.Label className="mt-2">Towar</Form.Label>
+                        <Form.Label className="mt-2">
+                          <p>Towar</p>
+                        </Form.Label>
                         <Form.Select
                           className="mt-0"
                           onChange={(e) => {
