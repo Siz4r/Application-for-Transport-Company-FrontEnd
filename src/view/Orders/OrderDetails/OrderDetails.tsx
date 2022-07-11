@@ -69,7 +69,6 @@ export const OrderDetails = () => {
           if (!isBoolean(order)) {
             setOrder(order);
             quantitySetValue(order.quantity.toString());
-            console.log(employees);
             setFreeEmployees([...employees.filter((e) => e.isAvailable)]);
           } else {
             navigate(RouterPathsKeys.ORDER);
@@ -134,7 +133,6 @@ export const OrderDetails = () => {
   if (freeEmployees.length > 0 && !employee) {
     setEmployee(freeEmployees[0]);
   }
-  console.log(order.client);
 
   const isDoneClasses = order.done ? "text-success" : "text-danger";
 

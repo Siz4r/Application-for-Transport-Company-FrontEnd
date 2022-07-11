@@ -98,14 +98,10 @@ export const useOrders = (config: UseOrdersConfig | undefined = undefined) => {
     setOrdersLoading(false);
   };
 
-  const orderAStuff = async (
-    stuffId: string,
-    clientId: string,
-    amount: number
-  ) => {
+  const orderAStuff = async (stuffId: string, amount: number) => {
     setOrdersLoading(true);
     const result = await typedDispatchAddOrder(
-      addOrder({ stuffId: stuffId, clientId: clientId, amount: amount })
+      addOrder({ stuffId: stuffId, amount: amount })
     );
     if (addOrder.rejected.match(result)) {
       throw new Error(result.payload);

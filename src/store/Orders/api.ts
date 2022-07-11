@@ -122,12 +122,12 @@ export const changeOrderState = createAsyncThunk<void, { id: string }, {}>(
 
 export const addOrder = createAsyncThunk<
   void,
-  { stuffId: string; clientId: string; amount: number },
+  { stuffId: string; amount: number },
   {}
->("orders/addOrder", async ({ stuffId, clientId, amount }, thunkAPI) => {
+>("orders/addOrder", async ({ stuffId, amount }, thunkAPI) => {
   try {
     await apiFetch(
-      `/api/orders/${stuffId}/${clientId}`,
+      `/api/orders/${stuffId}`,
       {
         requestConfig: {
           data: JSON.stringify({

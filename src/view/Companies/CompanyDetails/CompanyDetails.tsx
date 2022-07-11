@@ -197,33 +197,33 @@ export const CompanyDetails = () => {
   const addOrderHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     let stuffId;
-    if (!isBoolean(user)) {
-      if (!orderStuffId) {
-        stuffId = stuffs[0].id;
-      } else {
-        stuffId = orderStuffId;
-      }
 
-      if (orderQuantity && user.id && stuffId) {
-        try {
-          await orderAStuff(stuffId, user.id, orderQuantity);
-          const stuff = stuffs.find((o) => o.id === orderStuffId);
-          if (stuff) {
-            const index = stuffs.indexOf(stuff);
-            setStuffs((stuffs) => [
-              ...stuffs.slice(0, index),
-              {
-                ...stuff,
-                quantity: stuff.quantity - orderQuantity,
-              },
-              ...stuffs.slice(index + 1),
-            ]);
-          }
+    if (!orderStuffId) {
+      stuffId = stuffs[0].id;
+    } else {
+      stuffId = orderStuffId;
+    }
 
-          setNewOrderAdded("Twoje zamówienie zostało złożone!");
-        } catch (error: any) {
-          parseErrorToString(error.toString(), setFormError);
+
+    if (orderQuantity && stuffId) {
+      try {
+        await orderAStuff(stuffId, orderQuantity);
+        const stuff = stuffs.find((o) => o.id === orderStuffId);
+        if (stuff) {
+          const index = stuffs.indexOf(stuff);
+          setStuffs((stuffs) => [
+            ...stuffs.slice(0, index),
+            {
+              ...stuff,
+              quantity: stuff.quantity - orderQuantity,
+            },
+            ...stuffs.slice(index + 1),
+          ]);
         }
+
+        setNewOrderAdded("Twoje zamówienie zostało złożone!");
+      } catch (error: any) {
+        parseErrorToString(error.toString(), setFormError);
       }
     }
   };
